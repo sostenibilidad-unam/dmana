@@ -1,4 +1,6 @@
 from django.db import models
+import networkx as nx
+from django.conf import settings
 
 
 class Phase(models.Model):
@@ -22,16 +24,18 @@ class Power(models.Model):
         return u"%s" % self.name
 
 
-class Alter(models.Model):
+class Person(models.Model):
     name = models.CharField(max_length=200)
     sector = models.ForeignKey(Sector, null=True)
-    desc = models.TextField(blank=True)
+    description = models.TextField(blank=True)
 
     degree = models.IntegerField(default=0)
 
     avatar_name = models.CharField(max_length=200, blank=True)
     avatar_pic = models.ImageField(blank=True, null=True,
                                    upload_to='avatars/')
+
+    ego = models.BooleanField(default=False)
 
     def mental_model(self, phase):
         g = nx.DiGraph()
@@ -100,21 +104,21 @@ class Alter(models.Model):
         return u"%s" % self.name
 
     class Meta:
-        verbose_name_plural = "Egos and Alters"
+        verbose_name_plural = "People"
 
 
 class EgoEdge(models.Model):
-    source = models.ForeignKey(Alter, related_name='ego_net')
-    target = models.ForeignKey(Alter, related_name='alter_for')
+    source = models.ForeignKey(Person, related_name='ego_net')
+    target = models.ForeignKey(Person, related_name='alter_for')
 
-    distance = models.IntegerField()
+    distance = models.IntegerField(null=True)
 
-    interaction = models.CharField(max_length=20)
+    interaction = models.CharField(max_length=20, null=True)
 
-    polarity = models.IntegerField(default=0)
+    polarity = models.IntegerField(null=True)
 
-    influence_source = models.IntegerField(default=0)
-    influence_target = models.IntegerField(default=0)
+    influence_source = models.IntegerField(null=True)
+    influence_target = models.IntegerField(null=True)
 
     phase = models.ForeignKey(Phase, null=True)
 
@@ -123,7 +127,7 @@ class EgoEdge(models.Model):
 
 
 class PowerEdge(models.Model):
-    source = models.ForeignKey(Alter, related_name='powers')
+    source = models.ForeignKey(Person, related_name='powers')
     target = models.ForeignKey(Power, related_name='wielded_by')
 
     phase = models.ForeignKey(Phase, null=True)
@@ -162,7 +166,7 @@ class Action(models.Model):
 
 
 class ActionEdge(models.Model):
-    alter = models.ForeignKey(Alter,
+    alter = models.ForeignKey(Person,
                               related_name='action_set',
                               null=True)
     action = models.ForeignKey(Action,
@@ -191,7 +195,7 @@ class Variable(models.Model):
 
 
 class MentalEdge(models.Model):
-    ego = models.ForeignKey(Alter, null=True)
+    ego = models.ForeignKey(Person, null=True)
     source = models.ForeignKey(Variable,
                                related_name='leads_to',
                                null=True)
@@ -233,7 +237,7 @@ class AgencyNetwork:
         phase = Phase.objects.get(pk=phase_id)
         g = nx.DiGraph()
         for ego_id in ego_ids:
-            ego = Alter.objects.get(id=ego_id)
+            ego = Person.objects.get(id=ego_id)
 
             # create network from egos to alters
             for e in ego.ego_net.filter(phase=phase):
@@ -340,13 +344,13 @@ class MentalModel:
         phase = Phase.objects.get(pk=phase_id)
         g = nx.DiGraph()
         for ego_id in ego_ids:
-            ego = Alter.objects.get(id=ego_id)
+            ego = Person.objects.get(id=ego_id)
             h = ego.mental_model(phase)
 
             g = nx.compose(g, h)
 
         for ego_id in ego_ids:
-            ego = Alter.objects.get(id=ego_id)
+            ego = Person.objects.get(id=ego_id)
             h = ego.mental_model(phase)
             for n in h.nodes:
                 if n in g.nodes:
@@ -389,7 +393,7 @@ class PowerNetwork:
         phase = Phase.objects.get(pk=phase_id)
         g = nx.Graph()
         for ego_id in ego_ids:
-            ego = Alter.objects.get(id=ego_id)
+            ego = Person.objects.get(id=ego_id)
             h = ego.power_network(phase)
             g = nx.compose(g, h)
 
