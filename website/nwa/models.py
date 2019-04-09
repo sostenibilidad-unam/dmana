@@ -1,10 +1,12 @@
 from django.db import models
 import networkx as nx
 from django.conf import settings
+from django.contrib.auth.models import User
 
 
 class Phase(models.Model):
     phase = models.CharField(max_length=200)
+    author = models.ForeignKey(User)
 
     def __unicode__(self):
         return u"%s" % self.phase
@@ -19,6 +21,7 @@ class Sector(models.Model):
 
 class Power(models.Model):
     name = models.CharField(max_length=200)
+    author = models.ForeignKey(User)    
 
     def __unicode__(self):
         return u"%s" % self.name
@@ -37,20 +40,12 @@ class Person(models.Model):
 
     ego = models.BooleanField(default=False)
 
+    author = models.ForeignKey(User)
+    
     def mental_model(self, phase):
         g = nx.DiGraph()
 
         for e in self.mentaledge_set.filter(phase=phase):
-            g.add_node(e.source.name,
-                       shape="ellipse"
-                       if "Proceso" in e.source.mental_type
-                       else "rectangle")
-
-            g.add_node(e.target.name,
-                       shape="ellipse"
-                       if "Proceso" in e.target.mental_type
-                       else "rectangle")
-
             g.add_edge(e.source.name,
                        e.target.name)
         return g
@@ -107,23 +102,21 @@ class Person(models.Model):
         verbose_name_plural = "People"
 
 
-class EgoEdge(models.Model):
-    source = models.ForeignKey(Person, related_name='ego_net')
-    target = models.ForeignKey(Person, related_name='alter_for')
+class AgencyEdge(models.Model):
+    person = models.ForeignKey(Person)
+    action = models.ForeignKey(Action)
 
-    distance = models.IntegerField(null=True)
+    distance = models.IntegerField(null=True, null=True)
 
     interaction = models.CharField(max_length=20, null=True)
 
     polarity = models.IntegerField(null=True)
 
-    influence_source = models.IntegerField(null=True)
-    influence_target = models.IntegerField(null=True)
-
     phase = models.ForeignKey(Phase, null=True)
-
+    author = models.ForeignKey(User)
+    
     def __unicode__(self):
-        return u"%s<-%s->%s" % (self.source, self.distance, self.target)
+        return u"%s->%s" % (self.person, self.action)
 
 
 class PowerEdge(models.Model):
@@ -131,7 +124,7 @@ class PowerEdge(models.Model):
     target = models.ForeignKey(Power, related_name='wielded_by')
 
     phase = models.ForeignKey(Phase, null=True)
-
+    author = models.ForeignKey(User)
     def __unicode__(self):
         return u"%s -- %s" % (self.source, self.target)
 
@@ -145,6 +138,8 @@ class Category(models.Model):
     def get_degree(self):
         return sum([a.in_degree for a in self.alters()])
 
+    author = models.ForeignKey(User)
+    
     class Meta:
         verbose_name_plural = "Categories"
 
@@ -157,7 +152,8 @@ class Action(models.Model):
     category = models.ForeignKey(Category, null=True)
 
     in_degree = models.IntegerField(default=0)
-
+    author = models.ForeignKey(User)
+    
     def update_in_degree(self, phase):
         self.in_degree = self.actor_set.filter(phase=phase).count()
 
@@ -165,31 +161,11 @@ class Action(models.Model):
         return u"%s" % self.action
 
 
-class ActionEdge(models.Model):
-    alter = models.ForeignKey(Person,
-                              related_name='action_set',
-                              null=True)
-    action = models.ForeignKey(Action,
-                               related_name='actor_set',
-                               null=True)
-
-    phase = models.ForeignKey(Phase, null=True)
-
-    class Meta:
-        verbose_name_plural = "Action Edges"
-
-    def __unicode__(self):
-        return u"%s->%s" % (self.alter, self.action)
-
 
 class Variable(models.Model):
     name = models.CharField(max_length=200)
-    mental_type = models.CharField(max_length=200,
-                                   choices=(('Proceso', 'Proceso'),
-                                            ('Estado', 'Estado'),
-                                            ('NUEVO_Proceso', 'NUEVO_Proceso'),
-                                            ('NUEVO_Estado', 'NUEVO_Estado')))
-
+    author = models.ForeignKey(User)
+    
     def __unicode__(self):
         return u"%s" % self.name
 
@@ -204,7 +180,8 @@ class MentalEdge(models.Model):
                                null=True)
 
     phase = models.ForeignKey(Phase, null=True)
-
+    author = models.ForeignKey(User)
+    
     def __unicode__(self):
         return u"(%s)->(%s)" % (self.source, self.target)
 
