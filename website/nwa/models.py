@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Phase(models.Model):
     phase = models.CharField(max_length=200)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return u"%s" % self.phase
@@ -21,7 +21,7 @@ class Sector(models.Model):
 
 class Power(models.Model):
     name = models.CharField(max_length=200)
-    author = models.ForeignKey(User)    
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return u"%s" % self.name
@@ -29,7 +29,7 @@ class Power(models.Model):
 
 class Person(models.Model):
     name = models.CharField(max_length=200)
-    sector = models.ForeignKey(Sector, null=True)
+    sector = models.ForeignKey(Sector, null=True, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
 
     degree = models.IntegerField(default=0)
@@ -40,8 +40,8 @@ class Person(models.Model):
 
     ego = models.BooleanField(default=False)
 
-    author = models.ForeignKey(User)
-    
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
     def mental_model(self, phase):
         g = nx.DiGraph()
 
@@ -102,32 +102,6 @@ class Person(models.Model):
         verbose_name_plural = "People"
 
 
-class AgencyEdge(models.Model):
-    person = models.ForeignKey(Person)
-    action = models.ForeignKey(Action)
-
-    distance = models.IntegerField(null=True, null=True)
-
-    interaction = models.CharField(max_length=20, null=True)
-
-    polarity = models.IntegerField(null=True)
-
-    phase = models.ForeignKey(Phase, null=True)
-    author = models.ForeignKey(User)
-    
-    def __unicode__(self):
-        return u"%s->%s" % (self.person, self.action)
-
-
-class PowerEdge(models.Model):
-    source = models.ForeignKey(Person, related_name='powers')
-    target = models.ForeignKey(Power, related_name='wielded_by')
-
-    phase = models.ForeignKey(Phase, null=True)
-    author = models.ForeignKey(User)
-    def __unicode__(self):
-        return u"%s -- %s" % (self.source, self.target)
-
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -138,8 +112,8 @@ class Category(models.Model):
     def get_degree(self):
         return sum([a.in_degree for a in self.alters()])
 
-    author = models.ForeignKey(User)
-    
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
     class Meta:
         verbose_name_plural = "Categories"
 
@@ -147,13 +121,14 @@ class Category(models.Model):
         return u"%s" % self.name
 
 
+
 class Action(models.Model):
     action = models.CharField(max_length=200)
-    category = models.ForeignKey(Category, null=True)
+    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
 
     in_degree = models.IntegerField(default=0)
-    author = models.ForeignKey(User)
-    
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
     def update_in_degree(self, phase):
         self.in_degree = self.actor_set.filter(phase=phase).count()
 
@@ -162,26 +137,58 @@ class Action(models.Model):
 
 
 
+class AgencyEdge(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    action = models.ForeignKey(Action, on_delete=models.CASCADE)
+
+    distance = models.IntegerField(null=True)
+
+    interaction = models.CharField(max_length=20, null=True)
+
+    polarity = models.IntegerField(null=True)
+
+    phase = models.ForeignKey(Phase, null=True, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __unicode__(self):
+        return u"%s->%s" % (self.person, self.action)
+
+
+class PowerEdge(models.Model):
+    source = models.ForeignKey(Person, related_name='powers', on_delete=models.CASCADE)
+    target = models.ForeignKey(Power, related_name='wielded_by', on_delete=models.CASCADE)
+
+    phase = models.ForeignKey(Phase, null=True, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    def __unicode__(self):
+        return u"%s -- %s" % (self.source, self.target)
+
+
+
+
+
 class Variable(models.Model):
     name = models.CharField(max_length=200)
-    author = models.ForeignKey(User)
-    
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
     def __unicode__(self):
         return u"%s" % self.name
 
 
 class MentalEdge(models.Model):
-    ego = models.ForeignKey(Person, null=True)
+    ego = models.ForeignKey(Person, null=True, on_delete=models.CASCADE)
     source = models.ForeignKey(Variable,
                                related_name='leads_to',
-                               null=True)
+                               null=True,
+                               on_delete=models.CASCADE)
     target = models.ForeignKey(Variable,
                                related_name='caused_by',
-                               null=True)
+                               null=True,
+                               on_delete=models.CASCADE)
 
-    phase = models.ForeignKey(Phase, null=True)
-    author = models.ForeignKey(User)
-    
+    phase = models.ForeignKey(Phase, null=True, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
     def __unicode__(self):
         return u"(%s)->(%s)" % (self.source, self.target)
 
