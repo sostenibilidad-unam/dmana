@@ -40,17 +40,21 @@ class JustMine(object):
             author=request.user)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-
-# class EgoEdgeInline(admin.TabularInline):
-#     model = EgoEdge
-#     fk_name = 'source'
-#     extra = 1
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        kwargs['queryset'] = db_field.related_model.objects.filter(
+            author=request.user)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 # class ActionEdgeInline(admin.TabularInline):
 #     model = ActionEdge
 #     fk_name = 'alter'
 #     extra = 0
+
+class AgencyEdgeInline(JustMine, admin.TabularInline):
+    model = AgencyEdge
+    fk_name = 'person'
+    extra = 1
 
 
 class PowerEdgeInline(JustMine, admin.TabularInline):
@@ -65,6 +69,7 @@ class MentalEdgeInline(JustMine, admin.TabularInline):
     extra = 1
 
 
+@admin.register(Person)
 class PersonAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['name']
     list_display = ['name', 'sector', 'avatar_name', 'image_tag']
@@ -72,35 +77,10 @@ class PersonAdmin(JustMine, admin.ModelAdmin):
     list_filter = (
         ('sector', admin.RelatedOnlyFieldListFilter), )
 
-    inlines = [#EgoEdgeInline,
-               #ActionEdgeInline,
+    inlines = [AgencyEdgeInline,
+               # ActionEdgeInline,
                PowerEdgeInline,
                MentalEdgeInline]
-
-
-admin.site.register(Person, PersonAdmin)
-
-
-# class EgoEdgeAdmin(admin.ModelAdmin):
-#     search_fields = ['source__name', 'target__name', 'phase__phase']
-#     list_display = ['id', 'source', 'influence_source',
-#                     'target', 'influence_target',
-#                     'distance', 'polarity', 'interaction', 'phase']
-
-#     list_filter = ('phase',)
-
-#     actions = ['copy_to_latest_phase', ]
-
-#     def copy_to_latest_phase(self, request, queryset):
-#         phase = Phase.objects.last()
-#         for edge in queryset:
-#             edge.pk = None
-#             edge.phase = phase
-#             edge.save()
-#     copy_to_latest_phase.\
-#         short_description = "Copy selected edges to latest phase"
-
-# admin.site.register(EgoEdge, EgoEdgeAdmin)
 
 
 @admin.register(Sector)
@@ -115,43 +95,39 @@ class SectorAdmin(JustMine, admin.ModelAdmin):
         return qs.filter(author=request.user)
 
 
-#admin.site.register(Sector, SectorAdmin)
-
-
+@admin.register(Phase)
 class PhaseAdmin(JustMine, admin.ModelAdmin):
     exclude = ('author', )
     list_display = ['phase', 'author']
 
 
-admin.site.register(Phase, PhaseAdmin)
+@admin.register(Category)
+class CategoryAdmin(JustMine, admin.ModelAdmin):
+    pass
 
 
-admin.site.register(Category)
-
-
+@admin.register(Variable)
 class VariableAdmin(JustMine, admin.ModelAdmin):
     list_display = ['name', ]
 
 
-admin.site.register(Variable, VariableAdmin)
-
-
+@admin.register(Action)
 class ActionAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['action', ]
     list_display = ['action', 'category', 'in_degree']
-    list_filter = ('category', )
+    list_filter = (
+        ('category', admin.RelatedOnlyFieldListFilter), )
 
 
-admin.site.register(Action, ActionAdmin)
+@admin.register(AgencyEdge)
+class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
+    search_fields = ['person__name', 'action__action']
+    list_display = ['id', 'person', 'action', 'phase']
 
-
-# class ActionEdgeAdmin(admin.ModelAdmin):
-#     search_fields = ['alter__name', 'action__action']
-#     list_display = ['id', 'alter', 'action', 'phase']
+    list_filter = (
+        ('phase', admin.RelatedOnlyFieldListFilter), )
 
 #     actions = ['copy_to_latest_phase']
-
-#     list_filter = ('phase',)
 
 #     def copy_to_latest_phase(self, request, queryset):
 #         phase = Phase.objects.last()
@@ -163,14 +139,13 @@ admin.site.register(Action, ActionAdmin)
 #         short_description = "Copy selected edges to latest phase"
 
 
-# admin.site.register(ActionEdge, ActionEdgeAdmin)
-
-
+@admin.register(MentalEdge)
 class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['ego__name']
     list_display = ['ego', 'source', 'target', 'phase']
 
-    list_filter = ('phase',)
+    list_filter = (
+        ('phase', admin.RelatedOnlyFieldListFilter), )
 
     actions = ['copy_to_latest_phase']
 
@@ -184,9 +159,6 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
         short_description = "Copy selected edges to latest phase"
 
 
-admin.site.register(MentalEdge, MentalEdgeAdmin)
-
-
 @admin.register(Power)
 class PowerAdmin(JustMine, admin.ModelAdmin):
     pass
@@ -196,7 +168,8 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['person__name', 'power__name']
     list_display = ['person', 'power', 'phase']
 
-    list_filter = ('phase',)
+    list_filter = (
+        ('phase', admin.RelatedOnlyFieldListFilter), )
 
     actions = ['copy_to_latest_phase']
 
@@ -211,3 +184,8 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
 
 
 admin.site.register(PowerEdge, PowerEdgeAdmin)
+
+
+admin.site.site_header = "Agency Network Serializer"
+admin.site.site_title = "AgNes Admin Portal"
+admin.site.index_title = "Agency network database administrator"
