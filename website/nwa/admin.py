@@ -14,17 +14,20 @@ class JustMine(object):
         obj.save()
 
     def has_change_permission(self, request, obj=None):
-        if obj is not None and obj.author != request.user:
-            return False
-        return True
+        if obj is not None:
+            if request.user.is_superuser is True:
+                return True
+            if obj.author == request.user:
+                return True
+        return False
 
     def has_delete_permission(self, request, obj=None):
-        if obj is not None\
-           and obj.author != request.user\
-           and request.user.is_superuser is False:
-            return False
-        else:
-            return True
+        if obj is not None:
+            if request.user.is_superuser is True:
+                return True
+            if obj.author == request.user:
+                return True
+        return False
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
