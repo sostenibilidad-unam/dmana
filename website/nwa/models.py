@@ -139,16 +139,16 @@ class AgencyEdge(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     action = models.ForeignKey(Action, on_delete=models.CASCADE)
 
-    distance = models.IntegerField(null=True)
+    distance = models.IntegerField(blank=True, null=True)
 
-    interaction = models.CharField(max_length=20, null=True)
+    interaction = models.CharField(max_length=20, blank=True, null=True)
 
-    polarity = models.IntegerField(null=True)
+    polarity = models.IntegerField(blank=True, null=True)
 
     people = models.ManyToManyField(Person, related_name='people')
 
     phase = models.ForeignKey(Phase, null=True, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return u"%s->%s" % (self.person, self.action)
@@ -166,7 +166,7 @@ class PowerEdge(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return u"%s -- %s" % (self.source, self.target)
+        return u"%s -> %s" % (self.person, self.power)
 
 
 class Variable(models.Model):

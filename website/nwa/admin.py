@@ -45,6 +45,14 @@ class JustMine(object):
             author=request.user)
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in formset.deleted_objects:
+            obj.delete()
+        for instance in instances:
+            instance.author = request.user
+            instance.save()
+        formset.save_m2m()
 
 # class ActionEdgeInline(admin.TabularInline):
 #     model = ActionEdge
