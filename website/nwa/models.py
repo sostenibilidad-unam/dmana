@@ -101,9 +101,9 @@ class Person(models.Model):
 
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
-
+    
     def __str__(self):
-        return u"%s" % self.name
+        return u"%s (%s)" % (self.avatar_name, self.name)
 
     class Meta:
         verbose_name_plural = "People"
@@ -153,7 +153,7 @@ class AgencyEdge(models.Model):
 
     people = models.ManyToManyField(Person,
                                     related_name='people',
-                                    null=True, blank=True)
+                                    blank=True)
 
     phase = models.ForeignKey(Phase, null=True, on_delete=models.CASCADE)
     author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
@@ -195,7 +195,7 @@ class Variable(models.Model):
 
 
 class MentalEdge(models.Model):
-    ego = models.ForeignKey(Person, null=True, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, null=True, on_delete=models.CASCADE)
     source = models.ForeignKey(Variable,
                                related_name='leads_to',
                                null=True,

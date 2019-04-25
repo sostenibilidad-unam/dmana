@@ -63,25 +63,28 @@ class AgencyEdgeInline(JustMine, admin.TabularInline):
     model = AgencyEdge
     fk_name = 'person'
     extra = 1
-
-
+    classes = ('grp-collapse grp-closed',)
+    autocomplete_fields = ['person', 'action', 'people'] 
+    
 class PowerEdgeInline(JustMine, admin.TabularInline):
     model = PowerEdge
     fk_name = 'person'
     extra = 1
-
+    classes = ('grp-collapse grp-closed',)
+    autocomplete_fields = ['person', 'power', ]
 
 class MentalEdgeInline(JustMine, admin.TabularInline):
     model = MentalEdge
-    fk_name = 'ego'
+    fk_name = 'person'
     extra = 1
-
+    classes = ('grp-collapse grp-closed',)
+    autocomplete_fields = ['source', 'target', ]
 
 @admin.register(Person)
 class PersonAdmin(JustMine, admin.ModelAdmin):
-    search_fields = ['name']
-    list_display = ['name', 'sector', 'avatar_name', 'image_tag']
-
+    search_fields = ['name', 'avatar_name']
+    list_display = ['name', 'sector', 'avatar_name',]
+    
     list_filter = (
         ('sector', admin.RelatedOnlyFieldListFilter), )
 
@@ -90,6 +93,12 @@ class PersonAdmin(JustMine, admin.ModelAdmin):
                PowerEdgeInline,
                MentalEdgeInline]
 
+    fieldsets = (
+        ('', {
+            'fields': ('name', 'sector', 'description', 'avatar_name', 'avatar_pic', 'ego', ),
+        }),
+    )
+    
 
 @admin.register(Sector)
 class SectorAdmin(JustMine, admin.ModelAdmin):
@@ -116,6 +125,7 @@ class CategoryAdmin(JustMine, admin.ModelAdmin):
 
 @admin.register(Variable)
 class VariableAdmin(JustMine, admin.ModelAdmin):
+    search_fields = ['name']    
     list_display = ['name', ]
 
 
@@ -131,10 +141,12 @@ class ActionAdmin(JustMine, admin.ModelAdmin):
 class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['person__name', 'action__action']
     list_display = ['id', 'person', 'action', 'phase']
-
+    
     list_filter = (
         ('phase', admin.RelatedOnlyFieldListFilter), )
 
+    autocomplete_fields = ['person', 'action', 'people']
+    
 #     actions = ['copy_to_latest_phase']
 
 #     def copy_to_latest_phase(self, request, queryset):
@@ -149,14 +161,16 @@ class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
 
 @admin.register(MentalEdge)
 class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
-    search_fields = ['ego__name']
-    list_display = ['ego', 'source', 'target', 'phase']
+    search_fields = ['person__name']
+    list_display = ['person', 'source', 'target', 'phase']
 
     list_filter = (
         ('phase', admin.RelatedOnlyFieldListFilter), )
 
     actions = ['copy_to_latest_phase']
 
+    autocomplete_fields = ['source', 'target', 'person', ]
+    
     def copy_to_latest_phase(self, request, queryset):
         phase = Phase.objects.last()
         for edge in queryset:
@@ -169,7 +183,7 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
 
 @admin.register(Power)
 class PowerAdmin(JustMine, admin.ModelAdmin):
-    pass
+    search_fields = ['name']    
 
 
 class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
@@ -179,6 +193,8 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
     list_filter = (
         ('phase', admin.RelatedOnlyFieldListFilter), )
 
+    autocomplete_fields = ['person', 'power', ]
+    
     actions = ['copy_to_latest_phase']
 
     def copy_to_latest_phase(self, request, queryset):
