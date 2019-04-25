@@ -124,3 +124,7 @@ STATICFILES_DIRS = [
  ]
 
 STATIC_URL = '/static/'
+
+
+GRAPPELLI_SWITCH_USER = True
+
