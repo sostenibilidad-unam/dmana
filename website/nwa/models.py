@@ -19,6 +19,9 @@ class Sector(models.Model):
     def __str__(self):
         return u"%s" % self.sector
 
+    class Meta:
+        verbose_name_plural = "Economy sectors"
+
 
 class Power(models.Model):
     name = models.CharField(max_length=200)
@@ -26,6 +29,9 @@ class Power(models.Model):
 
     def __str__(self):
         return u"%s" % self.name
+
+    class Meta:
+        verbose_name_plural = "Avatar powers"
 
 
 class Person(models.Model):
@@ -115,7 +121,7 @@ class Category(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name_plural = "Categories"
+        verbose_name_plural = "Actions categories"
 
     def __str__(self):
         return u"%s" % self.name
@@ -145,13 +151,18 @@ class AgencyEdge(models.Model):
 
     polarity = models.IntegerField(blank=True, null=True)
 
-    people = models.ManyToManyField(Person, related_name='people')
+    people = models.ManyToManyField(Person,
+                                    related_name='people',
+                                    null=True, blank=True)
 
     phase = models.ForeignKey(Phase, null=True, on_delete=models.CASCADE)
     author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return u"%s->%s" % (self.person, self.action)
+
+    class Meta:
+        verbose_name_plural = "Agency edgelist"
 
 
 class PowerEdge(models.Model):
@@ -168,6 +179,9 @@ class PowerEdge(models.Model):
     def __str__(self):
         return u"%s -> %s" % (self.person, self.power)
 
+    class Meta:
+        verbose_name_plural = "Avatar power edgelist"
+
 
 class Variable(models.Model):
     name = models.CharField(max_length=200)
@@ -175,6 +189,9 @@ class Variable(models.Model):
 
     def __str__(self):
         return u"%s" % self.name
+
+    class Meta:
+        verbose_name_plural = "Cognitive map variables"
 
 
 class MentalEdge(models.Model):
@@ -193,3 +210,6 @@ class MentalEdge(models.Model):
 
     def __str__(self):
         return u"(%s)->(%s)" % (self.source, self.target)
+
+    class Meta:
+        verbose_name_plural = "Cognitive map edgelist"
