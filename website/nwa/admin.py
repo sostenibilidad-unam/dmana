@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
-from .models import Person, AgencyEdge, Action, Phase, \
+from .models import Person, AgencyEdge, Action, Project, \
     Sector, Variable, MentalEdge, Category, \
     Power, PowerEdge
 
@@ -54,24 +54,22 @@ class JustMine(object):
             instance.save()
         formset.save_m2m()
 
-# class ActionEdgeInline(admin.TabularInline):
-#     model = ActionEdge
-#     fk_name = 'alter'
-#     extra = 0
 
 class AgencyEdgeInline(JustMine, admin.TabularInline):
     model = AgencyEdge
     fk_name = 'person'
     extra = 1
     classes = ('grp-collapse grp-closed',)
-    autocomplete_fields = ['person', 'action', 'people'] 
-    
+    autocomplete_fields = ['person', 'action', 'people']
+
+
 class PowerEdgeInline(JustMine, admin.TabularInline):
     model = PowerEdge
     fk_name = 'person'
     extra = 1
     classes = ('grp-collapse grp-closed',)
     autocomplete_fields = ['person', 'power', ]
+
 
 class MentalEdgeInline(JustMine, admin.TabularInline):
     model = MentalEdge
@@ -80,11 +78,12 @@ class MentalEdgeInline(JustMine, admin.TabularInline):
     classes = ('grp-collapse grp-closed',)
     autocomplete_fields = ['source', 'target', ]
 
+
 @admin.register(Person)
 class PersonAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['name', 'avatar_name']
-    list_display = ['name', 'sector', 'avatar_name',]
-    
+    list_display = ['name', 'sector', 'avatar_name', ]
+
     list_filter = (
         ('sector', admin.RelatedOnlyFieldListFilter), )
 
@@ -95,10 +94,15 @@ class PersonAdmin(JustMine, admin.ModelAdmin):
 
     fieldsets = (
         ('', {
-            'fields': ('name', 'sector', 'description', 'avatar_name', 'avatar_pic', 'ego', ),
+            'fields': ('name',
+                       'sector',
+                       'description',
+                       'avatar_name',
+                       'avatar_pic',
+                       'ego', ),
         }),
     )
-    
+
 
 @admin.register(Sector)
 class SectorAdmin(JustMine, admin.ModelAdmin):
@@ -112,10 +116,49 @@ class SectorAdmin(JustMine, admin.ModelAdmin):
         return qs.filter(author=request.user)
 
 
-@admin.register(Phase)
-class PhaseAdmin(JustMine, admin.ModelAdmin):
+class AgencyEdgelistInline(JustMine, admin.TabularInline):
+    model = AgencyEdge
+    fk_name = 'project'
+    extra = 1
+    classes = ('grp-collapse grp-closed',)
+    autocomplete_fields = ['person', 'action', 'people']
+
+
+class PowerEdgelistInline(JustMine, admin.TabularInline):
+    model = PowerEdge
+    fk_name = 'project'
+    extra = 1
+    classes = ('grp-collapse grp-closed',)
+    autocomplete_fields = ['person', 'power', ]
+
+
+class MentalEdgelistInline(JustMine, admin.TabularInline):
+    model = MentalEdge
+    fk_name = 'project'
+    extra = 1
+    classes = ('grp-collapse grp-closed',)
+    autocomplete_fields = ['source', 'target', ]
+
+
+@admin.register(Project)
+class ProjectAdmin(JustMine, admin.ModelAdmin):
     exclude = ('author', )
-    list_display = ['phase', 'author']
+    list_display = ['project']
+
+    inlines = [AgencyEdgelistInline,
+               PowerEdgelistInline,
+               MentalEdgelistInline]
+
+    def duplicate_project(self, request, queryset):
+
+        for p in queryset:
+            p.pk = None
+            p.project = p.project + " (duplicate)"
+            p.save()
+    duplicate_project.\
+        short_description = "Make duplicate copy of selected project"
+
+    actions = [duplicate_project]
 
 
 @admin.register(Category)
@@ -125,7 +168,7 @@ class CategoryAdmin(JustMine, admin.ModelAdmin):
 
 @admin.register(Variable)
 class VariableAdmin(JustMine, admin.ModelAdmin):
-    search_fields = ['name']    
+    search_fields = ['name']
     list_display = ['name', ]
 
 
@@ -140,71 +183,60 @@ class ActionAdmin(JustMine, admin.ModelAdmin):
 @admin.register(AgencyEdge)
 class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['person__name', 'action__action']
-    list_display = ['id', 'person', 'action', 'phase']
-    
+    list_display = ['id', 'person', 'action', 'project']
+
     list_filter = (
-        ('phase', admin.RelatedOnlyFieldListFilter), )
+        ('project', admin.RelatedOnlyFieldListFilter), )
 
     autocomplete_fields = ['person', 'action', 'people']
-    
-#     actions = ['copy_to_latest_phase']
-
-#     def copy_to_latest_phase(self, request, queryset):
-#         phase = Phase.objects.last()
-#         for edge in queryset:
-#             edge.pk = None
-#             edge.phase = phase
-#             edge.save()
-#     copy_to_latest_phase.\
-#         short_description = "Copy selected edges to latest phase"
 
 
 @admin.register(MentalEdge)
 class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['person__name']
-    list_display = ['person', 'source', 'target', 'phase']
+    list_display = ['person', 'source', 'target', 'project']
 
     list_filter = (
-        ('phase', admin.RelatedOnlyFieldListFilter), )
+        ('project', admin.RelatedOnlyFieldListFilter), )
 
-    actions = ['copy_to_latest_phase']
+    actions = ['copy_to_latest_project']
 
     autocomplete_fields = ['source', 'target', 'person', ]
-    
-    def copy_to_latest_phase(self, request, queryset):
-        phase = Phase.objects.last()
+
+    def copy_to_latest_project(self, request, queryset):
+        project = Project.objects.last()
         for edge in queryset:
             edge.pk = None
-            edge.phase = phase
+            edge.project = project
             edge.save()
-    copy_to_latest_phase.\
-        short_description = "Copy selected edges to latest phase"
+    copy_to_latest_project.\
+        short_description = "Copy selected edges to latest project"
 
 
 @admin.register(Power)
 class PowerAdmin(JustMine, admin.ModelAdmin):
-    search_fields = ['name']    
+    search_fields = ['name']
 
 
 class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['person__name', 'power__name']
-    list_display = ['person', 'power', 'phase']
+    list_display = ['person', 'power', 'project']
 
     list_filter = (
-        ('phase', admin.RelatedOnlyFieldListFilter), )
+        ('project', admin.RelatedOnlyFieldListFilter), )
 
     autocomplete_fields = ['person', 'power', ]
-    
-    actions = ['copy_to_latest_phase']
 
-    def copy_to_latest_phase(self, request, queryset):
-        phase = Phase.objects.last()
+    actions = ['copy_to_latest_project']
+
+    def copy_to_latest_project(self, request, queryset):
+        project = Project.objects.last()
         for edge in queryset:
             edge.pk = None
-            edge.phase = phase
+            edge.project = project
             edge.save()
-    copy_to_latest_phase.\
-        short_description = "Copy selected edges to latest phase"
+    copy_to_latest_project.\
+        short_description = "Copy selected edges to latest project"
 
 
 admin.site.register(PowerEdge, PowerEdgeAdmin)

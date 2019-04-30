@@ -4,12 +4,12 @@ from django.conf import settings
 from django.contrib.auth.models import User
 
 
-class Phase(models.Model):
-    phase = models.CharField(max_length=200)
+class Project(models.Model):
+    project = models.CharField(max_length=200)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return u"%s" % self.phase
+        return u"%s" % self.project
 
 
 class Sector(models.Model):
@@ -49,18 +49,18 @@ class Person(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def mental_model(self, phase):
+    def mental_model(self, project):
         g = nx.DiGraph()
 
-        for e in self.mentaledge_set.filter(phase=phase):
+        for e in self.mentaledge_set.filter(project=project):
             g.add_edge(e.source.name,
                        e.target.name)
         return g
 
-    def compound_mental_model(self, phase):
+    def compound_mental_model(self, project):
         g = nx.DiGraph()
 
-        for e in self.mentaledge_set.filter(phase=phase):
+        for e in self.mentaledge_set.filter(project=project):
             g.add_node(e.source.name, egos=[])
 
             g.add_node(e.target.name, egos=[])
@@ -69,10 +69,10 @@ class Person(models.Model):
                        e.target.name)
         return g
 
-    def power_network(self, phase):
+    def power_network(self, project):
         g = nx.Graph()
 
-        for e in self.powers.filter(phase=phase):
+        for e in self.powers.filter(project=project):
             g.add_node(e.source.name,
                        shape="ellipse",
                        width=120,
@@ -134,8 +134,8 @@ class Action(models.Model):
     in_degree = models.IntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def update_in_degree(self, phase):
-        self.in_degree = self.actor_set.filter(phase=phase).count()
+    def update_in_degree(self, project):
+        self.in_degree = self.actor_set.filter(project=project).count()
 
     def __str__(self):
         return u"%s" % self.action
@@ -155,7 +155,7 @@ class AgencyEdge(models.Model):
                                     related_name='people',
                                     blank=True)
 
-    phase = models.ForeignKey(Phase, null=True, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, null=True, on_delete=models.CASCADE)
     author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -173,7 +173,7 @@ class PowerEdge(models.Model):
                               related_name='wielded_by',
                               on_delete=models.CASCADE)
 
-    phase = models.ForeignKey(Phase, null=True, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, null=True, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -205,7 +205,7 @@ class MentalEdge(models.Model):
                                null=True,
                                on_delete=models.CASCADE)
 
-    phase = models.ForeignKey(Phase, null=True, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, null=True, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
