@@ -204,6 +204,7 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
         ('project', admin.RelatedOnlyFieldListFilter), )
 
     actions = ['copy_to_latest_project',
+               'download_as_graphml',
                'download_as_dot',
                'download_as_pdf', ]
 
@@ -217,6 +218,19 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
             edge.save()
     copy_to_latest_project.\
         short_description = "Copy selected edges to latest project"
+
+    def download_as_graphml(self, request, queryset):
+        response = HttpResponse(
+            "\n".join([l
+                       for l in
+                       nx.readwrite.graphml.generate_graphml(
+                           mental_model(queryset))]),
+            content_type="application/xml")
+        response[
+            'Content-Disposition'] = 'attachment; filename="cognitive_map.graphml"'
+        return response
+    download_as_graphml.\
+        short_description = "Download GraphML format suitalbe for Cytoscape"
 
     def download_as_dot(self, request, queryset):
         A = nx.nx_agraph.to_agraph(mental_model(queryset))
