@@ -2,3 +2,5 @@ Django==2.2
 django-grappelli==2.12.2
 networkx==2.2
 Pillow==6.0.0
+pydot==1.4.1
+pygraphviz==1.5
