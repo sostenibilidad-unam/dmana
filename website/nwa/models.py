@@ -50,24 +50,7 @@ class Person(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def mental_model(self, project):
-        g = nx.DiGraph()
-
-        for e in self.mentaledge_set.filter(project=project):
-            g.add_edge(e.source.name,
-                       e.target.name)
-        return g
-
-    def compound_mental_model(self, project):
-        g = nx.DiGraph()
-
-        for e in self.mentaledge_set.filter(project=project):
-            g.add_node(e.source.name, egos=[])
-
-            g.add_node(e.target.name, egos=[])
-
-            g.add_edge(e.source.name,
-                       e.target.name)
-        return g
+        pass
 
     def power_network(self, project):
         g = nx.Graph()
@@ -101,7 +84,7 @@ class Person(models.Model):
 
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
-    
+
     def __str__(self):
         return u"%s (%s)" % (self.avatar_name, self.name)
 

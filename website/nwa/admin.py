@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.http import HttpResponse
+import tempfile
+from .networks import mental_model
+import networkx as nx
 
 from .models import Person, AgencyEdge, Action, Project, \
     Sector, Variable, MentalEdge, Category, \
@@ -199,7 +203,9 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
     list_filter = (
         ('project', admin.RelatedOnlyFieldListFilter), )
 
-    actions = ['copy_to_latest_project']
+    actions = ['copy_to_latest_project',
+               'download_as_dot',
+               'download_as_pdf', ]
 
     autocomplete_fields = ['source', 'target', 'person', ]
 
@@ -212,12 +218,35 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
     copy_to_latest_project.\
         short_description = "Copy selected edges to latest project"
 
+    def download_as_dot(self, request, queryset):
+        A = nx.nx_agraph.to_agraph(mental_model(queryset))
+        response = HttpResponse(A.string(),
+                                content_type="text/dot")
+        response[
+            'Content-Disposition'] = 'attachment; filename="cognitive_map.dot"'
+        return response
+    download_as_dot.\
+        short_description = "Download DOT format for Graphviz"
+
+    def download_as_pdf(self, request, queryset):
+        response = HttpResponse(
+            nx.drawing.nx_pydot.to_pydot(mental_model(queryset)).create_pdf(),
+            content_type="application/pdf")
+        response[
+            'Content-Disposition'] = 'attachment; filename="cognitive_map.pdf"'
+
+        return response
+    download_as_pdf.\
+        short_description = "Download as PDF"
+
+
 
 @admin.register(Power)
 class PowerAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['name']
 
 
+@admin.register(PowerEdge)
 class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['person__name', 'power__name']
     list_display = ['person', 'power', 'project']
@@ -237,9 +266,6 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
             edge.save()
     copy_to_latest_project.\
         short_description = "Copy selected edges to latest project"
-
-
-admin.site.register(PowerEdge, PowerEdgeAdmin)
 
 
 admin.site.site_header = "Agency Network Serializer"
