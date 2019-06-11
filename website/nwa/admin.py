@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from django.http import HttpResponse
-import tempfile
 from .networks import mental_model
 import networkx as nx
 
