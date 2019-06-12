@@ -49,27 +49,6 @@ class Person(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def mental_model(self, project):
-        pass
-
-    def power_network(self, project):
-        g = nx.Graph()
-
-        for e in self.powers.filter(project=project):
-            g.add_node(e.source.name,
-                       shape="ellipse",
-                       width=120,
-                       height=120,
-                       avatar=e.source.avatar_url())
-            g.add_node(e.target.name,
-                       shape="octagon",
-                       width=90,
-                       height=90)
-
-            g.add_edge(e.source.name,
-                       e.target.name)
-        return g
-
     def avatar_url(self):
         if self.avatar_pic:
             return u"%s%s" % (settings.MEDIA_URL, self.avatar_pic)
@@ -86,7 +65,10 @@ class Person(models.Model):
     image_tag.allow_tags = True
 
     def __str__(self):
-        return u"%s (%s)" % (self.avatar_name, self.name)
+        if self.avatar_name:
+            return u"%s (%s)" % (self.avatar_name, self.name)
+        else:
+            return u"%s" % self.name
 
     class Meta:
         verbose_name_plural = "People"
@@ -145,7 +127,7 @@ class AgencyEdge(models.Model):
         return u"%s->%s" % (self.person, self.action)
 
     class Meta:
-        verbose_name_plural = "Agency edgelist"
+        verbose_name_plural = "Agency Edgelist"
 
 
 class PowerEdge(models.Model):
@@ -163,7 +145,7 @@ class PowerEdge(models.Model):
         return u"%s -> %s" % (self.person, self.power)
 
     class Meta:
-        verbose_name_plural = "Avatar power edgelist"
+        verbose_name_plural = "Avatar power Edgelist"
 
 
 class Variable(models.Model):
@@ -195,4 +177,4 @@ class MentalEdge(models.Model):
         return u"(%s)->(%s)" % (self.source, self.target)
 
     class Meta:
-        verbose_name_plural = "Cognitive map edgelist"
+        verbose_name_plural = "Cognitive map Edgelist"
