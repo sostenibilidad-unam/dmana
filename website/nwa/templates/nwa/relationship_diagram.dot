@@ -1,0 +1,38 @@
+digraph {
+    graph [pad="0.5", nodesep="0.5", ranksep="2"];
+    node [shape=plain]
+    rankdir=LR;
+
+Egos [label=<
+<table border="0" cellborder="1" cellspacing="0">
+  <tr><td><i>Egos</i></td></tr>
+  {% for ego in egos %}
+  <tr><td port="ego{{ ego.id }}">{{ ego }}</td></tr>
+  {% endfor %}
+</table>>];
+
+Alters [label=<
+<table border="0" cellborder="1" cellspacing="0">
+  <tr><td><i>Alters</i></td></tr>
+  {% for alter in alters %}
+  <tr><td port="alt{{ alter.id }}">{{ alter }}</td></tr>
+  {% endfor %}
+</table>>];
+
+Actions [label=<
+<table border="0" cellborder="1" cellspacing="0">
+  <tr><td><i>Actions</i></td></tr>
+  {% for action in actions %}
+  <tr><td port="act{{ action.id }}">{{ action }}</td></tr>
+  {% endfor %}
+</table>>];
+
+{% for e in egos_alters %}
+Egos:ego{{ e.0 }} -> Alters:alt{{ e.1 }};
+{% endfor %}
+
+{% for a in alters_actions %}
+Alters:alt{{ a.0 }} -> Actions:act{{ a.1 }};
+{% endfor %}
+
+}
