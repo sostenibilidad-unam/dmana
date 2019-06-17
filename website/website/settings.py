@@ -128,3 +128,4 @@ STATIC_URL = '/static/'
 
 GRAPPELLI_SWITCH_USER = True
 
+GRAPPELLI_ADMIN_TITLE = "Agency Network Serializer"

@@ -276,10 +276,19 @@ class VariableAdmin(JustMine, admin.ModelAdmin):
     list_display = ['name', ]
 
 
+class AgencyEdgelistInline(JustMine, admin.TabularInline):
+    model = AgencyEdge
+    fk_name = 'action'
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    autocomplete_fields = ['person', 'people']
+
+
 @admin.register(Action)
 class ActionAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['action', ]
-    list_display = ['action', 'category', 'in_degree']
+    list_display = ['action', 'category', ]
+    inlines = [AgencyEdgelistInline, ]
     list_filter = (
         ('category', admin.RelatedOnlyFieldListFilter), )
 

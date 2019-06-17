@@ -53,8 +53,6 @@ class Person(models.Model):
 
     description = models.TextField(blank=True)
 
-    degree = models.IntegerField(default=0)
-
     avatar_name = models.CharField(max_length=200, blank=True)
     avatar_pic = models.ImageField(blank=True, null=True,
                                    upload_to='avatars/')
@@ -95,9 +93,6 @@ class Category(models.Model):
     def alters(self):
         return [a for a in self.action_set.all()]
 
-    def get_degree(self):
-        return sum([a.in_degree for a in self.alters()])
-
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
@@ -112,11 +107,7 @@ class Action(models.Model):
     action = models.CharField(max_length=200, unique=True)
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
 
-    in_degree = models.IntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def update_in_degree(self, project):
-        self.in_degree = self.actor_set.filter(project=project).count()
 
     def __str__(self):
         return u"%s" % self.action
