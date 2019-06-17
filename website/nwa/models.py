@@ -13,7 +13,7 @@ class Project(models.Model):
 
 
 class Sector(models.Model):
-    sector = models.CharField(max_length=200)
+    sector = models.CharField(max_length=200, unique=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -21,7 +21,18 @@ class Sector(models.Model):
 
     class Meta:
         verbose_name_plural = "Economy sectors"
+        ordering = ['sector']
 
+class Organization(models.Model):
+    organization = models.CharField(max_length=200, unique=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return u"%s" % self.organization
+
+    class Meta:
+        verbose_name_plural = "Organizations"
+        ordering = ['organization']
 
 class Power(models.Model):
     name = models.CharField(max_length=200)
@@ -32,11 +43,14 @@ class Power(models.Model):
 
     class Meta:
         verbose_name_plural = "Avatar powers"
+        ordering = ['name', ]
 
 
 class Person(models.Model):
-    name = models.CharField(max_length=200)
-    sector = models.ForeignKey(Sector, null=True, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, unique=True)
+    sector = models.ForeignKey(Sector, null=True, blank=True,on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
+
     description = models.TextField(blank=True)
 
     degree = models.IntegerField(default=0)
@@ -72,6 +86,7 @@ class Person(models.Model):
 
     class Meta:
         verbose_name_plural = "People"
+        ordering = ['name']
 
 
 class Category(models.Model):
@@ -87,14 +102,15 @@ class Category(models.Model):
 
     class Meta:
         verbose_name_plural = "Actions categories"
+        ordering = ["name", ]
 
     def __str__(self):
         return u"%s" % self.name
 
 
 class Action(models.Model):
-    action = models.CharField(max_length=200)
-    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
+    action = models.CharField(max_length=200, unique=True)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
 
     in_degree = models.IntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -105,19 +121,40 @@ class Action(models.Model):
     def __str__(self):
         return u"%s" % self.action
 
+    class Meta:
+        ordering = ['action']
+
+
+class SocialEdge(models.Model):
+    source = models.ForeignKey(Person,
+                               related_name='outbound',
+                               on_delete=models.CASCADE)
+    target = models.ForeignKey(Person,
+                               related_name='inbound',
+                               on_delete=models.CASCADE)
+
+    influence = models.IntegerField(blank=True, null=True)
+    distance = models.IntegerField(blank=True, null=True)
+    interaction = models.CharField(max_length=20, blank=True, null=True)
+    polarity = models.IntegerField(blank=True, null=True)
+
+    project = models.ForeignKey(Project, null=True, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Social Edgelist"
+        unique_together = (('source', 'target'),)
+
+    def __str__(self):
+        return u"%s -> %s" % (self.source, self.target)
+
 
 class AgencyEdge(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     action = models.ForeignKey(Action, on_delete=models.CASCADE)
 
-    distance = models.IntegerField(blank=True, null=True)
-
-    interaction = models.CharField(max_length=20, blank=True, null=True)
-
-    polarity = models.IntegerField(blank=True, null=True)
-
     people = models.ManyToManyField(Person,
-                                    related_name='people',
+                                    related_name='agency_actor_in',
                                     blank=True)
 
     project = models.ForeignKey(Project, null=True, on_delete=models.CASCADE)
@@ -128,6 +165,8 @@ class AgencyEdge(models.Model):
 
     class Meta:
         verbose_name_plural = "Agency Edgelist"
+        unique_together = (('person', 'action'),)
+
 
 
 class PowerEdge(models.Model):
@@ -157,6 +196,7 @@ class Variable(models.Model):
 
     class Meta:
         verbose_name_plural = "Cognitive map variables"
+        ordering = ["name", ]
 
 
 class MentalEdge(models.Model):

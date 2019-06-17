@@ -66,30 +66,7 @@ def agency_agraph(queryset):
                    colorscheme='set13', color=2,
                    shape='box')
         g.add_node(e.action,
-                   colorscheme='set13', color=3, shape="box")
+                   colorscheme='set13', color=3, shape="egg")
         g.add_edge(e.person,
-                   e.action,
-                           label="""<<table><TR>
-                <TD>Top left</TD>
-                <TD>
-                    <TABLE BORDER="0">
-                        <TR><TD>Row 1</TD></TR>
-                        <TR><TD>Row 2</TD></TR>
-                    </TABLE>
-                </TD>
-            </TR>
-            <TR>
-                <TD>Bottom Left</TD>
-                <TD>
-                    <TABLE BORDER="0">
-                        <TR><TD>Row 1</TD></TR>
-                        <TR><TD>Row 2</TD></TR>
-                    </TABLE>
-                </TD>
-            </TR></table>>""")
-#                   distanceee_="" if e.distance is None else e.distance,
-#                   interaction="" if e.interaction is None else e.interaction,
-#                   polarity="" if e.polarity is None else e.polarity,
-#                   people=",".join([str(p)
-#                                    for p in e.people.all()]))
+                   e.action)
     return g

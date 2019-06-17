@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from advanced_filters.admin import AdminAdvancedFiltersMixin
 from django.template.loader import render_to_string
 from django.contrib import admin
 from django.http import HttpResponse
@@ -10,7 +11,7 @@ import tempfile
 
 from .models import Person, AgencyEdge, Action, Project, \
     Sector, Variable, MentalEdge, Category, \
-    Power, PowerEdge
+    Power, PowerEdge, Organization, SocialEdge
 
 
 class JustMine(object):
@@ -70,6 +71,14 @@ class AgencyEdgeInline(JustMine, admin.TabularInline):
     autocomplete_fields = ['person', 'action', 'people']
 
 
+class SocialEdgelistInline(JustMine, admin.TabularInline):
+    model = SocialEdge
+    fk_name = 'source'
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    autocomplete_fields = ['source', 'target']
+
+
 class PowerEdgeInline(JustMine, admin.TabularInline):
     model = PowerEdge
     fk_name = 'person'
@@ -88,13 +97,14 @@ class MentalEdgeInline(JustMine, admin.TabularInline):
 
 @admin.register(Person)
 class PersonAdmin(JustMine, admin.ModelAdmin):
-    search_fields = ['name', 'avatar_name']
-    list_display = ['name', 'sector', 'avatar_name', ]
+    search_fields = ['name', 'avatar_name', 'organization__organization']
+    list_display = ['name', 'avatar_name', 'organization', 'sector', 'ego', ]
 
     list_filter = (
-        ('sector', admin.RelatedOnlyFieldListFilter), )
+        ('sector', admin.RelatedOnlyFieldListFilter), 'ego')
 
     inlines = [AgencyEdgeInline,
+               SocialEdgelistInline,
                PowerEdgeInline,
                MentalEdgeInline]
 
@@ -102,6 +112,7 @@ class PersonAdmin(JustMine, admin.ModelAdmin):
         ('', {
             'fields': ('name',
                        'sector',
+                       'organization',
                        'description',
                        'avatar_name',
                        'avatar_pic',
@@ -122,12 +133,95 @@ class SectorAdmin(JustMine, admin.ModelAdmin):
         return qs.filter(author=request.user)
 
 
+class PersonAdminInline(JustMine, admin.TabularInline):
+    model = Person
+    fk_name = 'organization'
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+
+
+@admin.register(Organization)
+class OrganizationAdmin(JustMine, admin.ModelAdmin):
+    search_fields = ['organization', ]
+    list_display = ['organization']
+    inlines = [PersonAdminInline, ]
+
+    def get_queryset(self, request):
+        qs = super(OrganizationAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(author=request.user)
+
+
+@admin.register(SocialEdge)
+class SocialEdgelistAdmin(JustMine, admin.ModelAdmin):
+    search_fields = ['source__name', 'source__name']
+    list_display = ['source', 'target', 'project']
+
+    list_filter = (
+        ('project', admin.RelatedOnlyFieldListFilter), )
+
+    autocomplete_fields = ['source', 'target', ]
+
+    # actions = [
+    #            'download_as_graphml',
+    #            'download_as_pdf',
+    #            'download_as_dot', ]
+
+
+    # def download_as_graphml(self, request, queryset):
+    #     response = HttpResponse(
+    #         "\n".join([l
+    #                    for l in
+    #                    nx.readwrite.graphml.generate_graphml(
+    #                        power_network(queryset))]),
+    #         content_type="application/xml")
+    #     response[
+    #         'Content-Disposition'] = 'attachment; filename="power_network.graphml"'
+    #     return response
+    # download_as_graphml.\
+    #     short_description = "Download GraphML format suitalbe for Cytoscape"
+
+    # def download_as_dot(self, request, queryset):
+    #     A = nx.nx_agraph.to_agraph(power_network(queryset))
+    #     response = HttpResponse(A.string(),
+    #                             content_type="text/dot")
+    #     response[
+    #         'Content-Disposition'] = 'attachment; filename="power_network.dot"'
+    #     return response
+    # download_as_dot.\
+    #     short_description = "Download DOT format for Graphviz"
+
+    # def download_as_pdf(self, request, queryset):
+    #     tmp = tempfile.SpooledTemporaryFile()
+    #     # nx.drawing.nx_pydot.to_pydot(power_network(queryset)).create_pdf(),
+    #     G = power_agraph(queryset)
+    #     G.draw(tmp, format='pdf', prog='neato')
+    #     tmp.seek(0)
+    #     response = HttpResponse(
+    #         tmp.read(),
+    #         content_type="application/pdf")
+    #     response[
+    #         'Content-Disposition'] = 'attachment; filename="power_network.pdf"'
+    #     return response
+    # download_as_pdf.\
+    #     short_description = "Download as PDF"
+
+
 class AgencyEdgelistInline(JustMine, admin.TabularInline):
     model = AgencyEdge
     fk_name = 'project'
     extra = 1
     classes = ('grp-collapse grp-open',)
-    autocomplete_fields = ['person', 'people', 'action',]
+    autocomplete_fields = ['person', 'people', 'action']
+
+
+class SocialEdgelistInline(JustMine, admin.TabularInline):
+    model = SocialEdge
+    fk_name = 'project'
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    autocomplete_fields = ['source', 'target']
 
 
 class PowerEdgelistInline(JustMine, admin.TabularInline):
@@ -152,6 +246,7 @@ class ProjectAdmin(JustMine, admin.ModelAdmin):
     list_display = ['project']
 
     inlines = [AgencyEdgelistInline,
+               SocialEdgelistInline,
                PowerEdgelistInline,
                MentalEdgelistInline]
 
@@ -187,7 +282,7 @@ class ActionAdmin(JustMine, admin.ModelAdmin):
     list_display = ['action', 'category', 'in_degree']
     list_filter = (
         ('category', admin.RelatedOnlyFieldListFilter), )
-    
+
 
 @admin.register(MentalEdge)
 class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
@@ -220,7 +315,8 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
                        nx.readwrite.graphml.generate_graphml(
                            mental_model(queryset))]),
             content_type="application/xml")
-        response['Content-Disposition'] = 'attachment; filename="cognitive_map.graphml"'
+        response['Content-Disposition'] \
+            = 'attachment; filename="cognitive_map.graphml"'
         return response
     download_as_graphml.\
         short_description = "Download GraphML format suitalbe for Cytoscape"
@@ -282,8 +378,8 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
                        nx.readwrite.graphml.generate_graphml(
                            power_network(queryset))]),
             content_type="application/xml")
-        response[
-            'Content-Disposition'] = 'attachment; filename="power_network.graphml"'
+        response['Content-Disposition'] \
+            = 'attachment; filename="power_network.graphml"'
         return response
     download_as_graphml.\
         short_description = "Download GraphML format suitalbe for Cytoscape"
@@ -315,16 +411,26 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
 
 
 @admin.register(AgencyEdge)
-class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
+class AgencyEdgeAdmin(AdminAdvancedFiltersMixin, JustMine, admin.ModelAdmin):
     search_fields = ['person__name', 'action__action']
-    list_display = ['id', 'person', 'action', 'project']
+    list_display = ['id', 'person', 'action', 'project', ]
 
     list_filter = (
         ('project', admin.RelatedOnlyFieldListFilter), )
 
+    advanced_filter_fields = (
+        'person__name',
+        'action__name',
+        'distance',
+        'interaction',
+        'polarity',
+        'project',
+    )
+
     autocomplete_fields = ['person', 'action', 'people']
 
     actions = ['download_as_graphml',
+               'agency_cluster_as_pdf',
                'relationship_diagram_as_pdf',
                'download_as_dot',
                'download_as_pdf', ]
@@ -379,27 +485,15 @@ class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
                 egos_alters.add((e.person.id, p.id))
                 alters.add(p)
                 alters_actions.add((p.id, e.action.id))
-        print(render_to_string('nwa/relationship_diagram.dot',
-                                       {'queryset': queryset,
-                                        'egos': egos,
-                                        'egos_alters': egos_alters,
-                                        'alters': alters,
-                                        'actions': actions,
-                                        'alters_actions': alters_actions
-                                       }))
         A = pgv.AGraph()
-        # print(render_to_string('nwa/relationship_diagram.dot',
-        #                                {'edges': queryset,
-        #                                 'alters': alters,
-        #                                }))
         A.from_string(render_to_string('nwa/relationship_diagram.dot',
                                        {'queryset': queryset,
                                         'egos': egos,
                                         'egos_alters': egos_alters,
                                         'alters': alters,
                                         'actions': actions,
-                                        'alters_actions': alters_actions                                        
-                                       }).encode('utf-8'))
+                                        'alters_actions': alters_actions
+                                        }).encode('utf-8'))
         with tempfile.SpooledTemporaryFile() as tmp:
             A.draw(tmp, format='pdf', prog='dot')
             tmp.seek(0)
@@ -411,3 +505,39 @@ class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
             return response
     relationship_diagram_as_pdf.\
         short_description = "Download Relationship Diagram as PDF"
+
+    def agency_cluster_as_pdf(self, request, queryset):
+        egos = set()
+        egos_alters = set()
+        alters = set()
+        actions = set()
+        alters_actions = set()
+        for e in queryset:
+            egos.add(e.person)
+            actions.add(e.action)
+            for p in e.people.all():
+                egos_alters.add((e.person.id, p.id))
+                alters.add(p)
+                alters_actions.add((p.id, e.action.id))
+        A = pgv.AGraph()
+        st = render_to_string('nwa/agency_cluster.dot',
+                              {'queryset': queryset,
+                               'egos': egos,
+                               'egos_alters': egos_alters,
+                               'alters': alters,
+                               'actions': actions,
+                               'alters_actions': alters_actions
+                               }).encode('utf-8')
+        print(st)
+        A.from_string(st)
+        with tempfile.SpooledTemporaryFile() as tmp:
+            A.draw(tmp, format='pdf', prog='dot')
+            tmp.seek(0)
+            response = HttpResponse(
+                tmp.read(),
+                content_type="application/pdf")
+            response['Content-Disposition'] \
+                = 'attachment; filename="power_network.pdf"'
+            return response
+    agency_cluster_as_pdf.\
+        short_description = "Cluster diagram as PDF"
