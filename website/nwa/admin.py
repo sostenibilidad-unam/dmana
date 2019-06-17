@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from advanced_filters.admin import AdminAdvancedFiltersMixin
 from django.template.loader import render_to_string
 from django.contrib import admin
 from django.http import HttpResponse
@@ -155,8 +154,8 @@ class OrganizationAdmin(JustMine, admin.ModelAdmin):
 
 @admin.register(SocialEdge)
 class SocialEdgelistAdmin(JustMine, admin.ModelAdmin):
-    search_fields = ['source__name', 'source__name']
-    list_display = ['source', 'target', 'project']
+    search_fields = ['source__name', 'target__name']
+    list_display = ['source', 'target', 'influence', 'distance', 'interaction', 'polarity', 'project']
 
     list_filter = (
         ('project', admin.RelatedOnlyFieldListFilter), )
@@ -420,7 +419,7 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
 
 
 @admin.register(AgencyEdge)
-class AgencyEdgeAdmin(AdminAdvancedFiltersMixin, JustMine, admin.ModelAdmin):
+class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['person__name', 'action__action']
     list_display = ['id', 'person', 'action', 'project', ]
 
@@ -514,39 +513,3 @@ class AgencyEdgeAdmin(AdminAdvancedFiltersMixin, JustMine, admin.ModelAdmin):
             return response
     relationship_diagram_as_pdf.\
         short_description = "Download Relationship Diagram as PDF"
-
-    def agency_cluster_as_pdf(self, request, queryset):
-        egos = set()
-        egos_alters = set()
-        alters = set()
-        actions = set()
-        alters_actions = set()
-        for e in queryset:
-            egos.add(e.person)
-            actions.add(e.action)
-            for p in e.people.all():
-                egos_alters.add((e.person.id, p.id))
-                alters.add(p)
-                alters_actions.add((p.id, e.action.id))
-        A = pgv.AGraph()
-        st = render_to_string('nwa/agency_cluster.dot',
-                              {'queryset': queryset,
-                               'egos': egos,
-                               'egos_alters': egos_alters,
-                               'alters': alters,
-                               'actions': actions,
-                               'alters_actions': alters_actions
-                               }).encode('utf-8')
-        print(st)
-        A.from_string(st)
-        with tempfile.SpooledTemporaryFile() as tmp:
-            A.draw(tmp, format='pdf', prog='dot')
-            tmp.seek(0)
-            response = HttpResponse(
-                tmp.read(),
-                content_type="application/pdf")
-            response['Content-Disposition'] \
-                = 'attachment; filename="power_network.pdf"'
-            return response
-    agency_cluster_as_pdf.\
-        short_description = "Cluster diagram as PDF"

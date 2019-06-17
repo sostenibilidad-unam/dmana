@@ -60,13 +60,16 @@ def agency_network(queryset):
 
 
 def agency_agraph(queryset):
-    g = pgv.AGraph(directed=True)
+    g = pgv.AGraph(directed=True, overlap='scale')
     for e in queryset:
         g.add_node(e.person,
                    colorscheme='set13', color=2,
                    shape='box')
         g.add_node(e.action,
-                   colorscheme='set13', color=3, shape="egg")
+                   colorscheme='set13', color=3,
+                   shape="box",
+                   fontsize='9',
+                   style='filled', fillcolor='white')
         g.add_edge(e.person,
                    e.action)
     return g

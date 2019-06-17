@@ -48,8 +48,12 @@ class Power(models.Model):
 
 class Person(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    sector = models.ForeignKey(Sector, null=True, blank=True,on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
+    sector = models.ForeignKey(Sector,
+                               null=True, blank=True,
+                               on_delete=models.SET_NULL)
+    organization = models.ForeignKey(Organization,
+                                     null=True, blank=True,
+                                     on_delete=models.SET_NULL)
 
     description = models.TextField(blank=True)
 
@@ -77,10 +81,15 @@ class Person(models.Model):
     image_tag.allow_tags = True
 
     def __str__(self):
+        name = u"%s" % self.name
+
         if self.avatar_name:
-            return u"%s (%s)" % (self.avatar_name, self.name)
-        else:
-            return u"%s" % self.name
+            name += u' "%s"' % self.avatar_name
+
+        if self.organization and self.organization.organization != self.name:
+            name += u" (%s)" % self.organization
+
+        return name
 
     class Meta:
         verbose_name_plural = "People"
