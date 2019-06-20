@@ -1,4 +1,4 @@
-Django==2.2.2
+Django>=2.2.2
 django-grappelli==2.12.2
 networkx==2.2
 Pillow==6.0.0
