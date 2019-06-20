@@ -25,15 +25,16 @@ def power_network(queryset):
 
 
 def power_agraph(queryset):
-    g = pgv.AGraph()
-    g.graph_attr['splines'] = 'true'
+    g = pgv.AGraph(spline='splines', overlap='false', outputorder='edgesfirst')
 
     for e in queryset:
         g.add_node(e.person,
                    colorscheme='set13', color=2,
+                   style='filled', fillcolor='white',
                    shape='box')
         g.add_node(e.power.name,
                    colorscheme='set13', color=3,
+                   style='filled', fillcolor='white',                   
                    shape='egg')
         g.add_edge(e.person,
                    e.power.name,
@@ -72,4 +73,50 @@ def agency_agraph(queryset):
                    style='filled', fillcolor='white')
         g.add_edge(e.person,
                    e.action)
+    return g
+
+
+def social_network(queryset):
+    """
+    return a networkx DiGraph object
+    from a Django Orm Queryset of social edges
+    """
+    g = nx.DiGraph()
+    for e in queryset:
+        g.add_edge(e.source,
+                   e.target,
+                   influence=e.influence,
+                   distance=e.distance,
+                   interaction=e.interaction,
+                   polarity=e.polarity)
+    return g
+
+
+def social_agraph(queryset):
+    g = pgv.AGraph(directed=True, spline='splines', overlap='false', outputorder='edgesfirst')
+    for e in queryset:
+        g.add_node(e.source,
+                   colorscheme='set13', color=2,
+                   shape='box',                   
+                   fontsize='9',                   
+                   style='filled', fillcolor='white')                   
+        g.add_node(e.target,
+                   colorscheme='set13', color=2,
+                   shape="box",
+                   fontsize='9',
+                   style='filled', fillcolor='white')
+        
+        if e.polarity == 1:
+            arrowhead = 'normal'
+        elif e.polarity == 0:
+            arrowhead = 'dot'
+        elif e.polarity == -1:
+            arrowhead = 'inv'
+
+        penwidth = e.distance * 1.2
+            
+        g.add_edge(e.source,
+                   e.target,
+                   arrowhead=arrowhead,
+                   penwidth=penwidth)
     return g

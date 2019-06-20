@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-from django.template.loader import render_to_string
 from django.contrib import admin
-from django.http import HttpResponse
-from .networks import mental_model, power_network, power_agraph, \
-    agency_network, agency_agraph
-import networkx as nx
-import pygraphviz as pgv
-import tempfile
 
 from .models import Person, AgencyEdge, Action, Project, \
     Sector, Variable, MentalEdge, Category, \
     Power, PowerEdge, Organization, SocialEdge
+
+import nwa.agency_edge_admin_actions as aexn
+import nwa.mental_edge_admin_actions as mmxn
+import nwa.power_edge_admin_actions as pexn
+import nwa.social_edge_admin_actions as sexn
 
 
 class JustMine(object):
@@ -153,58 +151,20 @@ class OrganizationAdmin(JustMine, admin.ModelAdmin):
 
 
 @admin.register(SocialEdge)
-class SocialEdgelistAdmin(JustMine, admin.ModelAdmin):
+class SocialEdgeAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['source__name', 'target__name']
-    list_display = ['source', 'target', 'influence', 'distance', 'interaction', 'polarity', 'project']
+    list_display = ['source', 'target',
+                    'influence', 'distance', 'interaction', 'polarity',
+                    'project']
 
     list_filter = (
-        ('project', admin.RelatedOnlyFieldListFilter), )
+        ('project', admin.RelatedOnlyFieldListFilter), 'interaction')
 
     autocomplete_fields = ['source', 'target', ]
 
-    # actions = [
-    #            'download_as_graphml',
-    #            'download_as_pdf',
-    #            'download_as_dot', ]
-
-
-    # def download_as_graphml(self, request, queryset):
-    #     response = HttpResponse(
-    #         "\n".join([l
-    #                    for l in
-    #                    nx.readwrite.graphml.generate_graphml(
-    #                        power_network(queryset))]),
-    #         content_type="application/xml")
-    #     response[
-    #         'Content-Disposition'] = 'attachment; filename="power_network.graphml"'
-    #     return response
-    # download_as_graphml.\
-    #     short_description = "Download GraphML format suitalbe for Cytoscape"
-
-    # def download_as_dot(self, request, queryset):
-    #     A = nx.nx_agraph.to_agraph(power_network(queryset))
-    #     response = HttpResponse(A.string(),
-    #                             content_type="text/dot")
-    #     response[
-    #         'Content-Disposition'] = 'attachment; filename="power_network.dot"'
-    #     return response
-    # download_as_dot.\
-    #     short_description = "Download DOT format for Graphviz"
-
-    # def download_as_pdf(self, request, queryset):
-    #     tmp = tempfile.SpooledTemporaryFile()
-    #     # nx.drawing.nx_pydot.to_pydot(power_network(queryset)).create_pdf(),
-    #     G = power_agraph(queryset)
-    #     G.draw(tmp, format='pdf', prog='neato')
-    #     tmp.seek(0)
-    #     response = HttpResponse(
-    #         tmp.read(),
-    #         content_type="application/pdf")
-    #     response[
-    #         'Content-Disposition'] = 'attachment; filename="power_network.pdf"'
-    #     return response
-    # download_as_pdf.\
-    #     short_description = "Download as PDF"
+    actions = [sexn.download_as_graphml,
+               sexn.download_as_dot,
+               sexn.download_as_pdf, ]
 
 
 class AgencyEdgelistInline(JustMine, admin.TabularInline):
@@ -301,9 +261,9 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
         ('project', admin.RelatedOnlyFieldListFilter), )
 
     actions = ['copy_to_latest_project',
-               'download_as_graphml',
-               'download_as_dot',
-               'download_as_pdf', ]
+               mmxn.download_as_graphml,
+               mmxn.download_as_dot,
+               mmxn.download_as_pdf, ]
 
     autocomplete_fields = ['source', 'target', 'person', ]
 
@@ -316,38 +276,6 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
     copy_to_latest_project.\
         short_description = "Copy selected edges to latest project"
 
-    def download_as_graphml(self, request, queryset):
-        response = HttpResponse(
-            "\n".join([l
-                       for l in
-                       nx.readwrite.graphml.generate_graphml(
-                           mental_model(queryset))]),
-            content_type="application/xml")
-        response['Content-Disposition'] \
-            = 'attachment; filename="cognitive_map.graphml"'
-        return response
-    download_as_graphml.\
-        short_description = "Download GraphML format suitalbe for Cytoscape"
-
-    def download_as_dot(self, request, queryset):
-        A = nx.nx_agraph.to_agraph(mental_model(queryset))
-        response = HttpResponse(A.string(),
-                                content_type="text/dot")
-        response[
-            'Content-Disposition'] = 'attachment; filename="cognitive_map.dot"'
-        return response
-    download_as_dot.\
-        short_description = "Download DOT format for Graphviz"
-
-    def download_as_pdf(self, request, queryset):
-        response = HttpResponse(
-            nx.drawing.nx_pydot.to_pydot(mental_model(queryset)).create_pdf(),
-            content_type="application/pdf")
-        response[
-            'Content-Disposition'] = 'attachment; filename="cognitive_map.pdf"'
-        return response
-    download_as_pdf.\
-        short_description = "Download as PDF"
 
 
 @admin.register(Power)
@@ -365,10 +293,12 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
 
     autocomplete_fields = ['person', 'power', ]
 
-    actions = ['copy_to_latest_project',
-               'download_as_graphml',
-               'download_as_pdf',
-               'download_as_dot', ]
+    actions = [
+        'copy_to_latest_project',
+        pexn.download_as_graphml,
+        pexn.download_as_pdf,
+        pexn.download_as_dot,
+    ]
 
     def copy_to_latest_project(self, request, queryset):
         project = Project.objects.last()
@@ -378,44 +308,6 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
             edge.save()
     copy_to_latest_project.\
         short_description = "Copy selected edges to latest project"
-
-    def download_as_graphml(self, request, queryset):
-        response = HttpResponse(
-            "\n".join([l
-                       for l in
-                       nx.readwrite.graphml.generate_graphml(
-                           power_network(queryset))]),
-            content_type="application/xml")
-        response['Content-Disposition'] \
-            = 'attachment; filename="power_network.graphml"'
-        return response
-    download_as_graphml.\
-        short_description = "Download GraphML format suitalbe for Cytoscape"
-
-    def download_as_dot(self, request, queryset):
-        A = nx.nx_agraph.to_agraph(power_network(queryset))
-        response = HttpResponse(A.string(),
-                                content_type="text/dot")
-        response[
-            'Content-Disposition'] = 'attachment; filename="power_network.dot"'
-        return response
-    download_as_dot.\
-        short_description = "Download DOT format for Graphviz"
-
-    def download_as_pdf(self, request, queryset):
-        tmp = tempfile.SpooledTemporaryFile()
-        # nx.drawing.nx_pydot.to_pydot(power_network(queryset)).create_pdf(),
-        G = power_agraph(queryset)
-        G.draw(tmp, format='pdf', prog='neato')
-        tmp.seek(0)
-        response = HttpResponse(
-            tmp.read(),
-            content_type="application/pdf")
-        response[
-            'Content-Disposition'] = 'attachment; filename="power_network.pdf"'
-        return response
-    download_as_pdf.\
-        short_description = "Download as PDF"
 
 
 @admin.register(AgencyEdge)
@@ -437,79 +329,7 @@ class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
 
     autocomplete_fields = ['person', 'action', 'people']
 
-    actions = ['download_as_graphml',
-               'agency_cluster_as_pdf',
-               'relationship_diagram_as_pdf',
-               'download_as_dot',
-               'download_as_pdf', ]
-
-    def download_as_graphml(self, request, queryset):
-        response = HttpResponse(
-            "\n".join([l
-                       for l in
-                       nx.readwrite.graphml.generate_graphml(
-                           agency_network(queryset))]),
-            content_type="application/xml")
-        response['Content-Disposition'] \
-            = 'attachment; filename="agency_network.graphml"'
-        return response
-    download_as_graphml.\
-        short_description = "Download GraphML format suitalbe for Cytoscape"
-
-    def download_as_dot(self, request, queryset):
-        A = nx.nx_agraph.to_agraph(agency_network(queryset))
-        response = HttpResponse(A.string(),
-                                content_type="text/dot")
-        response['Content-Disposition'] \
-            = 'attachment; filename="agency_network.dot"'
-        return response
-    download_as_dot.\
-        short_description = "Download DOT format for Graphviz"
-
-    def download_as_pdf(self, request, queryset):
-        with tempfile.SpooledTemporaryFile() as tmp:
-            G = agency_agraph(queryset)
-            G.draw(tmp, format='pdf', prog='neato')
-            tmp.seek(0)
-            response = HttpResponse(
-                tmp.read(),
-                content_type="application/pdf")
-        response['Content-Disposition'] \
-            = 'attachment; filename="agency_network.pdf"'
-        return response
-    download_as_pdf.\
-        short_description = "Download as PDF"
-
-    def relationship_diagram_as_pdf(self, request, queryset):
-        egos = set()
-        egos_alters = set()
-        alters = set()
-        actions = set()
-        alters_actions = set()
-        for e in queryset:
-            egos.add(e.person)
-            actions.add(e.action)
-            for p in e.people.all():
-                egos_alters.add((e.person.id, p.id))
-                alters.add(p)
-                alters_actions.add((p.id, e.action.id))
-        A = pgv.AGraph()
-        A.from_string(render_to_string('nwa/relationship_diagram.dot',
-                                       {'queryset': queryset,
-                                        'egos': egos,
-                                        'egos_alters': egos_alters,
-                                        'alters': alters,
-                                        'actions': actions,
-                                        'alters_actions': alters_actions
-                                        }).encode('utf-8'))
-        with tempfile.SpooledTemporaryFile() as tmp:
-            A.draw(tmp, format='pdf', prog='dot')
-            tmp.seek(0)
-            response = HttpResponse(
-                tmp.read(),
-                content_type="application/pdf")
-            response['Content-Disposition'] \
-                = 'attachment; filename="power_network.pdf"'
-            return response
-    relationship_diagram_as_pdf.\
-        short_description = "Download Relationship Diagram as PDF"
+    actions = [aexn.download_as_graphml,
+               aexn.relationship_diagram_as_pdf,
+               aexn.download_as_dot,
+               aexn.download_as_pdf, ]
