@@ -34,7 +34,7 @@ def power_agraph(queryset):
                    shape='box')
         g.add_node(e.power.name,
                    colorscheme='set13', color=3,
-                   style='filled', fillcolor='white',                   
+                   style='filled', fillcolor='white',
                    shape='egg')
         g.add_edge(e.person,
                    e.power.name,
@@ -94,18 +94,35 @@ def social_network(queryset):
 
 def social_agraph(queryset):
     g = pgv.AGraph(directed=True, spline='splines', overlap='false', outputorder='edgesfirst')
+    scheme = "gnbu%s" % (max([e.distance for e in queryset]) + 1)
+
+
+    sectors = [e.source.sector for e in queryset]
+    sectors += [e.target.sector for e in queryset]
+    sectors = list(set(sectors))
+
+    if len(sectors) <= 12:
+        nodescheme = "set3%s" % len(sectors)
+    else:
+        nodescheme = "X11"
+    print(nodescheme)
+    print(sectors)
+
     for e in queryset:
+        print(sectors.index(e.source.sector) + 1)
+        fillcolor="/%s/%s" % (nodescheme, sectors.index(e.source.sector) + 1)
         g.add_node(e.source,
-                   colorscheme='set13', color=2,
-                   shape='box',                   
-                   fontsize='9',                   
-                   style='filled', fillcolor='white')                   
+                   shape='box',
+                   fontsize='9',
+                   style='filled',
+                   fillcolor=fillcolor)
+        fillcolor="/%s/%s" % (nodescheme, sectors.index(e.target.sector) + 1)
         g.add_node(e.target,
-                   colorscheme='set13', color=2,
                    shape="box",
                    fontsize='9',
-                   style='filled', fillcolor='white')
-        
+                   style='filled',
+                   fillcolor=fillcolor)
+
         if e.polarity == 1:
             arrowhead = 'normal'
         elif e.polarity == 0:
@@ -113,10 +130,11 @@ def social_agraph(queryset):
         elif e.polarity == -1:
             arrowhead = 'inv'
 
-        penwidth = e.distance * 1.2
-            
+        penwidth = 0.5 + (e.distance * 1.3)
+
         g.add_edge(e.source,
                    e.target,
+                   colorscheme=scheme, color=1 + e.influence,
                    arrowhead=arrowhead,
                    penwidth=penwidth)
     return g
