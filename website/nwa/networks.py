@@ -25,8 +25,7 @@ def power_network(queryset):
 
 
 def power_agraph(queryset):
-    g = pgv.AGraph(spline='splines', overlap='false', outputorder='edgesfirst')
-
+    g = pgv.AGraph(overlap='scale', splines="spline", outputmode="edgesfirst")
     for e in queryset:
         g.add_node(e.person,
                    colorscheme='set13', color=2,
@@ -76,6 +75,32 @@ def agency_agraph(queryset):
     return g
 
 
+def agency_agraph_orgs2cats(queryset):
+    g = pgv.AGraph(directed=True,
+                   overlap='false',
+                   splines='spline',
+                   outputmode='edgesfirst')
+    max_people = max([e.people.count()
+                      for e in queryset]) + 1
+    edgescheme = "purd%s" % max_people
+    for e in queryset:
+        g.add_node(e.person.org_or_self(),
+                   colorscheme='set13', color=2,
+                   shape='box',
+                   style='filled', fillcolor='white')
+        g.add_node(e.action.category_or_action(),
+                   colorscheme='set13', color=3,
+                   shape="egg",
+                   fontsize='9',
+                   style='filled', fillcolor='white')
+        g.add_edge(e.person.org_or_self(),
+                   e.action.category_or_action(),
+                   penwidth=e.people.count(),
+                   colorscheme=edgescheme,
+                   color=e.people.count() + 1)
+    return g
+
+
 def social_network(queryset):
     """
     return a networkx DiGraph object
@@ -93,9 +118,12 @@ def social_network(queryset):
 
 
 def social_agraph(queryset):
-    g = pgv.AGraph(directed=True, spline='splines', overlap='false', outputorder='edgesfirst')
-    scheme = "gnbu%s" % (max([e.distance for e in queryset]) + 1)
-
+    g = pgv.AGraph(directed=True,
+                   spline='splines',
+                   overlap='false',
+                   outputorder='edgesfirst')
+    max_distance = max([e.distance for e in queryset]) + 1
+    edgescheme = "gnbu%s" % max_distance
 
     sectors = [e.source.sector for e in queryset]
     sectors += [e.target.sector for e in queryset]
@@ -105,18 +133,18 @@ def social_agraph(queryset):
         nodescheme = "set3%s" % len(sectors)
     else:
         nodescheme = "X11"
-    print(nodescheme)
-    print(sectors)
 
     for e in queryset:
         print(sectors.index(e.source.sector) + 1)
-        fillcolor="/%s/%s" % (nodescheme, sectors.index(e.source.sector) + 1)
+        fillcolor = "/%s/%s" % (nodescheme,
+                                sectors.index(e.source.sector) + 1)
         g.add_node(e.source,
                    shape='box',
                    fontsize='9',
                    style='filled',
                    fillcolor=fillcolor)
-        fillcolor="/%s/%s" % (nodescheme, sectors.index(e.target.sector) + 1)
+        fillcolor = "/%s/%s" % (nodescheme,
+                                sectors.index(e.target.sector) + 1)
         g.add_node(e.target,
                    shape="box",
                    fontsize='9',
@@ -130,11 +158,15 @@ def social_agraph(queryset):
         elif e.polarity == -1:
             arrowhead = 'inv'
 
-        penwidth = 0.5 + (e.distance * 1.3)
+        penwidth = 0.5 + (e.influence * 1.3)
+
+        style = "dashed" if e.interaction == 'E' else "solid"
 
         g.add_edge(e.source,
                    e.target,
-                   colorscheme=scheme, color=1 + e.influence,
+                   style=style,
+                   colorscheme=edgescheme,
+                   color=max_distance - e.distance,
                    arrowhead=arrowhead,
                    penwidth=penwidth)
     return g

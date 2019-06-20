@@ -1,5 +1,4 @@
 from django.db import models
-import networkx as nx
 from django.conf import settings
 from django.contrib.auth.models import User
 
@@ -23,6 +22,7 @@ class Sector(models.Model):
         verbose_name_plural = "Economy sectors"
         ordering = ['sector']
 
+
 class Organization(models.Model):
     organization = models.CharField(max_length=200, unique=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -33,6 +33,7 @@ class Organization(models.Model):
     class Meta:
         verbose_name_plural = "Organizations"
         ordering = ['organization']
+
 
 class Power(models.Model):
     name = models.CharField(max_length=200)
@@ -64,6 +65,18 @@ class Person(models.Model):
     ego = models.BooleanField(default=False)
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def org_or_self(self):
+        if self.organization:
+            return self.organization
+        else:
+            return self
+
+    def sector_or_name(self):
+        if self.sector:
+            return self.sector
+        else:
+            return self.name
 
     def avatar_url(self):
         if self.avatar_pic:
@@ -114,9 +127,17 @@ class Category(models.Model):
 
 class Action(models.Model):
     action = models.CharField(max_length=200, unique=True)
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category,
+                                 null=True, blank=True,
+                                 on_delete=models.CASCADE)
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def category_or_action(self):
+        if self.category:
+            return self.category
+        else:
+            return self
 
     def __str__(self):
         return u"%s" % self.action
@@ -143,7 +164,7 @@ class SocialEdge(models.Model):
 
     class Meta:
         verbose_name_plural = "Social Edgelist"
-        unique_together = (('source', 'target'),)
+        unique_together = (('source', 'target', 'project'),)
 
     def __str__(self):
         return u"%s -> %s" % (self.source, self.target)
@@ -165,8 +186,7 @@ class AgencyEdge(models.Model):
 
     class Meta:
         verbose_name_plural = "Agency Edgelist"
-        unique_together = (('person', 'action'),)
-
+        unique_together = (('person', 'action', 'project'),)
 
 
 class PowerEdge(models.Model):
@@ -185,10 +205,11 @@ class PowerEdge(models.Model):
 
     class Meta:
         verbose_name_plural = "Avatar power Edgelist"
+        unique_together = (('person', 'power', 'project'),)
 
 
 class Variable(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -218,3 +239,4 @@ class MentalEdge(models.Model):
 
     class Meta:
         verbose_name_plural = "Cognitive map Edgelist"
+        unique_together = (('person', 'source', 'target', 'project'),)

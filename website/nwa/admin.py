@@ -331,5 +331,7 @@ class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
 
     actions = [aexn.download_as_graphml,
                aexn.relationship_diagram_as_pdf,
+               aexn.relationship_diagram_orgs2cats,
                aexn.download_as_dot,
-               aexn.download_as_pdf, ]
+               aexn.download_as_pdf,
+               aexn.download_orgs2cats_as_pdf, ]
