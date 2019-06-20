@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import networkx as nx
 
 
-def download_as_graphml(self, request, queryset):
+def download_as_graphml(modeladmin, request, queryset):
     response = HttpResponse(
         "\n".join([l
                    for l in
@@ -19,7 +19,7 @@ download_as_graphml.\
     short_description = "Download GraphML format suitalbe for Cytoscape"
 
 
-def download_as_dot(self, request, queryset):
+def download_as_dot(modeladmin, request, queryset):
     A = nx.nx_agraph.to_agraph(mental_model(queryset))
     response = HttpResponse(A.string(),
                             content_type="text/dot")
@@ -32,7 +32,7 @@ download_as_dot.\
     short_description = "Download DOT format for Graphviz"
 
 
-def download_as_pdf(self, request, queryset):
+def download_as_pdf(modeladmin, request, queryset):
     response = HttpResponse(
         nx.drawing.nx_pydot.to_pydot(mental_model(queryset)).create_pdf(),
         content_type="application/pdf")
