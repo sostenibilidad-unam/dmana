@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <title>Network | Sizing</title>
+
+  <style type="text/css">
+    html, body {
+      font: 10pt arial;
+    }
+    #mynetwork {
+      width: 1600px;
+      height: 800px;
+      border: 1px solid lightgray;
+    }
+  </style>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+
+  <script type="text/javascript">
+    var nodes = null;
+    var edges = null;
+    var network = null;
+
+    function draw() {
+      // create people.
+      // value corresponds with the age of the person
+    nodes = [
+    {% for n in nodes %}
+    {id: {{ n.id }}, value: 1, label: '{{ n.name }}'},
+    {% endfor %}
+      ];
+
+      // create connections between people
+      // value corresponds with the amount of contact between two people
+    edges = [
+    {% for e in edges %}
+    {from: {{ e.0.id }}, to: {{ e.1.id }}, value: 1 },
+    {% endfor %}
+    ];
+
+      // Instantiate our network object.
+      var container = document.getElementById('mynetwork');
+      var data = {
+	nodes: nodes,
+	edges: edges
+      };
+      var options = {
+	nodes: {
+	  shape: 'dot',
+	  <!-- scaling: { -->
+	  <!--   customScalingFunction: function (min,max,total,value) { -->
+	  <!--     return value/total; -->
+	  <!--   }, -->
+	  <!--   min:5, -->
+	  <!--   max:150 -->
+	  <!-- } -->
+	}
+      };
+      network = new vis.Network(container, data, options);
+    }
+  </script>
+
+</head>
+<body onload="draw()">
+<p>
+
+</p>
+<div id="mynetwork"></div>
+</body>
+</html>

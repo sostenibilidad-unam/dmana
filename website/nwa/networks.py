@@ -51,9 +51,6 @@ def agency_network(queryset):
                    category=str(e.action.category))
         g.add_edge(e.person,
                    e.action,
-                   distance="" if e.distance is None else e.distance,
-                   interaction="" if e.interaction is None else e.interaction,
-                   polarity="" if e.polarity is None else e.polarity,
                    people=",".join([str(p)
                                     for p in e.people.all()]))
     return g

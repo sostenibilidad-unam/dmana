@@ -164,7 +164,8 @@ class SocialEdgeAdmin(JustMine, admin.ModelAdmin):
 
     actions = [sexn.download_as_graphml,
                sexn.download_as_dot,
-               sexn.download_as_pdf, ]
+               sexn.download_as_pdf,
+               sexn.create_visjs]
 
 
 class AgencyEdgelistInline(JustMine, admin.TabularInline):

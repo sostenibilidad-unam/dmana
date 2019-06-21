@@ -98,7 +98,7 @@ def relationship_diagram_as_pdf(modeladmin, request, queryset):
             tmp.read(),
             content_type="application/pdf")
         response['Content-Disposition'] \
-            = 'attachment; filename="power_network.pdf"'
+            = 'attachment; filename="agency_relationship_diagram.pdf"'
         return response
 
 
@@ -135,7 +135,7 @@ def relationship_diagram_orgs2cats(modeladmin, request, queryset):
             tmp.read(),
             content_type="application/pdf")
         response['Content-Disposition'] \
-            = 'attachment; filename="power_network_orgs2cats.pdf"'
+            = 'attachment; filename="relationship_diagram_orgs2cats.pdf"'
         return response
 
 

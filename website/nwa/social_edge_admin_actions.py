@@ -1,6 +1,8 @@
 import tempfile
 from .networks import social_agraph, social_network
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.template.loader import render_to_string
 import networkx as nx
 
 
@@ -48,3 +50,17 @@ def download_as_pdf(modeladmin, request, queryset):
 
 download_as_pdf.\
     short_description = "Download as PDF"
+
+
+def create_visjs(modeladmin, request, queryset):
+    # STATICFILES_DIRS
+    with open('/home/rgarcia/tmp/aguas.html', 'w') as f:
+        g = social_network(queryset)
+        f.write(render_to_string('nwa/force_directed.html',
+                               {'nodes': list(g.nodes),
+                                'edges': list(g.edges)}))
+    return HttpResponseRedirect("/export/")
+
+
+create_visjs.\
+    short_description = "Export as interactive webpage"
