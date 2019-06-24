@@ -1,14 +1,15 @@
 import tempfile
 from .networks import social_agraph, social_network
 from .models import Sector
+from .scale import Scale
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 import networkx as nx
-from color_tol import sequential, qualitative
 from django.conf import settings
 from os import path
 import uuid
+import matplotlib.pyplot as plt
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -59,26 +60,34 @@ download_as_pdf.\
 
 def create_visjs(modeladmin, request, queryset):
 
+    max_distance = max([e.distance for e in queryset])
     g = social_network(queryset)
-        
-    edgecolors = list(reversed(sequential(5).html_colors))
+
+    scale = Scale(domain=[0, 1.0],
+                  range=[0, 255])
+
+    dist_scale = Scale(domain=[0, max_distance],
+                       range=[0, max_distance + 1])
+
+    cm = plt.get_cmap('GnBu', lut=5)
 
     edges = []
+
     for e in queryset:
-        e.color = edgecolors[e.distance]
+        e.color = tuple([scale.linear(c)
+                         for c in cm(int(dist_scale.linear_inv(e.distance)))])
         e.length = (e.distance ** 3) + 1
         edges.append(e)
 
-    
-    degree = g.in_degree()
     bc = nx.betweenness_centrality(g)
 
-
-    colors = qualitative(Sector.objects.count() + 1).html_colors
-    sectorcolor = {c[0]:c[1]
-                   for c in zip(list(Sector.objects.all()) + [None, ],
-                                colors)}
-
+    sector_count = Sector.objects.count()
+    cm = plt.get_cmap('Set3', lut=sector_count)
+    n = 1
+    sectorcolor = {None: tuple([scale.linear(c) for c in cm(n)])}
+    for sector in Sector.objects.all():
+        sectorcolor[sector] = tuple([scale.linear(c) for c in cm(n)])
+        n += 1
 
     filename = "%s.html" % uuid.uuid4()
     with open(path.join(settings.EXPORT,
@@ -89,14 +98,14 @@ def create_visjs(modeladmin, request, queryset):
                             bc[e.source],
                             e.source.name,
                             sectorcolor[e.source.sector])
-                           for e in queryset] \
+                           for e in queryset]
                           + [(e.target.id,
                               bc[e.target],
                               e.target.name,
                               sectorcolor[e.target.sector])
                              for e in queryset]),
              'edges': edges
-            }))
+             }))
     return HttpResponseRedirect(settings.STATIC_URL
                                 + 'networks/' + filename)
 
