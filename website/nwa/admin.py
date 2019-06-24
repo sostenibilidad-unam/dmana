@@ -9,6 +9,7 @@ import nwa.agency_edge_admin_actions as aexn
 import nwa.mental_edge_admin_actions as mmxn
 import nwa.power_edge_admin_actions as pexn
 import nwa.social_edge_admin_actions as sexn
+import nwa.project_admin_actions as prxn
 
 
 class JustMine(object):
@@ -172,7 +173,7 @@ class AgencyEdgelistInline(JustMine, admin.TabularInline):
     model = AgencyEdge
     fk_name = 'project'
     extra = 1
-    classes = ('grp-collapse grp-open',)
+    classes = ('grp-collapse grp-closed',)
     autocomplete_fields = ['person', 'people', 'action']
 
 
@@ -180,7 +181,7 @@ class SocialEdgelistInline(JustMine, admin.TabularInline):
     model = SocialEdge
     fk_name = 'project'
     extra = 1
-    classes = ('grp-collapse grp-open',)
+    classes = ('grp-collapse grp-closed',)
     autocomplete_fields = ['source', 'target']
 
 
@@ -188,7 +189,7 @@ class PowerEdgelistInline(JustMine, admin.TabularInline):
     model = PowerEdge
     fk_name = 'project'
     extra = 1
-    classes = ('grp-collapse grp-open',)
+    classes = ('grp-collapse grp-closed',)
     autocomplete_fields = ['person', 'power', ]
 
 
@@ -196,7 +197,7 @@ class MentalEdgelistInline(JustMine, admin.TabularInline):
     model = MentalEdge
     fk_name = 'project'
     extra = 1
-    classes = ('grp-collapse grp-open',)
+    classes = ('grp-collapse grp-closed',)
     autocomplete_fields = ['source', 'target', ]
 
 
@@ -210,19 +211,7 @@ class ProjectAdmin(JustMine, admin.ModelAdmin):
                PowerEdgelistInline,
                MentalEdgelistInline]
 
-    def duplicate_project(self, request, queryset):
-
-        for p in queryset:
-            p.pk = None
-            p.project = p.project + " (duplicate)"
-            p.save()
-
-            # TODO: copy all edgelists
-
-    duplicate_project.\
-        short_description = "Make duplicate copy of selected project"
-
-    actions = [duplicate_project]
+    actions = [prxn.duplicate_project]
 
 
 @admin.register(Category)
@@ -267,15 +256,6 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
                mmxn.download_as_pdf, ]
 
     autocomplete_fields = ['source', 'target', 'person', ]
-
-    def copy_to_latest_project(self, request, queryset):
-        project = Project.objects.last()
-        for edge in queryset:
-            edge.pk = None
-            edge.project = project
-            edge.save()
-    copy_to_latest_project.\
-        short_description = "Copy selected edges to latest project"
 
 
 
