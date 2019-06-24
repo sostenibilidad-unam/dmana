@@ -1,9 +1,11 @@
 import tempfile
 from .networks import social_agraph, social_network
+from .models import Sector
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 import networkx as nx
+from color_tol import sequential, qualitative
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -53,12 +55,44 @@ download_as_pdf.\
 
 
 def create_visjs(modeladmin, request, queryset):
-    # STATICFILES_DIRS
+
+    g = social_network(queryset)
+        
+    edgecolors = list(reversed(sequential(5).html_colors))
+
+    edges = []
+    for e in queryset:
+        e.color = edgecolors[e.distance]
+        e.length = (e.distance ** 3) + 1
+        edges.append(e)
+
+    
+    degree = g.in_degree()
+    bc = nx.betweenness_centrality(g)
+
+
+    colors = qualitative(Sector.objects.count() + 1).html_colors
+    sectorcolor = {c[0]:c[1]
+                   for c in zip(list(Sector.objects.all()) + [None, ],
+                                colors)}
+
+
+    # STATICFILES_DIRS                 
     with open('/home/rgarcia/tmp/aguas.html', 'w') as f:
-        g = social_network(queryset)
-        f.write(render_to_string('nwa/force_directed.html',
-                               {'nodes': list(g.nodes),
-                                'edges': list(g.edges)}))
+        f.write(render_to_string(
+            'nwa/force_directed.html',
+            {'nodes': set([(e.source.id,
+                            bc[e.source],
+                            e.source.name,
+                            sectorcolor[e.source.sector])
+                           for e in queryset] \
+                          + [(e.target.id,
+                              bc[e.target],
+                              e.target.name,
+                              sectorcolor[e.target.sector])
+                             for e in queryset]),
+             'edges': edges
+            }))
     return HttpResponseRedirect("/export/")
 
 
