@@ -33,8 +33,18 @@ download_as_dot.\
 
 
 def download_as_pdf(modeladmin, request, queryset):
+    g = mental_model(queryset)
+
+    for n in g.nodes:
+        if g.in_degree(n) == 0:
+            g.nodes[n]['color'] = 'green'
+        elif g.out_degree(n) == 0:
+            g.nodes[n]['color'] = 'red'
+        else:
+            g.nodes[n]['color'] = 'black'
+            
     response = HttpResponse(
-        nx.drawing.nx_pydot.to_pydot(mental_model(queryset)).create_pdf(),
+        nx.drawing.nx_pydot.to_pydot(g).create_pdf(),
         content_type="application/pdf")
     response[
         'Content-Disposition'] = 'attachment; filename="cognitive_map.pdf"'
