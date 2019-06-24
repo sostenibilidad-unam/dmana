@@ -6,6 +6,9 @@ from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 import networkx as nx
 from color_tol import sequential, qualitative
+from django.conf import settings
+from os import path
+import uuid
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -77,8 +80,9 @@ def create_visjs(modeladmin, request, queryset):
                                 colors)}
 
 
-    # STATICFILES_DIRS                 
-    with open('/home/rgarcia/tmp/aguas.html', 'w') as f:
+    filename = "%s.html" % uuid.uuid4()
+    with open(path.join(settings.EXPORT,
+                        filename), 'w') as f:
         f.write(render_to_string(
             'nwa/force_directed.html',
             {'nodes': set([(e.source.id,
@@ -93,7 +97,8 @@ def create_visjs(modeladmin, request, queryset):
                              for e in queryset]),
              'edges': edges
             }))
-    return HttpResponseRedirect("/export/")
+    return HttpResponseRedirect(settings.STATIC_URL
+                                + 'networks/' + filename)
 
 
 create_visjs.\

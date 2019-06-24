@@ -119,6 +119,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+EXPORT = os.path.join(BASE_DIR, "static", "networks")
+os.makedirs(EXPORT, exist_ok=True)
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
  ]
