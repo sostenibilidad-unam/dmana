@@ -59,20 +59,26 @@ download_as_pdf.\
 
 
 def create_visjs(modeladmin, request, queryset):
-
-    max_distance = max([e.distance for e in queryset])
+    export_id = uuid.uuid4()
+    
     g = social_network(queryset)
+
+    fig = plt.figure(figsize=(5, 5), dpi=100)
+    degree_sequence=sorted(dict(nx.degree(g)).values(), reverse=True)
+    f = plt.loglog(degree_sequence, marker='.', linewidth=0.3, color='navy', alpha=0.3)
+    filename = '%s_degree_loglog.png' % export_id
+    fig.savefig(path.join(settings.EXPORT,
+                          filename))
 
     scale = Scale(domain=[0, 1.0],
                   range=[0, 255])
-
+    max_distance = max([e.distance for e in queryset])    
     dist_scale = Scale(domain=[0, max_distance],
                        range=[0, max_distance + 1])
 
     cm = plt.get_cmap('GnBu', lut=5)
 
     edges = []
-
     for e in queryset:
         e.color = tuple([scale.linear(c)
                          for c in cm(int(dist_scale.linear_inv(e.distance)))])
@@ -89,7 +95,7 @@ def create_visjs(modeladmin, request, queryset):
         sectorcolor[sector] = tuple([scale.linear(c) for c in cm(n)])
         n += 1
 
-    filename = "%s.html" % uuid.uuid4()
+    filename = "%s.html" % export_id
     with open(path.join(settings.EXPORT,
                         filename), 'w') as f:
         f.write(render_to_string(
@@ -104,7 +110,8 @@ def create_visjs(modeladmin, request, queryset):
                               e.target.name,
                               sectorcolor[e.target.sector])
                              for e in queryset]),
-             'edges': edges
+             'edges': edges,
+             'export_id': export_id
              }))
     return HttpResponseRedirect(settings.STATIC_URL
                                 + 'networks/' + filename)
