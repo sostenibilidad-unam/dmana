@@ -1,6 +1,12 @@
 from .networks import mental_model
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.conf import settings
+from django.template.loader import render_to_string
 import networkx as nx
+import uuid
+import matplotlib.pyplot as plt
+from os import path
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -42,7 +48,7 @@ def download_as_pdf(modeladmin, request, queryset):
             g.nodes[n]['color'] = 'red'
         else:
             g.nodes[n]['color'] = 'black'
-            
+
     response = HttpResponse(
         nx.drawing.nx_pydot.to_pydot(g).create_pdf(),
         content_type="application/pdf")
@@ -53,3 +59,57 @@ def download_as_pdf(modeladmin, request, queryset):
 
 download_as_pdf.\
     short_description = "Download as PDF"
+
+
+def create_visjs(modeladmin, request, queryset):
+    export_id = uuid.uuid4()
+
+    g = mental_model(queryset)
+
+    fig = plt.figure(figsize=(5, 5), dpi=100)
+    degree_sequence = sorted(dict(nx.degree(g)).values(),
+                             reverse=True)
+    f = plt.loglog(degree_sequence,
+                   marker='.',
+                   linewidth=0.3,
+                   color='navy',
+                   alpha=0.3)
+    filename = '%s_degree_loglog.png' % export_id
+    fig.savefig(path.join(settings.EXPORT,
+                          filename))
+
+    bc = nx.betweenness_centrality(g)
+
+    nodes = set()
+    for e in queryset:
+        if g.in_degree(e.source.name) == 0:
+            color = 'green'
+        elif g.out_degree(e.source.name) == 0:
+            color = 'red'
+        else:
+            color = '#aabbdd'
+        nodes.add((e.source.id, bc[e.source.name], e.source.name, color))
+
+        if g.in_degree(e.target.name) == 0:
+            color = 'green'
+        elif g.out_degree(e.target.name) == 0:
+            color = 'red'
+        else:
+            color = '#aabbdd'
+        nodes.add((e.target.id, bc[e.target.name], e.target.name, color))
+
+    filename = "%s.html" % export_id
+    with open(path.join(settings.EXPORT,
+                        filename), 'w') as f:
+        f.write(render_to_string(
+            'nwa/mm.html',
+            {'nodes': nodes,
+             'edges': queryset,
+             'export_id': export_id
+             }))
+    return HttpResponseRedirect(settings.STATIC_URL
+                                + 'networks/' + filename)
+
+
+create_visjs.\
+    short_description = "Export as interactive webpage"

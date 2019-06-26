@@ -250,7 +250,7 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
     list_filter = (
         ('project', admin.RelatedOnlyFieldListFilter), )
 
-    actions = ['copy_to_latest_project',
+    actions = [mmxn.create_visjs,
                mmxn.download_as_graphml,
                mmxn.download_as_dot,
                mmxn.download_as_pdf, ]
