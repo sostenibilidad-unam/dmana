@@ -169,36 +169,36 @@ class SocialEdgeAdmin(JustMine, admin.ModelAdmin):
                sexn.create_visjs]
 
 
-class AgencyEdgelistInline(JustMine, admin.TabularInline):
-    model = AgencyEdge
-    fk_name = 'project'
-    extra = 1
-    classes = ('grp-collapse grp-closed',)
-    autocomplete_fields = ['person', 'people', 'action']
+# class AgencyEdgelistInline(JustMine, admin.TabularInline):
+#     model = AgencyEdge
+#     fk_name = 'project'
+#     extra = 1
+#     classes = ('grp-collapse grp-closed',)
+#     autocomplete_fields = ['person', 'people', 'action']
 
 
-class SocialEdgelistInline(JustMine, admin.TabularInline):
-    model = SocialEdge
-    fk_name = 'project'
-    extra = 1
-    classes = ('grp-collapse grp-closed',)
-    autocomplete_fields = ['source', 'target']
+# class SocialEdgelistInline(JustMine, admin.TabularInline):
+#     model = SocialEdge
+#     fk_name = 'project'
+#     extra = 1
+#     classes = ('grp-collapse grp-closed',)
+#     autocomplete_fields = ['source', 'target']
 
 
-class PowerEdgelistInline(JustMine, admin.TabularInline):
-    model = PowerEdge
-    fk_name = 'project'
-    extra = 1
-    classes = ('grp-collapse grp-closed',)
-    autocomplete_fields = ['person', 'power', ]
+# class PowerEdgelistInline(JustMine, admin.TabularInline):
+#     model = PowerEdge
+#     fk_name = 'project'
+#     extra = 1
+#     classes = ('grp-collapse grp-closed',)
+#     autocomplete_fields = ['person', 'power', ]
 
 
-class MentalEdgelistInline(JustMine, admin.TabularInline):
-    model = MentalEdge
-    fk_name = 'project'
-    extra = 1
-    classes = ('grp-collapse grp-closed',)
-    autocomplete_fields = ['source', 'target', ]
+# class MentalEdgelistInline(JustMine, admin.TabularInline):
+#     model = MentalEdge
+#     fk_name = 'project'
+#     extra = 1
+#     classes = ('grp-collapse grp-closed',)
+#     autocomplete_fields = ['source', 'target', ]
 
 
 @admin.register(Project)
@@ -206,10 +206,10 @@ class ProjectAdmin(JustMine, admin.ModelAdmin):
     exclude = ('author', )
     list_display = ['project']
 
-    inlines = [AgencyEdgelistInline,
-               SocialEdgelistInline,
-               PowerEdgelistInline,
-               MentalEdgelistInline]
+    # inlines = [AgencyEdgelistInline,
+    #            SocialEdgelistInline,
+    #            PowerEdgelistInline,
+    #            MentalEdgelistInline]
 
     actions = [prxn.duplicate_project]
 
@@ -258,7 +258,6 @@ class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
     autocomplete_fields = ['source', 'target', 'person', ]
 
 
-
 @admin.register(Power)
 class PowerAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['name']
@@ -275,20 +274,10 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
     autocomplete_fields = ['person', 'power', ]
 
     actions = [
-        'copy_to_latest_project',
         pexn.download_as_graphml,
         pexn.download_as_pdf,
         pexn.download_as_dot,
     ]
-
-    def copy_to_latest_project(self, request, queryset):
-        project = Project.objects.last()
-        for edge in queryset:
-            edge.pk = None
-            edge.project = project
-            edge.save()
-    copy_to_latest_project.\
-        short_description = "Copy selected edges to latest project"
 
 
 @admin.register(AgencyEdge)
