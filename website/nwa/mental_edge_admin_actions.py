@@ -62,7 +62,7 @@ download_as_pdf.\
 
 
 def create_visjs(modeladmin, request, queryset):
-    export_id = uuid.uuid4()
+    export_id = str(uuid.uuid4())
 
     g = mental_model(queryset)
 
