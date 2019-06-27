@@ -117,7 +117,7 @@ def create_visjs(modeladmin, request, queryset):
                              for e in queryset]),
              'edges': edges,
              'export_id': export_id
-             }))
+             })).encode('utf-8')
     return HttpResponseRedirect(settings.STATIC_URL
                                 + 'networks/' + filename)
 
