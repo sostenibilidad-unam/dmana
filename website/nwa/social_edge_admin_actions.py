@@ -59,7 +59,7 @@ download_as_pdf.\
 
 
 def create_visjs(modeladmin, request, queryset):
-    export_id = str(uuid.uuid4())
+    export_id = uuid.uuid4()
 
     g = social_network(queryset)
 
@@ -102,7 +102,9 @@ def create_visjs(modeladmin, request, queryset):
 
     filename = "%s.html" % export_id
     with open(path.join(settings.EXPORT,
-                        filename), 'w') as f:
+                        filename),
+              'w',
+              encoding='utf-8') as f:
         f.write(render_to_string(
             'nwa/force_directed.html',
             {'nodes': set([(e.source.id,
@@ -117,7 +119,7 @@ def create_visjs(modeladmin, request, queryset):
                              for e in queryset]),
              'edges': edges,
              'export_id': export_id
-             })).encode('utf-8')
+             }).encode('utf-8'))
     return HttpResponseRedirect(settings.STATIC_URL
                                 + 'networks/' + filename)
 
