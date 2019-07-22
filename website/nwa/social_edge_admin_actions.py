@@ -77,7 +77,9 @@ def create_visjs(modeladmin, request, queryset):
 
     scale = Scale(domain=[0, 1.0],
                   range=[0, 255])
-    max_distance = max([e.distance for e in queryset])
+    max_distance = max([0 if e.distance is None
+                        else e.distance
+                        for e in queryset])
     dist_scale = Scale(domain=[0, max_distance],
                        range=[0, max_distance + 1])
 
@@ -85,6 +87,8 @@ def create_visjs(modeladmin, request, queryset):
 
     edges = []
     for e in queryset:
+        e.distance = 0 if e.distance is None else e.distance
+        e.influence = 0 if e.influence is None else e.influence
         e.color = tuple([scale.linear(c)
                          for c in cm(int(dist_scale.linear_inv(e.distance)))])
         e.length = (e.distance ** 3) + 1
