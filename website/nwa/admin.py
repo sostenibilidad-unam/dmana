@@ -304,4 +304,6 @@ class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
                aexn.relationship_diagram_orgs2cats,
                aexn.download_as_dot,
                aexn.download_as_pdf,
-               aexn.download_orgs2cats_as_pdf, ]
+               aexn.download_orgs2cats_as_pdf,
+               aexn.create_visjs,
+    ]

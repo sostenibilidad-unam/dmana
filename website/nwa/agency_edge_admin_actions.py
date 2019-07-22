@@ -1,9 +1,15 @@
 import pygraphviz as pgv
 import tempfile
 from django.template.loader import render_to_string
+from django.conf import settings
+from os import path
 from .networks import agency_network, agency_agraph, agency_agraph_orgs2cats
+from .scale import Scale
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 import networkx as nx
+import uuid
+import matplotlib.pyplot as plt
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -141,3 +147,54 @@ def relationship_diagram_orgs2cats(modeladmin, request, queryset):
 
 relationship_diagram_orgs2cats.\
     short_description = "Download orgs2cats relationship diagram as PDF"
+
+
+def create_visjs(modeladmin, request, queryset):
+    export_id = uuid.uuid4()
+
+    g = agency_network(queryset)
+
+    bc = nx.betweenness_centrality(g)
+
+    fig = plt.figure(figsize=(5, 5), dpi=100)
+    degree_sequence = sorted(dict(nx.degree(g)).values(),
+                             reverse=True)
+    f = plt.loglog(degree_sequence,
+                   marker='.',
+                   linewidth=0.3,
+                   color='navy',
+                   alpha=0.3)
+    filename = '%s_degree_loglog.png' % export_id
+    fig.savefig(path.join(settings.EXPORT,
+                          filename))
+
+    edges = []
+    for e in queryset:
+        edges.append(e)
+
+    filename = "%s.html" % export_id
+    with open(path.join(settings.EXPORT,
+                        filename),
+              'w',
+              encoding='utf-8') as f:
+        f.write(render_to_string(
+            'nwa/agency.html',
+            {'nodes': set([("p%s" % e.person.id,
+                            bc[e.person],
+                            e.person.name,
+                            'blue')
+                           for e in queryset]
+                          + [("a%s" % e.action.id,
+                              bc[e.action],
+                              e.action.action,
+                              'red')
+                             for e in queryset]),
+             'edges': edges,
+             'export_id': export_id
+             }))
+    return HttpResponseRedirect(settings.STATIC_URL
+                                + 'networks/' + filename)
+
+
+create_visjs.\
+    short_description = "Export as interactive webpage"
