@@ -8,8 +8,12 @@ from .models import Person, AgencyEdge, Action, Project, \
 import nwa.agency_edge_admin_actions as aexn
 import nwa.mental_edge_admin_actions as mmxn
 import nwa.power_edge_admin_actions as pexn
-import nwa.social_edge_admin_actions as sexn
 import nwa.project_admin_actions as prxn
+import nwa.social_edge_admin_actions as sexn
+
+
+def delete_selection(modeladmin, request, queryset):
+    queryset.delete()
 
 
 class JustMine(object):
@@ -153,7 +157,7 @@ class OrganizationAdmin(JustMine, admin.ModelAdmin):
 
 @admin.register(SocialEdge)
 class SocialEdgeAdmin(JustMine, admin.ModelAdmin):
-    search_fields = ['source__name', 'target__name']
+    search_fields = ['source__name__search', 'target__name__icontains']
     list_display = ['source', 'target',
                     'influence', 'distance', 'interaction', 'polarity',
                     'project']
@@ -166,7 +170,9 @@ class SocialEdgeAdmin(JustMine, admin.ModelAdmin):
     actions = [sexn.download_as_graphml,
                sexn.download_as_dot,
                sexn.download_as_pdf,
-               sexn.create_visjs]
+               sexn.create_visjs,
+               delete_selection
+               ]
 
 
 # class AgencyEdgelistInline(JustMine, admin.TabularInline):
