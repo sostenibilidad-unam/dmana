@@ -5,3 +5,4 @@ Pillow==6.0.0
 pydot==1.4.1
 pygraphviz==1.5
 matplotlib
+djangoql==0.13.0

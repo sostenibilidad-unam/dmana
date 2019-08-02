@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
+from djangoql.admin import DjangoQLSearchMixin
+
 from .models import Person, AgencyEdge, Action, Project, \
     Sector, Variable, MentalEdge, Category, \
     Power, PowerEdge, Organization, SocialEdge
@@ -102,6 +104,14 @@ class PersonAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['name', 'avatar_name', 'organization__organization']
     list_display = ['name', 'avatar_name', 'organization', 'sector', 'ego', ]
 
+    actions = [sexn.download_as_graphml,
+               sexn.download_as_dot,
+               sexn.download_as_pdf,
+               sexn.create_visjs,
+               delete_selection
+               ]
+
+
     list_filter = (
         ('sector', admin.RelatedOnlyFieldListFilter), 'ego')
 
@@ -156,8 +166,8 @@ class OrganizationAdmin(JustMine, admin.ModelAdmin):
 
 
 @admin.register(SocialEdge)
-class SocialEdgeAdmin(JustMine, admin.ModelAdmin):
-    search_fields = ['source__name__search', 'target__name__icontains']
+class SocialEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
+    # search_fields = ['source__name', 'target__name']
     list_display = ['source', 'target',
                     'influence', 'distance', 'interaction', 'polarity',
                     'project']
