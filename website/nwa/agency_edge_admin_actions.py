@@ -169,8 +169,14 @@ def create_visjs(modeladmin, request, queryset):
                           filename))
 
     edges = []
+    edge_data = {}
     for e in queryset:
         edges.append(e)
+        edge_data['a%s' % e.action.id] = (
+            "<h2>%s</h2><ul>" % e.action.action
+            + " ".join(["<li>%s</li>" % str(p)
+                        for p in e.people.all()])
+            + "</ul>")
 
     filename = "%s.html" % export_id
     with open(path.join(settings.EXPORT,
@@ -182,14 +188,15 @@ def create_visjs(modeladmin, request, queryset):
             {'nodes': set([("p%s" % e.person.id,
                             bc[e.person],
                             e.person.name,
-                            'blue')
+                            '#b3cde3')
                            for e in queryset]
                           + [("a%s" % e.action.id,
                               bc[e.action],
                               e.action.action,
-                              'red')
+                              '#ccebc5')
                              for e in queryset]),
              'edges': edges,
+             'edge_data': edge_data,
              'export_id': export_id
              }))
     return HttpResponseRedirect(settings.STATIC_URL
@@ -197,4 +204,4 @@ def create_visjs(modeladmin, request, queryset):
 
 
 create_visjs.\
-    short_description = "Export as interactive webpage"
+    short_description = "Create interactive browser based visualization"
