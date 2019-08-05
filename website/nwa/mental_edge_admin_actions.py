@@ -83,19 +83,19 @@ def create_visjs(modeladmin, request, queryset):
     nodes = set()
     for e in queryset:
         if g.in_degree(e.source.name) == 0:
-            color = 'green'
+            color = '#ccebc5'
         elif g.out_degree(e.source.name) == 0:
-            color = 'red'
+            color = '#fbb4ae'
         else:
-            color = '#aabbdd'
+            color = '#b3cde3'
         nodes.add((e.source.id, bc[e.source.name], e.source.name, color))
 
         if g.in_degree(e.target.name) == 0:
-            color = 'green'
+            color = '#ccebc5'
         elif g.out_degree(e.target.name) == 0:
-            color = 'red'
+            color = '#fbb4ae'
         else:
-            color = '#aabbdd'
+            color = '#b3cde3'
         nodes.add((e.target.id, bc[e.target.name], e.target.name, color))
 
     filename = "%s.html" % export_id

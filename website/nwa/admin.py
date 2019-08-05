@@ -259,17 +259,17 @@ class ActionAdmin(JustMine, admin.ModelAdmin):
 
 
 @admin.register(MentalEdge)
-class MentalEdgeAdmin(JustMine, admin.ModelAdmin):
+class MentalEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
     search_fields = ['person__name']
     list_display = ['person', 'source', 'target', 'project']
 
     list_filter = (
         ('project', admin.RelatedOnlyFieldListFilter), )
 
-    actions = [mmxn.create_visjs,
-               mmxn.download_as_graphml,
+    actions = [mmxn.download_as_graphml,
                mmxn.download_as_dot,
-               mmxn.download_as_pdf, ]
+               mmxn.download_as_pdf,
+               mmxn.create_visjs, ]
 
     autocomplete_fields = ['source', 'target', 'person', ]
 
@@ -280,7 +280,7 @@ class PowerAdmin(JustMine, admin.ModelAdmin):
 
 
 @admin.register(PowerEdge)
-class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
+class PowerEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
     search_fields = ['person__name', 'power__name']
     list_display = ['person', 'power', 'project']
 
@@ -297,7 +297,7 @@ class PowerEdgeAdmin(JustMine, admin.ModelAdmin):
 
 
 @admin.register(AgencyEdge)
-class AgencyEdgeAdmin(JustMine, admin.ModelAdmin):
+class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
     search_fields = ['person__name', 'action__action']
     list_display = ['id', 'person', 'action', 'project', ]
 

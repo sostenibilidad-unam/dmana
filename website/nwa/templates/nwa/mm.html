@@ -43,12 +43,26 @@
 	nodes: nodes,
 	edges: edges
       };
-      var options = {
-	nodes: {
-	  shape: 'dot'
-	}
-      };
-      network = new vis.Network(container, data, options);
+    var options = {
+
+     "edges": {
+    "smooth": false
+    },
+
+"physics": {
+    "barnesHut": {
+      "gravitationalConstant": -10000,
+      "centralGravity": 4.25,
+      "springLength": 300,
+      "springConstant": 0.045,
+      "damping": 0.99,
+      "avoidOverlap": 0.3
+    },
+    "minVelocity": 0.75
+  }
+
+    };
+    network = new vis.Network(container, data, options);
     }
   </script>
 
