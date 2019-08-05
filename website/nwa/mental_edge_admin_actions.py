@@ -112,4 +112,4 @@ def create_visjs(modeladmin, request, queryset):
 
 
 create_visjs.\
-    short_description = "Export as interactive webpage"
+    short_description = "Create interactive browser based visualization"
