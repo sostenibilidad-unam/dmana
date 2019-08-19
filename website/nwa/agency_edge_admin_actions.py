@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 import networkx as nx
 import uuid
 import matplotlib.pyplot as plt
+from .agency_hiveplot import agency_hiveplot
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -205,3 +206,11 @@ def create_visjs(modeladmin, request, queryset):
 
 create_visjs.\
     short_description = "Create interactive browser based visualization"
+
+
+def create_agency_hiveplot(modeladmin, request, queryset):
+    agency_hiveplot(queryset)
+
+
+create_agency_hiveplot.\
+    short_description = "create agency hiveplot"
