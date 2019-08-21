@@ -3,6 +3,8 @@ import networkx as nx
 from pprint import pprint
 from pyveplot import Hiveplot, Node, Axis
 import operator
+from .scale import Scale
+import random
 
 
 def agency_hiveplot(queryset):
@@ -16,16 +18,27 @@ def agency_hiveplot(queryset):
         g.add_node(e.person, type='person',
                    sector=str(e.person.sector),
                    ego=e.person.ego)
-
+        
         g.add_node(e.action, type='action', 
                    category=str(e.action.category))
+        
+        for p in e.people.all():
+            g.add_node(p, type='person',
+                       sector=str(p.sector),
+                       ego=p.ego)
+            # ego to alter
+            g.add_edge(e.person,
+                       p)
+            # alter to action
+            g.add_edge(p,
+                       e.action)
 
         g.add_edge(e.person,
                    e.action,
                    people=", ".join([str(p)
                                     for p in e.people.all()]))
         
-        # populate categories dict
+        # populate action categories dict
         if e.action.category in categories:
             categories[e.action.category].add(e.action)
         else:
@@ -63,6 +76,7 @@ def agency_hiveplot(queryset):
 
     # create alter axes
     alter_axes = {}
+    alter_axes_scales = {}
     start = offcenter
     end = 0
     for sector, sec_len in sorted_sec_len:
@@ -75,11 +89,48 @@ def agency_hiveplot(queryset):
         alter_axes[sector] = Axis(start=start, end=end,
                                   angle=angle, stroke="grey")
 
-        start = end + spacer
+        alter_axes_scales[sector] = Scale(
+            domain=[start, end],
+            range=[0, 1])
         
         
+        start = end + spacer        
+    
+    
+    # ego_count = Alter.objects.filter(name__contains='TL0').count()
+    # ego_scale= Scale(domain=[Alter.objects.order_by('degree')[0].degree,
+    #                          Alter.objects.order_by('-degree')[0].degree],
+    #                  range=[5, 30])
+    h.axes = list(alter_axes.values())
 
-    h.axes = alter_axes.values()
+    
+    ego_axis = Axis(start=offcenter, end=end,
+                    angle=angle - 120, stroke="firebrick")
 
+    h.axes.append(ego_axis)
+
+    # create action axis
+    action_axis = Axis(start=offcenter, end=end,
+                       angle=angle + 120, stroke="darkgreen")
+
+    pprint(in_degree)
+    # populate action axis
+    for cat in categories:
+        i = 0.0
+        for action in categories[cat]:
+            node = Node(action)
+            action_axis.add_node(node,
+                                 i / len(categories[cat]))
+            i += 1
+            node.dwg = node.dwg.circle(center = (node.x, node.y),
+                                       r      = in_degree[action],
+                                       fill   = 'orange',
+                                       fill_opacity = 0.5,
+                                       stroke = random.choice(['red','crimson','coral','purple']),
+                                       stroke_width = 0.3)
+        
+    h.axes.append(action_axis)
+
+    
     h.save()
     return g
