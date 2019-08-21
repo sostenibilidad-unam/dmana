@@ -269,7 +269,9 @@ class MentalEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
     actions = [mmxn.download_as_graphml,
                mmxn.download_as_dot,
                mmxn.download_as_pdf,
-               mmxn.create_visjs, ]
+               mmxn.create_visjs,
+               delete_selection,               
+    ]
 
     autocomplete_fields = ['source', 'target', 'person', ]
 
@@ -293,6 +295,7 @@ class PowerEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         pexn.download_as_graphml,
         pexn.download_as_pdf,
         pexn.download_as_dot,
+        delete_selection,        
     ]
 
 
@@ -322,5 +325,6 @@ class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
                aexn.download_as_pdf,
                aexn.download_orgs2cats_as_pdf,
                aexn.create_visjs,
-               aexn.create_agency_hiveplot
+               aexn.create_agency_hiveplot,
+               delete_selection               
     ]
