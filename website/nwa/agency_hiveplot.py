@@ -68,13 +68,16 @@ def agency_hiveplot(queryset):
     for sector, sec_len in sorted_sec_len:
         if sector is None:
             continue
-        start += spacer + end
-        
         axis_len = sec_len * alter_node_size
-        end += axis_len
+        
+        end = start + axis_len
         
         alter_axes[sector] = Axis(start=start, end=end,
                                   angle=angle, stroke="grey")
+
+        start = end + spacer
+        
+        
 
     h.axes = alter_axes.values()
 
