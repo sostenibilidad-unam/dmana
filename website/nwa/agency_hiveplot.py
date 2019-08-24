@@ -104,6 +104,7 @@ def agency_hiveplot(queryset):
     ego_axis = Axis(start=offcenter, end=end,
                     angle=angle - 120, stroke="firebrick")
     i = 0.5
+    ego_len = sum([in_degree[ego] for ego, degree in sorted_in_degree])
     for ego, degree in sorted_in_degree:
         if type(ego) is not Person:
             continue
@@ -111,7 +112,7 @@ def agency_hiveplot(queryset):
             continue
         node = Node(ego)
         ego_axis.add_node(node,
-                          i / len(categories[cat]))
+                          i / ego_len)
         i += 1.0
         node.dwg = node.dwg.circle(
             center=(node.x, node.y),
