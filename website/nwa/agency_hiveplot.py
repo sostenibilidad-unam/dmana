@@ -7,16 +7,18 @@ from .scale import Scale
 import random
 
 
-def add_nodes_to_axis(axis, nodes, scaler):
-    i = 0.5
+def add_nodes_to_axis(axis, axis_len, spacer, nodes):
+    i = 0.5 * nodes[0][1]
     for v, k in nodes:
+        i += k
         node = Node(v)
         axis.add_node(node,
-                      i / len(nodes))
-        i += 1.0
+                      i / axis_len)
+        i += k + spacer        
+
         node.dwg = node.dwg.circle(
             center=(node.x, node.y),
-            r=0.5 * scaler.linear(k),
+            r=k,
             fill='navy',
             fill_opacity=0.5,
             stroke=random.choice(['grey',
@@ -24,7 +26,7 @@ def add_nodes_to_axis(axis, nodes, scaler):
                                   'blue',
                                   'navy']),
             stroke_width=0.3)
-        print(v, k, node.x, node.y, 0.5 * scaler.linear(k))
+
 
 
 def agency_hiveplot(queryset):
@@ -96,7 +98,7 @@ def agency_hiveplot(queryset):
     # our hiveplot object
     h = Hiveplot('agency_hive.svg')
     offcenter = 10
-    spacer = 10
+    spacer = 4
     ego_spacer = 1
     node_size = 10.0
     angle = 0
@@ -145,38 +147,49 @@ def agency_hiveplot(queryset):
     for sector, sec_len in sorted_sec_len:
         if sector is None:
             continue
-        axis_len = sec_len * node_size
 
+        nodes = {person: in_degree[person] for person in sectors[sector]
+                 if type(person) is Person and person.ego is False}
+        sorted_nodes = sorted(nodes.items(), key=operator.itemgetter(1))               
+
+        axis_len = sum([(degree * 2) + spacer
+                        for person, degree in sorted_nodes])
+        
         end = start + axis_len
 
         alter_axis = Axis(start=start, end=end,
                           angle=angle, stroke="grey")
 
-        nodes=[(person, degree) for person, degree in sorted_in_degree
-               if type(person) is Person and person.ego is False]
 
         add_nodes_to_axis(
             axis=alter_axis,
-            nodes=nodes,
-            scaler=deg_scale)
+            axis_len=axis_len,
+            spacer=spacer,
+            nodes=sorted_nodes)
 
         alter_axes[sector] = alter_axis
         
-        start = end + spacer
+        start = end + (spacer * 4)
 
 
     # create action axis
-    action_axis = Axis(start=offcenter, end=end,
+    nodes=[(action, degree) for action, degree in sorted_in_degree
+           if type(action) is Action]
+    
+    action_len = sum([(degree * 2) + spacer
+                      for action, degree in nodes])
+    
+    action_axis = Axis(start=offcenter, end=action_len,
                        angle=angle + 120, stroke="darkgreen")
 
     # populate action axis
     for cat in action_category:
         i = 0.5
         add_nodes_to_axis(
+            nodes=nodes,
             axis=action_axis,
-            nodes=[(action, degree) for action, degree in sorted_in_degree
-                   if type(action) is Action],
-            scaler=deg_scale)
+            axis_len=action_len,
+            spacer=spacer)
 
         
     # place axes in hiveplot
