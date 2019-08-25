@@ -7,6 +7,26 @@ from .scale import Scale
 import random
 
 
+def add_nodes_to_axis(axis, nodes, scaler):
+    i = 0.5
+    for v, k in nodes:
+        node = Node(v)
+        axis.add_node(node,
+                      i / len(nodes))
+        i += 1.0
+        node.dwg = node.dwg.circle(
+            center=(node.x, node.y),
+            r=0.5 * scaler.linear(k),
+            fill='navy',
+            fill_opacity=0.5,
+            stroke=random.choice(['grey',
+                                  'green',
+                                  'blue',
+                                  'navy']),
+            stroke_width=0.3)
+        print(v, k, node.x, node.y, 0.5 * scaler.linear(k))
+
+
 def agency_hiveplot(queryset):
     g = nx.DiGraph()
 
@@ -129,13 +149,19 @@ def agency_hiveplot(queryset):
 
         end = start + axis_len
 
-        alter_axes[sector] = Axis(start=start, end=end,
-                                  angle=angle, stroke="grey")
+        alter_axis = Axis(start=start, end=end,
+                          angle=angle, stroke="grey")
 
-        alter_axes_scales[sector] = Scale(
-            domain=[start, end],
-            range=[0, 1])
+        nodes=[(person, degree) for person, degree in sorted_in_degree
+               if type(person) is Person and person.ego is False]
 
+        add_nodes_to_axis(
+            axis=alter_axis,
+            nodes=nodes,
+            scaler=deg_scale)
+
+        alter_axes[sector] = alter_axis
+        
         start = end + spacer
 
 
@@ -146,25 +172,14 @@ def agency_hiveplot(queryset):
     # populate action axis
     for cat in action_category:
         i = 0.5
-        for action, degree in sorted_in_degree:
-            if type(action) is not Action:
-                continue
+        add_nodes_to_axis(
+            axis=action_axis,
+            nodes=[(action, degree) for action, degree in sorted_in_degree
+                   if type(action) is Action],
+            scaler=deg_scale)
 
-            node = Node(action)
-            action_axis.add_node(node,
-                                 i / len(action_category[cat]))
-            i += 1.0
-            node.dwg = node.dwg.circle(
-                center=(node.x, node.y),
-                r=0.5 * deg_scale.linear(in_degree[action]),
-                fill='navy',
-                fill_opacity=0.5,
-                stroke=random.choice(['grey',
-                                      'green',
-                                      'blue',
-                                      'navy']),
-                stroke_width=0.3)
-
+        
+    # place axes in hiveplot
     h.axes.append(ego_axis)
     h.axes += list(alter_axes.values())
     h.axes.append(action_axis)
