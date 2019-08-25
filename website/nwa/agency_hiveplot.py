@@ -145,8 +145,8 @@ def agency_hiveplot(queryset):
     start = offcenter
     end = 0
     for sector, sec_len in sorted_sec_len:
-        if sector is None:
-            continue
+        # if sector is None:
+        #     continue
 
         nodes = {person: in_degree[person] for person in sectors[sector]
                  if type(person) is Person and person.ego is False}
@@ -159,7 +159,6 @@ def agency_hiveplot(queryset):
 
         alter_axis = Axis(start=start, end=end,
                           angle=angle, stroke="grey")
-
 
         add_nodes_to_axis(
             axis=alter_axis,
@@ -190,12 +189,38 @@ def agency_hiveplot(queryset):
             axis=action_axis,
             axis_len=action_len,
             spacer=spacer)
-
         
     # place axes in hiveplot
     h.axes.append(ego_axis)
     h.axes += list(alter_axes.values())
     h.axes.append(action_axis)
+
+    i = 0
+    j = 0
+    for u in g.edges:
+        (s, t) = u
+        if (type(s) is Person and s.ego is True
+            and
+            type(t) is Person and t.ego is False):
+            for sector, sec_len in sorted_sec_len:
+                if t in alter_axes[sector].nodes:
+                    j += 1
+                    h.connect(ego_axis, s, egos_out_deg[s] ** 1.5,
+                              alter_axes[sector], t, -40,
+                              stroke='black',
+                              stroke_width=1.666,
+                              stroke_opacity=0.33)
+
+        if (type(s) is Person and s.ego is True
+            and
+            type(t) is Action):
+            i += 1
+            h.connect(
+                action_axis, t, i * 7,
+                ego_axis, s, egos_out_deg[s]**1.42,
+                      stroke='black',
+                      stroke_width=1.666,
+                      stroke_opacity=0.33)
 
 
     h.save()
