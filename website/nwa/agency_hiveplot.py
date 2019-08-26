@@ -5,6 +5,7 @@ from pyveplot import Hiveplot, Node, Axis
 import operator
 from .scale import Scale
 import random
+import svgwrite
 
 
 def add_nodes_to_axis(axis, axis_len, spacer, nodes):
@@ -21,10 +22,7 @@ def add_nodes_to_axis(axis, axis_len, spacer, nodes):
             r=k,
             fill='navy',
             fill_opacity=0.5,
-            stroke=random.choice(['grey',
-                                  'green',
-                                  'blue',
-                                  'navy']),
+            stroke='grey',
             stroke_width=0.3)
 
 
@@ -124,24 +122,34 @@ def agency_hiveplot(queryset):
                           i / ego_len)
         i += degree + spacer
 
-        node.dwg = node.dwg.circle(
+        node.dwg.add(
+            node.dwg.circle(
             center=(node.x, node.y),
             r=g.out_degree(ego),
             fill='gold',
             fill_opacity=1.0,
             stroke='firebrick',
-            stroke_width=1.4)
+            stroke_width=1.4))
 
+        gr = svgwrite.container.Group(style='font-size:%s' % (degree * 0.5))
+        gr.add(node.dwg.text(ego.name,
+                             insert=(node.x - degree * 0.7,
+                                     node.y)))
+        node.dwg.add(gr)
+
+        
     # create alter axes
     alter_axes = {}
     start = offcenter
     end = 0
+    sorted_alter_nodes = []
     for sector, sec_len in sorted_sec_len:
 
         nodes = {person: in_degree[person] for person in sectors[sector]
                  if type(person) is Person and person.ego is False}
         sorted_nodes = sorted(nodes.items(), key=operator.itemgetter(1))
-
+        sorted_alter_nodes += [node for node, deg in sorted_nodes]
+        
         axis_len = sum([(degree * 2) + spacer
                         for person, degree in sorted_nodes])
 
@@ -164,7 +172,7 @@ def agency_hiveplot(queryset):
     action_axes = {}
     start = offcenter
     end = 0
-
+    sorted_action_nodes = []
     for category, cat_len in sorted_action_cats:
         nodes = {action: in_degree[action]
                  for action in action_category[category]}
@@ -176,6 +184,8 @@ def agency_hiveplot(queryset):
 
         action_axes[category] = Axis(start=start, end=end,
                                      angle=angle + 120, stroke="darkgreen")
+
+        sorted_action_nodes += [node for node, degree in sorted_nodes]
 
         # populate action axis with nodes
         add_nodes_to_axis(
@@ -218,8 +228,8 @@ def agency_hiveplot(queryset):
                 if t in action_axes[category].nodes:
                     i += 1
                     h.connect(
-                        action_axes[category], t, i,
-                        ego_axis, s, egos_out_deg[s]**1.2,
+                        action_axes[category], t, sorted_action_nodes.index(t) ** 1.4,
+                        ego_axis, s, egos_out_deg[s] ** 1.25,
                         stroke='black',
                         stroke_width=1.666,
                         stroke_opacity=0.33)
@@ -233,8 +243,8 @@ def agency_hiveplot(queryset):
                     for category, cat_len in sorted_action_cats:
                         if t in action_axes[category].nodes:
                             j += 1
-                            h.connect(alter_axes[sector], s, j ** 1.2,
-                                      action_axes[category], t, -j**1.02,
+                            h.connect(alter_axes[sector], s, sorted_alter_nodes.index(s) * 1.25,
+                                      action_axes[category], t, sorted_action_nodes.index(t) ** 1.4,
                                       stroke='navy',
                                       stroke_width=1.666,
                                       stroke_opacity=0.33)
