@@ -114,7 +114,7 @@ def agency_hiveplot(queryset):
     ego_len = sum([(degree * 2) + spacer
                    for ego, degree in sorted_egos_out_deg])
     ego_axis = Axis(start=offcenter, end=ego_len,
-                    angle=angle - 120, stroke="firebrick")
+                    angle=angle - 120, stroke="firebrick", stroke_width=1.4)
 
     i = 0.5 * sorted_egos_out_deg[0][1]
 
@@ -129,13 +129,10 @@ def agency_hiveplot(queryset):
         node.dwg = node.dwg.circle(
             center=(node.x, node.y),
             r=g.out_degree(ego),
-            fill='orange',
-            fill_opacity=0.5,
-            stroke=random.choice(['red',
-                                  'crimson',
-                                  'coral',
-                                  'purple']),
-            stroke_width=0.3)
+            fill='gold',
+            fill_opacity=1.0,
+            stroke='firebrick',
+            stroke_width=1.4)
 
 
 
@@ -204,7 +201,6 @@ def agency_hiveplot(queryset):
             type(t) is Person and t.ego is False):
             for sector, sec_len in sorted_sec_len:
                 if t in alter_axes[sector].nodes:
-                    j += 1
                     h.connect(ego_axis, s, egos_out_deg[s] ** 1.5,
                               alter_axes[sector], t, -40,
                               stroke='black',
@@ -223,5 +219,18 @@ def agency_hiveplot(queryset):
                       stroke_opacity=0.33)
 
 
+        if (type(s) is Person and s.ego is False
+            and
+            type(t) is Action):
+            for sector, sec_len in sorted_sec_len:
+                if s in alter_axes[sector].nodes:
+                    j += 1
+                    h.connect(alter_axes[sector], s, j ** 1.2,
+                              action_axis, t, -j**1.2,
+                              stroke='navy',
+                              stroke_width=1.666,
+                              stroke_opacity=0.33)
+            
+            
     h.save()
     return g
