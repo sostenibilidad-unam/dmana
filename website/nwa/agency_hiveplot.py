@@ -148,6 +148,10 @@ def agency_hiveplot(queryset):
         nodes = {person: in_degree[person] for person in sectors[sector]
                  if type(person) is Person and person.ego is False}
         sorted_nodes = sorted(nodes.items(), key=operator.itemgetter(1))
+
+        if not sorted_nodes:
+            continue
+        
         sorted_alter_nodes += [node for node, deg in sorted_nodes]
         
         axis_len = sum([(degree * 2) + spacer
@@ -177,7 +181,9 @@ def agency_hiveplot(queryset):
         nodes = {action: in_degree[action]
                  for action in action_category[category]}
         sorted_nodes = sorted(nodes.items(), key=operator.itemgetter(1))
-
+        if not sorted_nodes:
+            continue
+        
         axis_len = sum([(degree * 2) + spacer
                         for action, degree in sorted_nodes])
         end = start + axis_len
@@ -201,6 +207,7 @@ def agency_hiveplot(queryset):
     h.axes += list(alter_axes.values())
     h.axes += list(action_axes.values())
 
+    pprint(alter_axes)
     #################
     # connect edges #
     #################
@@ -213,7 +220,7 @@ def agency_hiveplot(queryset):
                 and
                 type(t) is Person and t.ego is False):
             for sector, sec_len in sorted_sec_len:
-                if t in alter_axes[sector].nodes:
+                if sector in alter_axes and t in alter_axes[sector].nodes:
                     h.connect(ego_axis, s, egos_out_deg[s] ** 1.5,
                               alter_axes[sector], t, -40,
                               stroke='black',
@@ -239,7 +246,7 @@ def agency_hiveplot(queryset):
                 and
                 type(t) is Action):
             for sector, sec_len in sorted_sec_len:
-                if s in alter_axes[sector].nodes:
+                if sector in alter_axes and s in alter_axes[sector].nodes:
                     for category, cat_len in sorted_action_cats:
                         if t in action_axes[category].nodes:
                             j += 1
