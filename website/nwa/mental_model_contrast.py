@@ -18,7 +18,7 @@ def networks_from_qs(queryset):
 
     networks = []
     for k in edges:
-        g = nx.Graph()
+        g = nx.DiGraph()
         g.add_edges_from(edges[k])
         networks.append(g)
 
@@ -39,6 +39,9 @@ def graph_contrast_heatmap(G, H):
     h = nx.to_pandas_adjacency(H, nodelist=nodelist)
 
     a = g - h
+
+    a = a.loc[(a != 0).any(1)]
+    a = a.loc[:, (a != 0).any(axis=0)]
 
     seaborn.palplot(seaborn.diverging_palette(220, 20, n=3, center='light'))
 
