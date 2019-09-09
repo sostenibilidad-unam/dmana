@@ -1,4 +1,6 @@
 from .networks import mental_model
+from .mental_model_contrast import networks_from_qs, graph_contrast_heatmap
+from pprint import pprint
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.conf import settings
@@ -7,6 +9,21 @@ import networkx as nx
 import uuid
 import matplotlib.pyplot as plt
 from os import path
+
+
+def contrast_heatmaps(modeladmin, request, queryset):
+    g, h = networks_from_qs(queryset)
+    pprint(graph_contrast_heatmap(g, h))
+    # response = HttpResponse(A.string(),
+    #                         content_type="text/dot")
+    # response[
+    #     'Content-Disposition'] = 'attachment; filename="cognitive_map.dot"'
+    # return response
+
+
+contrast_heatmaps.\
+    short_description = "Difference of adjacency \
+    matrices. Choose different projects or different egos."
 
 
 def download_as_graphml(modeladmin, request, queryset):

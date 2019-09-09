@@ -253,7 +253,7 @@ class AgencyEdgelistInline(JustMine, admin.TabularInline):
 class ActionAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['action', ]
     list_display = ['action', 'category', ]
-    inlines = [AgencyEdgelistInline, ]
+#    inlines = [AgencyEdgelistInline, ]
     list_filter = (
         ('category', admin.RelatedOnlyFieldListFilter), )
 
@@ -266,11 +266,13 @@ class MentalEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
     list_filter = (
         ('project', admin.RelatedOnlyFieldListFilter), )
 
-    actions = [mmxn.download_as_graphml,
-               mmxn.download_as_dot,
-               mmxn.download_as_pdf,
-               mmxn.create_visjs,
-               delete_selection,               
+    actions = [
+        mmxn.contrast_heatmaps,
+        mmxn.download_as_graphml,
+        mmxn.download_as_dot,
+        mmxn.download_as_pdf,
+        mmxn.create_visjs,
+        delete_selection,
     ]
 
     autocomplete_fields = ['source', 'target', 'person', ]
@@ -295,7 +297,7 @@ class PowerEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         pexn.download_as_graphml,
         pexn.download_as_pdf,
         pexn.download_as_dot,
-        delete_selection,        
+        delete_selection,
     ]
 
 
@@ -305,7 +307,8 @@ class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
     list_display = ['id', 'person', 'action', 'project', ]
 
     list_filter = (
-        ('project', admin.RelatedOnlyFieldListFilter), )
+        ('project', admin.RelatedOnlyFieldListFilter),
+        ('action__category', admin.RelatedOnlyFieldListFilter))
 
     advanced_filter_fields = (
         'person__name',
@@ -326,5 +329,5 @@ class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
                aexn.download_orgs2cats_as_pdf,
                aexn.create_visjs,
                aexn.create_agency_hiveplot,
-               delete_selection               
+               delete_selection
     ]
