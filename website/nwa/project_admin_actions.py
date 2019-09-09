@@ -1,8 +1,3 @@
-import tempfile
-from .networks import social_agraph, social_network
-from .models import Sector
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
 from .models import SocialEdge, AgencyEdge, PowerEdge, MentalEdge, Project
 
 
@@ -19,7 +14,6 @@ def duplicate_project(self, request, queryset):
                 edge.pk = None
                 edge.project = duproject
                 edge.save()
-
 
         for edge in AgencyEdge.objects.filter(project=p, author=request.user):
             people = list(edge.people.all())
