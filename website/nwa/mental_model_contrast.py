@@ -25,6 +25,11 @@ def networks_from_qs(queryset):
 
 
 def graph_contrast_heatmap(G, H):
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    # same network, return empty plot
+    if G.edges == H.edges:
+        return plt
 
     # grab set of nodes from all graphs
     nodelist = set()
@@ -41,19 +46,18 @@ def graph_contrast_heatmap(G, H):
     a = a.loc[(a != 0).any(1)]
     a = a.loc[:, (a != 0).any(axis=0)]
 
-    fig, ax = plt.subplots(figsize=(10, 10))
+    print(a.index, a.columns)
 
     ax = seaborn.heatmap(a,
                          cbar=False,
-                         center=0,
                          square=True,
                          linewidths=1.5,
-                         cmap=['red', 'white', 'green'])
+                         cmap=['#B84014', 'white', '#448D76'])
 
-    ax.set_xticklabels(labels=nodelist, rotation=45,
+    ax.set_xticklabels(labels=list(a.columns), rotation=45,
                        rotation_mode="anchor", ha="right", fontsize=7)
 
-    ax.set_yticklabels(labels=nodelist, fontsize=7)
+    ax.set_yticklabels(labels=list(a.index), fontsize=7)
 
     fig.tight_layout()
 
