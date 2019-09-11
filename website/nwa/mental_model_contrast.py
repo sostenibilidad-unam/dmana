@@ -1,6 +1,5 @@
 import matplotlib
 matplotlib.use('Agg')
-
 import matplotlib.pyplot as plt
 import seaborn
 import networkx as nx
@@ -16,11 +15,11 @@ def networks_from_qs(queryset):
         el.append((edge.source, edge.target))
         edges[(edge.person, edge.project)] = el
 
-    networks = []
+    networks = {}
     for k in edges:
         g = nx.DiGraph()
         g.add_edges_from(edges[k])
-        networks.append(g)
+        networks[k] = g
 
     return networks
 
@@ -28,10 +27,8 @@ def networks_from_qs(queryset):
 def graph_contrast_heatmap(G, H):
 
     # grab set of nodes from all graphs
-    networks = [G, H, ]
-
     nodelist = set()
-    for g in networks:
+    for g in [G, H, ]:
         for node in g.nodes:
             nodelist.add(node)
 
@@ -40,23 +37,11 @@ def graph_contrast_heatmap(G, H):
 
     a = g - h
 
+    # drop zeros from resulting dataframe
     a = a.loc[(a != 0).any(1)]
     a = a.loc[:, (a != 0).any(axis=0)]
 
-    seaborn.palplot(seaborn.diverging_palette(220, 20, n=3, center='light'))
-
     fig, ax = plt.subplots(figsize=(10, 10))
-    # im = ax.imshow(a)
-
-    # ax.set_xticks(range(len(nodelist)))
-    # ax.set_yticks(range(len(nodelist)))
-
-    # ax.set_xticklabels(nodelist)
-    # ax.set_yticklabels(nodelist)
-
-    # plt.setp(ax.get_yticklabels(), fontsize=8)
-    # plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
-    #          rotation_mode="anchor", fontsize=8)
 
     ax = seaborn.heatmap(a,
                          cbar=False,
@@ -69,8 +54,7 @@ def graph_contrast_heatmap(G, H):
                        rotation_mode="anchor", ha="right", fontsize=7)
 
     ax.set_yticklabels(labels=nodelist, fontsize=7)
-#    xlab.set_rotation(45)
 
     fig.tight_layout()
 
-    plt.savefig('/tmp/aguas.png')
+    return plt

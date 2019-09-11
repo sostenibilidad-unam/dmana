@@ -8,17 +8,42 @@ from django.template.loader import render_to_string
 import networkx as nx
 import uuid
 import matplotlib.pyplot as plt
-from os import path
+from os import path, mkdir
+from itertools import combinations
+from django.utils.text import slugify
 
 
 def contrast_heatmaps(modeladmin, request, queryset):
-    g, h = networks_from_qs(queryset)
-    pprint(graph_contrast_heatmap(g, h))
-    # response = HttpResponse(A.string(),
-    #                         content_type="text/dot")
-    # response[
-    #     'Content-Disposition'] = 'attachment; filename="cognitive_map.dot"'
-    # return response
+    export_id = str(uuid.uuid4())
+    networks = networks_from_qs(queryset)
+
+    outdir = path.join(settings.EXPORT, export_id)
+    mkdir(outdir)
+
+    with open(path.join(outdir, 'index.html'), 'w') as index:
+        plots = {}
+        for pair in combinations(networks, 2):
+
+            g = networks[pair[0]]
+            h = networks[pair[1]]
+            plt = graph_contrast_heatmap(g, h)
+            filename = "%s.png" % slugify(pair)
+            plt.savefig(path.join(outdir, filename),
+                        dpi=300)
+            title = "%s %s vs. %s %s" % (pair[0][0],
+                                         pair[0][1],
+                                         pair[1][0],
+                                         pair[1][1])
+            plots[title] = (settings.STATIC_URL
+                            + 'networks/'
+                            + export_id + "/"
+                            + filename)
+
+        index.write(render_to_string('nwa/mm_contrast_heatmaps.html',
+                                     {'plots': plots}))
+
+    return HttpResponseRedirect(settings.STATIC_URL
+                                + 'networks/' + export_id + "/index.html")
 
 
 contrast_heatmaps.\
