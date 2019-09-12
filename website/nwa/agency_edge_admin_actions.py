@@ -209,7 +209,11 @@ create_visjs.\
 
 
 def create_agency_hiveplot(modeladmin, request, queryset):
-    agency_hiveplot(queryset)
+    filename = agency_hiveplot(queryset)
+    return HttpResponseRedirect(settings.STATIC_URL
+                                + 'networks/' + filename)
+
+    
 
 
 create_agency_hiveplot.\

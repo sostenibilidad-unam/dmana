@@ -6,17 +6,29 @@ import operator
 from .scale import Scale
 import random
 import svgwrite
+import uuid
+from django.conf import settings
+from os import path
+from django.http import HttpResponseRedirect
+
 
 ##########################
 # create hiveplot object #
 ##########################
-h = Hiveplot('agency_hive.svg')
-offcenter = 10
+export_id = uuid.uuid4()
+filename = '%s_hiveplot.svg' % export_id
+
+Hi = Hiveplot(path.join(settings.EXPORT,
+                          filename))
+
+offcenter = 50
 spacer = 4
 angle = 0
 
 
 def add_nodes_to_axis(axis, axis_len, spacer, nodes):
+
+
     i = 0.5 * nodes[0][1]
     for v, k in nodes:
         i += k
@@ -24,15 +36,28 @@ def add_nodes_to_axis(axis, axis_len, spacer, nodes):
         axis.add_node(node,
                       i / axis_len)
         i += k + spacer
-        gr = svgwrite.container.Group()
-        gr.add(h.dwg.circle(
+        node.g.add(Hi.dwg.circle(
             center=(node.x, node.y),
             r=k,
             fill='navy',
             fill_opacity=0.5,
             stroke='grey',
             stroke_width=0.3))
-        node.dwg.add(gr)
+
+        #   <text x="50%" y="50%" text-anchor="middle" stroke="#51c5cf" stroke-width="2px" dy=".3em">Look, I’m centered!Look, I’m centered!</text>
+        if axis.angle > 90:
+            text_angle = axis.angle - 90
+        else:
+            text_angle = axis.angle + 90
+        node.g.add(Hi.dwg.text(v.label,
+                               text_anchor="middle",
+                               stroke="#51c5cf",
+                               stroke_width="0.01em",
+                               transform="translate(%s, %s) scale(0.3) rotate(%s)" % (node.x,
+                                                                                      node.y,
+                                                                                      text_angle)))
+
+
 
 
 def agency_hiveplot(queryset):
@@ -67,6 +92,7 @@ def agency_hiveplot(queryset):
                                     for p in e.people.all()]))
 
         # populate action categories dict
+        e.action.label = e.action.action
         if e.action.category in action_category:
             action_category[e.action.category].add(e.action)
         else:
@@ -74,13 +100,14 @@ def agency_hiveplot(queryset):
 
         # populate sectors dict from people in edge
         for p in e.people.all():
-
+            p.label = p.name
             if p.sector in sectors:
                 sectors[p.sector].add(p)
             else:
                 sectors[p.sector] = set([p, ])
 
         # add egos to sectors dict
+        e.person.label = e.person.name
         if e.person.sector in sectors:
             sectors[e.person.sector].add(e.person)
         else:
@@ -89,13 +116,6 @@ def agency_hiveplot(queryset):
     # create in-degrees dict
     in_degree = {v: g.in_degree(v) for v in g.nodes}
 
-    # sorted ego list
-    egos_out_deg = {v: g.out_degree(v)
-                    for v in g.nodes
-                    if g.nodes[v]['type'] == 'person'
-                    and g.nodes[v]['ego'] is True}
-    sorted_egos_out_deg = sorted(egos_out_deg.items(),
-                                 key=operator.itemgetter(1))
     # sort categories by length
     action_cats_len = {cat: len(action_category[cat])
                        for cat in action_category}
@@ -108,36 +128,28 @@ def agency_hiveplot(queryset):
     sorted_sec_len = sorted(sec_len.items(), key=operator.itemgetter(1))
 
 
+    # sorted ego list
+    egos_out_deg = {v: g.out_degree(v)
+                    for v in g.nodes
+                    if g.nodes[v]['type'] == 'person'
+                    and g.nodes[v]['ego'] is True}
+    sorted_egos_out_deg = sorted(egos_out_deg.items(),
+                                 key=operator.itemgetter(1))
+
     # create ego axis
     ego_len = sum([(degree * 2) + spacer
                    for ego, degree in sorted_egos_out_deg])
+
     ego_axis = Axis(start=offcenter, end=ego_len,
-                    angle=angle - 120, stroke="firebrick", stroke_width=1.4)
+                    angle=angle - 120, stroke="firebrick", stroke_width=1, dwg=Hi.dwg)
 
     i = 0.5 * sorted_egos_out_deg[0][1]
 
-    for ego, degree in sorted_egos_out_deg:
-        i += degree
-
-        node = Node(ego)
-        ego_axis.add_node(node,
-                          i / ego_len)
-        i += degree + spacer
-
-        gr = svgwrite.container.Group(style='font-size:%s' % (degree * 0.5))
-        gr.add(
-            h.dwg.circle(
-            center=(node.x, node.y),
-            r=g.out_degree(ego),
-            fill='gold',
-            fill_opacity=1.0,
-            stroke='firebrick',
-            stroke_width=1.4))
-
-        gr.add(node.dwg.text(ego.name,
-                             insert=(node.x - degree * 0.7,
-                                     node.y)))
-        node.dwg.add(gr)
+    add_nodes_to_axis(
+        axis=ego_axis,
+        axis_len=ego_len,
+        spacer=spacer,
+        nodes=sorted_egos_out_deg)
 
 
     # create alter axes
@@ -162,7 +174,7 @@ def agency_hiveplot(queryset):
         end = start + axis_len
 
         alter_axis = Axis(start=start, end=end,
-                          angle=angle, stroke="grey")
+                          angle=angle, stroke="grey", dwg=Hi.dwg)
 
         add_nodes_to_axis(
             axis=alter_axis,
@@ -191,7 +203,7 @@ def agency_hiveplot(queryset):
         end = start + axis_len
 
         action_axes[category] = Axis(start=start, end=end,
-                                     angle=angle + 120, stroke="darkgreen")
+                                     angle=angle + 120, stroke="darkgreen", dwg=Hi.dwg)
 
         sorted_action_nodes += [node for node, degree in sorted_nodes]
 
@@ -205,9 +217,9 @@ def agency_hiveplot(queryset):
         start = end + (spacer * 4)
 
     # place axes in hiveplot
-    h.axes.append(ego_axis)
-    h.axes += list(alter_axes.values())
-    h.axes += list(action_axes.values())
+    Hi.axes.append(ego_axis)
+    Hi.axes += list(alter_axes.values())
+    Hi.axes += list(action_axes.values())
 
     #################
     # connect edges #
@@ -222,7 +234,7 @@ def agency_hiveplot(queryset):
                 type(t) is Person and t.ego is False):
             for sector, sec_len in sorted_sec_len:
                 if sector in alter_axes and t in alter_axes[sector].nodes:
-                    h.connect(ego_axis, s, egos_out_deg[s] ** 1.5,
+                    Hi.connect(ego_axis, s, egos_out_deg[s] ** 1.5,
                               alter_axes[sector], t, -40,
                               stroke='black',
                               stroke_width=1.666,
@@ -235,7 +247,7 @@ def agency_hiveplot(queryset):
             for category, cat_len in sorted_action_cats:
                 if t in action_axes[category].nodes:
                     i += 1
-                    h.connect(
+                    Hi.connect(
                         action_axes[category], t, sorted_action_nodes.index(t) ** 1.4,
                         ego_axis, s, egos_out_deg[s] ** 1.25,
                         stroke='black',
@@ -251,11 +263,11 @@ def agency_hiveplot(queryset):
                     for category, cat_len in sorted_action_cats:
                         if t in action_axes[category].nodes:
                             j += 1
-                            h.connect(alter_axes[sector], s, sorted_alter_nodes.index(s) * 1.25,
+                            Hi.connect(alter_axes[sector], s, sorted_alter_nodes.index(s) * 1.25,
                                       action_axes[category], t, sorted_action_nodes.index(t) ** 1.4,
                                       stroke='navy',
                                       stroke_width=1.666,
                                       stroke_opacity=0.33)
 
-    h.save()
-    return g
+    Hi.save()
+    return filename
