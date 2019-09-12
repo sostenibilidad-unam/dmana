@@ -1,4 +1,6 @@
 from .networks import mental_model
+from .mental_model_contrast import networks_from_qs, graph_contrast_heatmap
+from pprint import pprint
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.conf import settings
@@ -6,7 +8,47 @@ from django.template.loader import render_to_string
 import networkx as nx
 import uuid
 import matplotlib.pyplot as plt
-from os import path
+from os import path, mkdir
+from itertools import combinations
+from django.utils.text import slugify
+
+
+def contrast_heatmaps(modeladmin, request, queryset):
+    export_id = str(uuid.uuid4())
+    networks = networks_from_qs(queryset)
+
+    outdir = path.join(settings.EXPORT, export_id)
+    mkdir(outdir)
+
+    with open(path.join(outdir, 'index.html'), 'w') as index:
+        plots = {}
+        for pair in combinations(networks, 2):
+
+            g = networks[pair[0]]
+            h = networks[pair[1]]
+            plt = graph_contrast_heatmap(g, h)
+            filename = "%s.png" % slugify(pair)
+            plt.savefig(path.join(outdir, filename),
+                        dpi=300)
+            title = "%s %s vs. %s %s" % (pair[0][0],
+                                         pair[0][1],
+                                         pair[1][0],
+                                         pair[1][1])
+            plots[title] = (settings.STATIC_URL
+                            + 'networks/'
+                            + export_id + "/"
+                            + filename)
+
+        index.write(render_to_string('nwa/mm_contrast_heatmaps.html',
+                                     {'plots': plots}))
+
+    return HttpResponseRedirect(settings.STATIC_URL
+                                + 'networks/' + export_id + "/index.html")
+
+
+contrast_heatmaps.\
+    short_description = "Difference of adjacency \
+    matrices. Choose different projects or different egos."
 
 
 def download_as_graphml(modeladmin, request, queryset):
