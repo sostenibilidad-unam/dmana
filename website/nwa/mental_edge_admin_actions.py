@@ -1,6 +1,6 @@
 from .networks import mental_model
+import tempfile
 from .mental_model_contrast import networks_from_qs, graph_contrast_heatmap
-from pprint import pprint
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.conf import settings
@@ -101,6 +101,22 @@ def download_as_pdf(modeladmin, request, queryset):
 
 download_as_pdf.\
     short_description = "Download as PDF"
+
+
+def download_as_pajek(modeladmin, request, queryset):
+    with tempfile.SpooledTemporaryFile() as tmp:
+        g = mental_model(queryset)
+        nx.write_pajek(g, tmp)
+        tmp.seek(0)
+        response = HttpResponse(tmp.read(),
+                                content_type="text/net")
+        response['Content-Disposition'] \
+            = 'attachment; filename="mental_model.net"'
+        return response
+
+
+download_as_pajek.\
+    short_description = "Download Pajek format"
 
 
 def create_visjs(modeladmin, request, queryset):

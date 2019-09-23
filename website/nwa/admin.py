@@ -270,6 +270,7 @@ class MentalEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         mmxn.contrast_heatmaps,
         mmxn.download_as_graphml,
         mmxn.download_as_dot,
+        mmxn.download_as_pajek,
         mmxn.download_as_pdf,
         mmxn.create_visjs,
         delete_selection,
