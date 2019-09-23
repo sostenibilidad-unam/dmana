@@ -1,7 +1,7 @@
 from .networks import power_network, power_agraph
+import tempfile
 from django.http import HttpResponse
 import networkx as nx
-import tempfile
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -31,6 +31,22 @@ def download_as_dot(modeladmin, request, queryset):
 
 download_as_dot.\
     short_description = "Download DOT format for Graphviz"
+
+
+def download_as_pajek(modeladmin, request, queryset):
+    with tempfile.SpooledTemporaryFile() as tmp:
+        g = power_network(queryset)
+        nx.write_pajek(g, tmp)
+        tmp.seek(0)
+        response = HttpResponse(tmp.read(),
+                                content_type="text/net")
+        response['Content-Disposition'] \
+            = 'attachment; filename="power_network.net"'
+        return response
+
+
+download_as_pajek.\
+    short_description = "Download Pajek format"
 
 
 def download_as_pdf(modeladmin, request, queryset):

@@ -41,6 +41,23 @@ download_as_dot.\
     short_description = "Download DOT format for Graphviz"
 
 
+def download_as_pajek(modeladmin, request, queryset):
+    with tempfile.SpooledTemporaryFile() as tmp:
+        g = social_network(queryset)
+        nx.write_pajek(g, tmp)
+        tmp.seek(0)
+        response = HttpResponse(tmp.read(),
+                                content_type="text/net")
+        response['Content-Disposition'] \
+            = 'attachment; filename="social_network.net"'
+        return response
+
+
+download_as_pajek.\
+    short_description = "Download Pajek format"
+
+
+
 def download_as_pdf(modeladmin, request, queryset):
     with tempfile.SpooledTemporaryFile() as tmp:
         G = social_agraph(queryset)

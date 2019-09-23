@@ -179,6 +179,7 @@ class SocialEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
 
     actions = [sexn.download_as_graphml,
                sexn.download_as_dot,
+               sexn.download_as_pajek,
                sexn.download_as_pdf,
                sexn.create_visjs,
                delete_selection
@@ -298,6 +299,7 @@ class PowerEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         pexn.download_as_graphml,
         pexn.download_as_pdf,
         pexn.download_as_dot,
+        pexn.download_as_pajek,
         delete_selection,
     ]
 
