@@ -42,6 +42,22 @@ download_as_dot.\
     short_description = "Download DOT format for Graphviz"
 
 
+def download_as_pajek(modeladmin, request, queryset):
+    with tempfile.SpooledTemporaryFile() as tmp:
+        G = agency_network(queryset)
+        nx.write_pajek(G, tmp)
+        tmp.seek(0)
+        response = HttpResponse(tmp.read(),
+                                content_type="text/net")
+        response['Content-Disposition'] \
+            = 'attachment; filename="agency_network.net"'
+        return response
+
+
+download_as_pajek.\
+    short_description = "Download Pajek format"
+
+
 def download_as_pdf(modeladmin, request, queryset):
     with tempfile.SpooledTemporaryFile() as tmp:
         G = agency_agraph(queryset)
@@ -213,7 +229,7 @@ def create_agency_hiveplot(modeladmin, request, queryset):
     return HttpResponseRedirect(settings.STATIC_URL
                                 + 'networks/' + filename)
 
-    
+
 
 
 create_agency_hiveplot.\
