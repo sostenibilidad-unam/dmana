@@ -104,7 +104,6 @@ class AgencyHiveplot:
             axis = Axis(start=20, angle=90 + 120 + 120,
                         stroke=random.choice(c), stroke_width=1.1)
             for v in self.g.nodes:  # sort 'em
-                print(str(cat))
                 if (self.g.node[v]['type'] == 'action' and self.g.node[v]['category'] == str(cat)):
                     self.add_node_to_axis(v, axis, circle_color='firebrick')  # sector colors
             self.h.axes.append(axis)
@@ -112,7 +111,6 @@ class AgencyHiveplot:
 
     def save(self):
         export_id = uuid.uuid4()
-        print("aguas")
         self.filename = '%s_hiveplot.svg' % export_id
         self.h.save(path.join(settings.EXPORT,
                               self.filename))
