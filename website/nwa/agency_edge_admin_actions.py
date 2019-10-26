@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 import networkx as nx
 import uuid
 import matplotlib.pyplot as plt
-from .agency_hiveplot import agency_hiveplot
+from .agency_hiveplot import AgencyHiveplot
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -225,12 +225,13 @@ create_visjs.\
 
 
 def create_agency_hiveplot(modeladmin, request, queryset):
-    filename = agency_hiveplot(queryset)
+    ah = AgencyHiveplot(queryset)
+    ah.add_ego_axis()
+    ah.add_sector_axes()
+    ah.add_actioncat_axes()
+    ah.save()
     return HttpResponseRedirect(settings.STATIC_URL
-                                + 'networks/' + filename)
-
-
-
+                                + 'networks/' + ah.filename)
 
 create_agency_hiveplot.\
     short_description = "create agency hiveplot"
