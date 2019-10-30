@@ -6,6 +6,8 @@ import random
 import uuid
 from django.conf import settings
 from os import path
+from pprint import pprint
+from itertools import combinations
 
 c = ['#e41a1c', '#377eb8', '#4daf4a',
      '#984ea3', '#ff7f00', '#ffff33',
@@ -44,12 +46,18 @@ class AgencyHiveplot:
                                              for p in e.people.all()]))
         self.g = g
 
+        # sort nodes by degree
+        self.k = list(nx.degree(g))
+        self.k.sort(key=lambda tup: tup[1])
+
         self.h = Hiveplot('tmp')
+        self.actions = []
+        self.people = []
 
     def add_node_to_axis(self, v, axis, circle_color, fill_opacity=0.7):
         # create node object
         node = Node(radius=self.g.degree(v),
-                    label="node %s k=%s" % (v, self.g.degree(v)))
+                    label="")
         # add it to axis
         axis.add_node(v, node)
         # once it has x, y coordinates, add a circle
@@ -64,25 +72,28 @@ class AgencyHiveplot:
             orientation = 1
             scale = 0.35
         # also add a label
-        node.add_label("%s k=%s" % (v, self.g.degree(v)),
-                       angle=axis.angle + 90 * orientation,
-                       scale=scale)
+        if self.g.degree(v) > 2:
+            node.add_label("%s k=%s" % (v, self.g.degree(v)),
+                           angle=axis.angle + 90 * orientation,
+                           scale=scale)
 
     def add_ego_axis(self):
         axis = Axis(start=40, angle=90,
                     stroke=random.choice(c), stroke_width=1.1)
-        for v in self.g.nodes:  # sort 'em
+        for v in self.k:
+            v = v[0]
             if ('ego' in self.g.node[v] and self.g.node[v]['ego'] is True):
                 self.add_node_to_axis(v, axis, 'blue')  # sector colors
         self.h.axes.append(axis)
 
     def add_sector_axes(self):
-        end = 20
+        end = 40
         for sector in Sector.objects.all():
             axis = Axis(start=end, angle=90 + 120,
                         stroke=random.choice(c), stroke_width=1.1)
 
-            for v in self.g.nodes:  # sort 'em
+            for v in self.k:
+                v = v[0]
                 if ('ego' in self.g.node[v] and self.g.node[v]['ego'] is False
                         and self.g.node[v]['sector'] == str(sector)):
                     self.add_node_to_axis(v, axis,
@@ -92,13 +103,15 @@ class AgencyHiveplot:
             if axis.length() > 0:
                 end = axis.end + 30
             self.h.axes.append(axis)
+            self.people.append(axis)
 
     def add_actioncat_axes(self):
-        end = 20
+        end = 40
         for cat in Category.objects.all():
             axis = Axis(start=end, angle=90 + 120 + 120,
                         stroke=random.choice(c), stroke_width=1.1)
-            for v in self.g.nodes:  # sort 'em
+            for v in self.k:
+                v = v[0]
                 if (self.g.node[v]['type'] == 'action'
                     and
                    self.g.node[v]['category'] == str(cat)):
@@ -109,6 +122,39 @@ class AgencyHiveplot:
             if axis.length() > 0:
                 end = axis.end + 30
             self.h.axes.append(axis)
+            self.actions.append(axis)
+
+    def connect_axes(self):
+        for axis in self.actions:
+            n = self.h.axes.index(axis)
+            curve_color = random.choice(c)
+            self.h.connect_axes(self.h.axes[n],
+                                self.h.axes[0],
+                                self.g.edges,
+                                stroke_width=0.5,
+                                stroke=curve_color)
+
+        for axis in self.people:
+            n = self.h.axes.index(axis)
+            curve_color = random.choice(c)
+            self.h.connect_axes(self.h.axes[0],
+                                self.h.axes[n],
+                                self.g.edges,
+                                stroke_width=0.5,
+                                stroke=curve_color)
+
+        for p in self.people:
+            n = self.h.axes.index(p)
+            for a in self.actions:
+                m = self.h.axes.index(a)
+                curve_color = random.choice(c)
+                self.h.connect_axes(self.h.axes[n],
+                                    self.h.axes[m],
+                                    self.g.edges,
+                                    stroke_width=0.5,
+                                    stroke=curve_color)
+
+
 
     def save(self):
         export_id = uuid.uuid4()

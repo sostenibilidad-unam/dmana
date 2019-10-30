@@ -229,6 +229,7 @@ def create_agency_hiveplot(modeladmin, request, queryset):
     ah.add_ego_axis()
     ah.add_sector_axes()
     ah.add_actioncat_axes()
+    ah.connect_axes()
     ah.save()
     return HttpResponseRedirect(settings.STATIC_URL
                                 + 'networks/' + ah.filename)
