@@ -1,20 +1,15 @@
-from .models import Person, AgencyEdge, Action, Sector, Category
+from .models import Sector, Category
 import networkx as nx
-from pprint import pprint
 from pyveplot import Hiveplot, Node, Axis
-import operator
 from .scale import Scale
 import random
-import svgwrite
 import uuid
 from django.conf import settings
 from os import path
-from django.http import HttpResponseRedirect
 
 c = ['#e41a1c', '#377eb8', '#4daf4a',
      '#984ea3', '#ff7f00', '#ffff33',
-     '#a65628', '#f781bf', '#999999',]
-
+     '#a65628', '#f781bf', '#999999', ]
 
 
 class AgencyHiveplot:
@@ -23,14 +18,11 @@ class AgencyHiveplot:
 
         g = nx.DiGraph()
 
-        sectors = {}
-        action_category = {}
-
         for e in queryset:
             # create NX graph
             g.add_node(e.person, type='person',
                        sector=str(e.person.sector),
-                           ego=e.person.ego)
+                       ego=e.person.ego)
 
             g.add_node(e.action, type='action',
                        category=str(e.action.category))
@@ -38,7 +30,7 @@ class AgencyHiveplot:
             for p in e.people.all():
                 g.add_node(p, type='person',
                            sector=str(p.sector),
-                               ego=p.ego)
+                           ego=p.ego)
                 # ego to alter
                 g.add_edge(e.person,
                            p)
@@ -54,8 +46,6 @@ class AgencyHiveplot:
 
         self.h = Hiveplot('tmp')
 
-
-        
     def add_node_to_axis(self, v, axis, circle_color, fill_opacity=0.7):
         # create node object
         node = Node(radius=self.g.degree(v),
@@ -78,43 +68,48 @@ class AgencyHiveplot:
                        angle=axis.angle + 90 * orientation,
                        scale=scale)
 
-
     def add_ego_axis(self):
-        axis = Axis(start=20, angle=90,
+        axis = Axis(start=40, angle=90,
                     stroke=random.choice(c), stroke_width=1.1)
         for v in self.g.nodes:  # sort 'em
             if ('ego' in self.g.node[v] and self.g.node[v]['ego'] is True):
                 self.add_node_to_axis(v, axis, 'blue')  # sector colors
         self.h.axes.append(axis)
 
-        
     def add_sector_axes(self):
+        end = 20
         for sector in Sector.objects.all():
-            axis = Axis(start=20, angle=90 + 120,
+            axis = Axis(start=end, angle=90 + 120,
                         stroke=random.choice(c), stroke_width=1.1)
-            for v in self.g.nodes:  # sort 'em
-                if ('ego' in self.g.node[v] and self.g.node[v]['ego'] == False
-                        and self.g.node[v]['sector'] == str(sector)):
-                    self.add_node_to_axis(v, axis, circle_color='purple')  # sector colors
-            self.h.axes.append(axis)
 
+            for v in self.g.nodes:  # sort 'em
+                if ('ego' in self.g.node[v] and self.g.node[v]['ego'] is False
+                        and self.g.node[v]['sector'] == str(sector)):
+                    self.add_node_to_axis(v, axis,
+                                          circle_color='purple')  # sector colors
+
+            axis.auto_place_nodes()
+            end = axis.end + 30
+            self.h.axes.append(axis)
 
     def add_actioncat_axes(self):
+        end = 20
         for cat in Category.objects.all():
-            axis = Axis(start=20, angle=90 + 120 + 120,
+            axis = Axis(start=end, angle=90 + 120 + 120,
                         stroke=random.choice(c), stroke_width=1.1)
             for v in self.g.nodes:  # sort 'em
-                if (self.g.node[v]['type'] == 'action' and self.g.node[v]['category'] == str(cat)):
-                    self.add_node_to_axis(v, axis, circle_color='firebrick')  # sector colors
-            self.h.axes.append(axis)
+                if (self.g.node[v]['type'] == 'action'
+                    and
+                   self.g.node[v]['category'] == str(cat)):
 
+                    self.add_node_to_axis(v, axis,
+                                          circle_color='firebrick')  # sector colors
+            axis.auto_place_nodes()
+            end = axis.end + 30
+            self.h.axes.append(axis)
 
     def save(self):
         export_id = uuid.uuid4()
         self.filename = '%s_hiveplot.svg' % export_id
         self.h.save(path.join(settings.EXPORT,
                               self.filename))
-
-            
-
-
