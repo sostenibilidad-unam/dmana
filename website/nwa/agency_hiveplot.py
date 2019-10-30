@@ -89,7 +89,8 @@ class AgencyHiveplot:
                                           circle_color='purple')  # sector colors
 
             axis.auto_place_nodes()
-            end = axis.end + 30
+            if axis.length() > 0:
+                end = axis.end + 30
             self.h.axes.append(axis)
 
     def add_actioncat_axes(self):
@@ -105,7 +106,8 @@ class AgencyHiveplot:
                     self.add_node_to_axis(v, axis,
                                           circle_color='firebrick')  # sector colors
             axis.auto_place_nodes()
-            end = axis.end + 30
+            if axis.length() > 0:
+                end = axis.end + 30
             self.h.axes.append(axis)
 
     def save(self):
