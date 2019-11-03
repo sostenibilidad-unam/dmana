@@ -52,7 +52,7 @@ class AgencyHiveplot:
                                              for p in e.people.all()]))
         self.g = g
 
-        self.h = Hiveplot('tmp')
+        self.h = Hiveplot()
 
 
         
