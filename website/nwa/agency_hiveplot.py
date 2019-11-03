@@ -1,10 +1,12 @@
 from .models import Sector, Category
 import networkx as nx
+import pyveplot
 from pyveplot import Hiveplot, Node, Axis
 import random
 import uuid
-from django.conf import settings
 from os import path
+import tempfile
+import svgwrite
 
 # action colors
 ac = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99',
@@ -166,8 +168,7 @@ class AgencyHiveplot:
                                     stroke_width=0.5,
                                     stroke=sector_color)
 
-    def save(self):
-        export_id = uuid.uuid4()
-        self.filename = '%s_hiveplot.svg' % export_id
-        self.h.save(path.join(settings.EXPORT,
-                              self.filename))
+    def save(self, filename):
+        self.h.save(filename)
+        tmp_file = tempfile.SpooledTemporaryFile()
+        pyveplot.dwg = svgwrite.Drawing(tmp_file)

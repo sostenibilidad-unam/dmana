@@ -11,6 +11,7 @@ import networkx as nx
 import uuid
 import matplotlib.pyplot as plt
 from .agency_hiveplot import AgencyHiveplot
+from django.conf import settings
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -225,13 +226,21 @@ create_visjs.\
 
 
 def create_agency_hiveplot(modeladmin, request, queryset):
+    print(len(list(queryset)))
     ah = AgencyHiveplot(queryset)
     ah.add_ego_axis()
     ah.add_sector_axes()
     ah.add_actioncat_axes()
-    ah.save()
+    ah.connect_axes()
+
+    export_id = uuid.uuid4()
+    filename = "%s.svg" % export_id
+
+    ah.save(path.join(settings.EXPORT,
+                      filename))
+    del(ah)
     return HttpResponseRedirect(settings.STATIC_URL
-                                + 'networks/' + ah.filename)
+                                + 'networks/' + filename)
 
 create_agency_hiveplot.\
     short_description = "create agency hiveplot"
