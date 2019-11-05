@@ -8,3 +8,4 @@ matplotlib
 djangoql==0.13.0
 #pyveplot
 seaborn
+django-markdown2

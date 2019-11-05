@@ -35,12 +35,17 @@ INSTALLED_APPS = [
     'djangoql',
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_markdown2',
+    'django.contrib.flatpages',
     'nwa',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
 ROOT_URLCONF = 'website.urls'
@@ -124,8 +130,11 @@ EXPORT = os.path.join(BASE_DIR, "static", "networks")
 os.makedirs(EXPORT, exist_ok=True)
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+#    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "static", 'networks'),
  ]
+
+#STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATIC_URL = '/static/'
 
