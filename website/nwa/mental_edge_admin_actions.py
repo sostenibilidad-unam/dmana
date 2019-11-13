@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 import networkx as nx
 import uuid
 import matplotlib.pyplot as plt
+import matplotlib
 from os import path, mkdir
 from itertools import combinations
 from django.utils.text import slugify
@@ -81,6 +82,7 @@ download_as_dot.\
 
 
 def download_as_pdf(modeladmin, request, queryset):
+
     g = mental_model(queryset)
 
     for n in g.nodes:
@@ -90,6 +92,18 @@ def download_as_pdf(modeladmin, request, queryset):
             g.nodes[n]['color'] = 'red'
         else:
             g.nodes[n]['color'] = 'black'
+
+    lut = max([g.get_edge_data(*e)['w'] for e in g.edges])
+    cmap = matplotlib.cm.get_cmap('Blues', lut)
+    
+    for e in g.edges:
+        w = g.get_edge_data(*e)['w']
+        g.add_edge(*e,
+                   penwidth=w*2,
+                   color=matplotlib.colors.rgb2hex(cmap(w)[:3]))
+
+    for e in g.edges:
+        print(g.get_edge_data(*e))
 
     response = HttpResponse(
         nx.drawing.nx_pydot.to_pydot(g).create_pdf(),
