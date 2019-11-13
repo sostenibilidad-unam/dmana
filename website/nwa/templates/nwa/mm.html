@@ -33,7 +33,7 @@
       // value corresponds with the amount of contact between two people
     edges = [
     {% for e in edges %}
-    {from: {{ e.source.id }}, to: {{ e.target.id }}, arrows: {to: true}},
+	{from: {{ e.source.id }}, to: {{ e.target.id }}, arrows: {to: true}, width: {{ e.width }}},
     {% endfor %}
     ];
 

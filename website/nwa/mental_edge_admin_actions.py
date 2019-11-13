@@ -102,9 +102,6 @@ def download_as_pdf(modeladmin, request, queryset):
                    penwidth=w*2,
                    color=matplotlib.colors.rgb2hex(cmap(w)[:3]))
 
-    for e in g.edges:
-        print(g.get_edge_data(*e))
-
     response = HttpResponse(
         nx.drawing.nx_pydot.to_pydot(g).create_pdf(),
         content_type="application/pdf")
@@ -154,6 +151,9 @@ def create_visjs(modeladmin, request, queryset):
 
     nodes = set()
     for e in queryset:
+
+        e.width = g.get_edge_data(e.source.name, e.target.name)['w'] * 2
+        
         if g.in_degree(e.source.name) == 0:
             color = '#ccebc5'
         elif g.out_degree(e.source.name) == 0:
