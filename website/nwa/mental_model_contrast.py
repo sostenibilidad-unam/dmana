@@ -40,19 +40,18 @@ def graph_contrast_heatmap(G, H):
     g = nx.to_pandas_adjacency(G, nodelist=nodelist)
     h = nx.to_pandas_adjacency(H, nodelist=nodelist)
 
-    a = g - h
+    h.replace(1, 2, inplace=True)
+    a = g + h
 
     # drop zeros from resulting dataframe
     a = a.loc[(a != 0).any(1)]
     a = a.loc[:, (a != 0).any(axis=0)]
 
-    print(a.index, a.columns)
-
     ax = seaborn.heatmap(a,
                          cbar=False,
                          square=True,
                          linewidths=1.5,
-                         cmap=['#B84014', 'white', '#448D76'])
+                         cmap=['white', 'red', 'blue', 'purple'])
 
     ax.set_xticklabels(labels=list(a.columns), rotation=45,
                        rotation_mode="anchor", ha="right", fontsize=7)

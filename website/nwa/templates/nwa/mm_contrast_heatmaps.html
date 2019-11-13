@@ -12,7 +12,7 @@
 
 <body>
   {% for title, plot in plots.items %}
-  <h2>{{ title }}</h2>
+  <h2>{{ title|safe }}</h2>
   <img src="{{ plot }}" width="42%" />
   <hr />
   {% endfor %}

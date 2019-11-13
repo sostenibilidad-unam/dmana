@@ -31,7 +31,7 @@ def contrast_heatmaps(modeladmin, request, queryset):
             filename = "%s.png" % slugify(pair)
             plt.savefig(path.join(outdir, filename),
                         dpi=300)
-            title = "%s %s vs. %s %s" % (pair[0][0],
+            title = "<span style=\"color:red\">%s %s</span> vs. <span style=\"color:blue\">%s %s</span>" % (pair[0][0],
                                          pair[0][1],
                                          pair[1][0],
                                          pair[1][1])
