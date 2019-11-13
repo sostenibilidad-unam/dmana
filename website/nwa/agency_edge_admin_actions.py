@@ -3,7 +3,7 @@ import tempfile
 from django.template.loader import render_to_string
 from django.conf import settings
 from os import path
-from .networks import agency_network, agency_agraph, agency_agraph_orgs2cats
+from .networks import agency_network, agency_agraph, agency_agraph_orgs2cats, agency_ego_alter, agency_ego_alter_agraph
 from .scale import Scale
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -12,6 +12,51 @@ import uuid
 import matplotlib.pyplot as plt
 from .agency_hiveplot import AgencyHiveplot
 from django.conf import settings
+
+
+def download_ego_alter_as_dot(modeladmin, request, queryset):
+    A = nx.nx_agraph.to_agraph(agency_ego_alter(queryset))
+    response = HttpResponse(A.string(),
+                            content_type="text/dot")
+    response['Content-Disposition'] \
+        = 'attachment; filename="agency_ego_alter.dot"'
+    return response
+
+
+download_ego_alter_as_dot.\
+    short_description = "Download Ego-Alter network in DOT format for Graphviz"
+
+
+def download_ego_alter_as_graphml(modeladmin, request, queryset):
+    response = HttpResponse(
+        "\n".join([l
+                   for l in
+                   nx.readwrite.graphml.generate_graphml(
+                       agency_ego_alter(queryset))]),
+        content_type="application/xml")
+    response['Content-Disposition'] \
+        = 'attachment; filename="agency_ego_alter.graphml"'
+    return response
+
+download_ego_alter_as_graphml.\
+    short_description = "Download Ego-Alter network in GraphML format for Cytoscape"
+
+
+def download_ego_alter_as_pdf(modeladmin, request, queryset):
+    with tempfile.SpooledTemporaryFile() as tmp:
+        G = agency_ego_alter_agraph(queryset)
+        G.draw(tmp, format='pdf', prog='neato')
+        tmp.seek(0)
+        response = HttpResponse(
+            tmp.read(),
+            content_type="application/pdf")
+        response['Content-Disposition'] \
+            = 'attachment; filename="agency_ego_alter.pdf"'
+        return response
+
+
+download_ego_alter_as_pdf.\
+    short_description = "Download Ego-Alter network as PDF"
 
 
 def download_as_graphml(modeladmin, request, queryset):

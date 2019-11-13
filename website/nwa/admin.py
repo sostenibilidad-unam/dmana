@@ -333,5 +333,8 @@ class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
                aexn.download_orgs2cats_as_pdf,
                aexn.create_visjs,
                aexn.create_agency_hiveplot,
+               aexn.download_ego_alter_as_dot,
+               aexn.download_ego_alter_as_graphml,
+               aexn.download_ego_alter_as_pdf,
                delete_selection
     ]
