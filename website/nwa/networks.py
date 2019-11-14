@@ -87,6 +87,51 @@ def agency_ego_alter_agraph(queryset):
     return g
 
 
+
+def agency_alter_action(queryset):
+    g = nx.DiGraph()
+    for e in queryset:
+        g.add_node(str(e.action), type='action')        
+        for alter in e.people.all():
+            g.add_node(str(alter), type='person',
+                       sector=str(alter.sector))
+
+            w = g.get_edge_data(str(alter),
+                                str(e.action),
+                                default={'w': 0})['w']
+            w += 1
+            g.add_edge(str(alter),
+                       str(e.action),
+                       w=w)
+    return g
+
+
+def agency_alter_action_agraph(queryset):
+    g = pgv.AGraph(directed=True, overlap='scale')
+    h = agency_alter_action(queryset)
+    for e in h.edges:
+        for node in e:
+            if h.node[node]['type'] == 'person':
+                g.add_node(node,
+                           colorscheme='set13', color=2,
+                           shape="box",
+                           fontsize='9',
+                           style='filled', fillcolor='white')
+            else:
+                g.add_node(node,
+                           colorscheme='set13', color=3,
+                           shape="box",
+                           fontsize='9',
+                           style='filled', fillcolor='white')
+            
+        g.add_edge(e[0],
+                   e[1],
+                   penwidth=h.get_edge_data(*e)['w'])
+
+    return g
+
+
+
 def agency_network(queryset):
     g = nx.DiGraph()
     for e in queryset:
