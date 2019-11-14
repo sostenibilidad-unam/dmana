@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -75,6 +78,14 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+     # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
 
 WSGI_APPLICATION = 'website.wsgi.application'
 
@@ -142,3 +153,11 @@ STATIC_URL = '/static/'
 GRAPPELLI_SWITCH_USER = True
 
 GRAPPELLI_ADMIN_TITLE = "Agency Network Serializer"
+
+ACCOUNT_ADAPTER = 'website.adapter.AccountAdapter'
+
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'
