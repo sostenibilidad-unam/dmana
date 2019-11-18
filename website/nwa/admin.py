@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.contrib.admin import AdminSite
 
 from djangoql.admin import DjangoQLSearchMixin
 
@@ -12,6 +13,9 @@ import nwa.mental_edge_admin_actions as mmxn
 import nwa.power_edge_admin_actions as pexn
 import nwa.project_admin_actions as prxn
 import nwa.social_edge_admin_actions as sexn
+
+
+AdminSite.site_header = "Agency Network Serializer"
 
 
 def delete_selection(modeladmin, request, queryset):

@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('grappelli/', include('grappelli.urls')), # grappelli URLS
-    path('admin/', admin.site.urls), # admin site    
+    path('admin/', admin.site.urls),
+    path(r'account/', include('allauth.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

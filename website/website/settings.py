@@ -31,12 +31,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'grappelli',
     'djangoql',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
-    'allauth',
+    'nwa',
+    'allauth',    
     'allauth.account',
     'allauth.socialaccount',
     'django.contrib.contenttypes',
@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_markdown2',
     'django.contrib.flatpages',
-    'nwa',
 ]
 
 SITE_ID = 1
@@ -148,11 +147,6 @@ STATICFILES_DIRS = [
 #STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATIC_URL = '/static/'
-
-
-GRAPPELLI_SWITCH_USER = True
-
-GRAPPELLI_ADMIN_TITLE = "Agency Network Serializer"
 
 ACCOUNT_ADAPTER = 'website.adapter.AccountAdapter'
 

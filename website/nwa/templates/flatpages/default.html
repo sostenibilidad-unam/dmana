@@ -1,26 +1,18 @@
+{% extends "admin/base.html" %}
 {% load md2 %}
-<!DOCTYPE html>
-<html>
-<head>
-  <title>{{ flatpage.title }}</title>
 
-  <link href="/static/grappelli/jquery/ui/jquery-ui.min.css" rel="stylesheet" type="text/css" media="screen" />
-  <link href="/static/grappelli/stylesheets/screen.css" rel="stylesheet" type="text/css" media="all" />
-  <link href="/static/grappelli/stylesheets/mueller/grid/output.css" rel="stylesheet" type="text/css" media="screen" />
-</head>
-<body>
-  <div id="container" class="grp-container">
-    <header id="grp-header" class="">
-      <div id="grp-navigation">
-	<h1 id="grp-admin-title">
-	  {{ flatpage.title }}
-	</h1>
-      </div>
-    </header>
-  </div>
+{% block title %}{{ flatpage.title }}{% endblock %}
 
-  <article id="grp-content" class="">
-    {{ flatpage.content|markdown }}
-  </article>
-</body>
-</html>
+{% block branding %}
+<h1 id="site-name"><a href="/">Agency Network Serializer</a></h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+{% endblock %}
+{% block content %}
+
+<h1>{{ flatpage.title }}</h1>
+
+{{ flatpage.content|markdown }}
+
+{% endblock %}
