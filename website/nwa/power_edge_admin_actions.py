@@ -79,7 +79,7 @@ def create_visjs(modeladmin, request, queryset):
 
     g = power_network(queryset)
 
-    fig = plt.figure(figsize=(5, 5), dpi=100)
+    fig = plt.figure(figsize=(7, 5), dpi=100)
     degree_sequence = sorted(dict(nx.degree(g)).values(),
                              reverse=True)
     f = plt.loglog(degree_sequence,
@@ -87,6 +87,10 @@ def create_visjs(modeladmin, request, queryset):
                    linewidth=0.3,
                    color='navy',
                    alpha=0.3)
+    ax = plt.gca()
+    ax.set(xlabel='degree', ylabel='frequency',
+       title='Connectivity degree (log-log)')
+    
     filename = '%s_degree_loglog.png' % export_id
     fig.savefig(path.join(settings.EXPORT,
                           filename))
