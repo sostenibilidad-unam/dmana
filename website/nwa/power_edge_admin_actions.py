@@ -2,6 +2,13 @@ from .networks import power_network, power_agraph
 import tempfile
 from django.http import HttpResponse
 import networkx as nx
+import uuid
+import matplotlib.pyplot as plt
+from os import path
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.http import HttpResponseRedirect
+
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -70,7 +77,7 @@ download_as_pdf.\
 def create_visjs(modeladmin, request, queryset):
     export_id = uuid.uuid4()
 
-    g = social_network(queryset)
+    g = power_network(queryset)
 
     fig = plt.figure(figsize=(5, 5), dpi=100)
     degree_sequence = sorted(dict(nx.degree(g)).values(),
@@ -84,49 +91,17 @@ def create_visjs(modeladmin, request, queryset):
     fig.savefig(path.join(settings.EXPORT,
                           filename))
 
-    scale = Scale(domain=[0, 1.0],
-                  range=[0, 255])
-    max_distance = max([e.distance for e in queryset])
-    dist_scale = Scale(domain=[0, max_distance],
-                       range=[0, max_distance + 1])
-
-    cm = plt.get_cmap('GnBu', lut=5)
-
-    edges = []
-    for e in queryset:
-        e.color = tuple([scale.linear(c)
-                         for c in cm(int(dist_scale.linear_inv(e.distance)))])
-        e.length = (e.distance ** 3) + 1
-        edges.append(e)
-
-    bc = nx.betweenness_centrality(g)
-
-    sector_count = Sector.objects.count()
-    cm = plt.get_cmap('Set3', lut=sector_count)
-    n = 1
-    sectorcolor = {None: tuple([scale.linear(c) for c in cm(n)])}
-    for sector in Sector.objects.all():
-        sectorcolor[sector] = tuple([scale.linear(c) for c in cm(n)])
-        n += 1
-
     filename = "%s.html" % export_id
     with open(path.join(settings.EXPORT,
                         filename),
               'w',
               encoding='utf-8') as f:
         f.write(render_to_string(
-            'nwa/force_directed.html',
-            {'nodes': set([(e.source.id,
-                            bc[e.source],
-                            e.source.name,
-                            sectorcolor[e.source.sector])
-                           for e in queryset]
-                          + [(e.target.id,
-                              bc[e.target],
-                              e.target.name,
-                              sectorcolor[e.target.sector])
-                             for e in queryset]),
-             'edges': edges,
+            'nwa/power_network.html',
+            {'nodes': [(v,
+                       g.node[v]['type'])
+                       for v in g.nodes],
+             'edges': g.edges,
              'export_id': export_id
              }))
     return HttpResponseRedirect(settings.STATIC_URL

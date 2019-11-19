@@ -304,6 +304,7 @@ class PowerEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         pexn.download_as_pdf,
         pexn.download_as_dot,
         pexn.download_as_pajek,
+        pexn.create_visjs,
         delete_selection,
     ]
 

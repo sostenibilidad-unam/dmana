@@ -22,7 +22,7 @@ def mental_model(queryset):
 def power_network(queryset):
     g = nx.Graph()
     for e in queryset:
-        g.add_node(e.person, type='person')
+        g.add_node(e.person.name, type='person')
         g.add_node(e.power.name, type='power')
         g.add_edge(e.person.name,
                    e.power.name)

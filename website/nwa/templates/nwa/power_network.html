@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <title>Avatar Power Network</title>
+  <meta charset="UTF-8">
+  <style type="text/css">
+    html, body {
+      font: 10pt arial;
+    }
+    #mynetwork {
+      width: 1000px;
+      height: 800px;
+      border: 1px solid lightgray;
+    }
+  </style>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+
+  <script type="text/javascript">
+    var nodes = null;
+    var edges = null;
+    var network = null;
+
+    function draw() {
+      // create people.
+      // value corresponds with the age of the person
+    nodes = [
+    {% for n in nodes %}
+	{id: '{{ n.0 }}',
+	 {% if n.1 == 'person' %} shape: 'box', color: {background: 'khaki'} {% else %} shape: 'ellipse', color: {background: 'darkseagreen'} {% endif %},
+	 label: '{{ n.0 }}'},
+    {% endfor %}
+      ];
+
+      // create connections between people
+      // value corresponds with the amount of contact between two people
+    edges = [
+    {% for e in edges %}
+    {from: '{{ e.0 }}', to: '{{ e.1 }}'},
+    {% endfor %}
+    ];
+
+      // Instantiate our network object.
+      var container = document.getElementById('mynetwork');
+      var data = {
+	nodes: nodes,
+	edges: edges
+      };
+      var options = {
+	nodes: {
+	  shape: 'dot'
+	}
+      };
+      network = new vis.Network(container, data, options);
+    }
+  </script>
+
+</head>
+<body onload="draw()">
+<p>
+</p>
+<div id="mynetwork"></div>
+  <img src="{{ export_id }}_degree_loglog.png" width="33%"/>
+</body>
+</html>
