@@ -21,8 +21,8 @@ AdminSite.site_header = "Agency Network Serializer"
 
 
 def confirm_delete(modeladmin, request, queryset):
-    response = TemplateResponse(request, 
-                                'admin/confirm_delete.html', 
+    response = TemplateResponse(request,
+                                'admin/confirm_delete.html',
                                 {'queryset': queryset,
                                  'model': queryset.model.__name__})
     return response
@@ -33,10 +33,11 @@ confirm_delete.short_description = "Delete selection"
 
 
 def copy_selection(modeladmin, request, queryset):
-    response = TemplateResponse(request, 
+    projects = Project.objects.filter(author=request.user)
+    response = TemplateResponse(request,
                                 'admin/copy_selection.html',
                                 {'queryset': queryset,
-                                 'projects': Project.objects.filter(author=request.user),
+                                 'projects': projects,
                                  'model': queryset.model.__name__})
     return response
 
@@ -200,6 +201,7 @@ class SocialEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
                sexn.download_as_pajek,
                sexn.download_as_pdf,
                sexn.create_visjs,
+               copy_selection,
                confirm_delete
                ]
 
@@ -292,7 +294,7 @@ class MentalEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         mmxn.download_as_pajek,
         mmxn.download_as_pdf,
         mmxn.create_visjs,
-        copy_selection,        
+        copy_selection,
         confirm_delete,
     ]
 

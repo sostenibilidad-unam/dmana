@@ -8,7 +8,7 @@
     <div>
       {% for obj in queryset %}
       <input type="hidden" name="obj_ids" value="{{ obj.pk }}" />
-      <ul><li>{{obj}}</li></ul>
+      <ul><li>{{obj}} @ {{ obj.project }}</li></ul>
       {% endfor %}
     </div>
     <input type="submit" value="Yes, I'm sure">

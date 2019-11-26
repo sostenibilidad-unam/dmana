@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from nwa.models import AgencyEdge, SocialEdge, PowerEdge, MentalEdge, Project
@@ -54,11 +55,14 @@ class CopyAction(LoginRequiredMixin, View):
                 
             obj.pk = None
             obj.project = new_project
-            obj.save()
-            
-            if model == "AgencyEdge":
-                obj.people.set(people)
+            try:
                 obj.save()
+            
+                if model == "AgencyEdge":
+                    obj.people.set(people)
+                    obj.save()
+            except IntegrityError:
+                pass
             
             
         return HttpResponseRedirect('/admin/nwa/%s' % model.lower())
