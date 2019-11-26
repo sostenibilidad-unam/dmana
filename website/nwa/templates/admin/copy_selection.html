@@ -1,0 +1,26 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Copy into another project</h1>
+<div id="content" class="colM delete-confirmation">
+  <form method="post" action="/admin/copy_action/">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+    
+
+    
+    <input type="hidden" name="model" value="{{ model }}" />
+
+    <div>
+      {% for obj in queryset %}
+      <input type="hidden" name="obj_ids" value="{{ obj.pk }}" />
+      <ul><li>{{obj}}</li></ul>
+      {% endfor %}
+    </div>
+    <input type="submit" value="Yes, I'm sure">
+    <a href="/admin/nwa/{{ model|lower }}/" class="button cancel-link">No, take me back</a>
+  </form>
+  <br class="clear">
+  <div id="footer"></div>
+</div>
+{% endblock %}

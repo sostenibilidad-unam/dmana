@@ -15,6 +15,7 @@ import nwa.project_admin_actions as prxn
 import nwa.social_edge_admin_actions as sexn
 
 from django.template.response import TemplateResponse
+from django.forms import ModelForm
 
 AdminSite.site_header = "Agency Network Serializer"
 
@@ -28,6 +29,24 @@ def confirm_delete(modeladmin, request, queryset):
 
 confirm_delete.short_description = "Delete selection"
 # actual delete in views
+
+class CopyForm(ModelForm):
+    class Meta:
+        model = AgencyEdge
+        fields = ['project', ]
+
+
+def copy_selection(modeladmin, request, queryset):
+    form = CopyForm()
+    response = TemplateResponse(request, 
+                                'admin/copy_selection.html',
+                                {'queryset': queryset,
+                                 'form': form,
+                                 'model': queryset.model.__name__})
+    return response
+
+copy_selection.short_description = "Copy selection into another project"
+# actual copy in views
 
 
 class JustMine(object):
@@ -115,14 +134,6 @@ class MentalEdgeInline(JustMine, admin.TabularInline):
 class PersonAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['name', 'avatar_name', 'organization__organization']
     list_display = ['name', 'avatar_name', 'organization', 'sector', 'ego', ]
-
-    actions = [sexn.download_as_graphml,
-               sexn.download_as_dot,
-               sexn.download_as_pdf,
-               sexn.create_visjs,
-               confirm_delete
-               ]
-
 
     list_filter = (
         ('sector', admin.RelatedOnlyFieldListFilter), 'ego')
@@ -286,6 +297,7 @@ class MentalEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         mmxn.download_as_pajek,
         mmxn.download_as_pdf,
         mmxn.create_visjs,
+        copy_selection,        
         confirm_delete,
     ]
 
@@ -313,6 +325,7 @@ class PowerEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         pexn.download_as_dot,
         pexn.download_as_pajek,
         pexn.create_visjs,
+        copy_selection,
         confirm_delete,
     ]
 
@@ -352,5 +365,6 @@ class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
                aexn.download_alter_action_as_dot,
                aexn.download_alter_action_as_graphml,
                aexn.download_alter_action_as_pdf,
+               copy_selection,
                confirm_delete,
     ]
