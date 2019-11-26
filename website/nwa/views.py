@@ -48,10 +48,18 @@ class CopyAction(LoginRequiredMixin, View):
 
         for obj_id in request.POST.getlist('obj_ids'):
             obj = EdgeList.objects.get(pk=obj_id)
+            
+            if model == "AgencyEdge":            
+                people = list(obj.people.all())
+                
             obj.pk = None
             obj.project = new_project
-            print(obj, obj.project)
-            #obj.save()
+            obj.save()
+            
+            if model == "AgencyEdge":
+                obj.people.set(people)
+                obj.save()
+            
             
         return HttpResponseRedirect('/admin/nwa/%s' % model.lower())
     

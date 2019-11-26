@@ -30,18 +30,13 @@ def confirm_delete(modeladmin, request, queryset):
 confirm_delete.short_description = "Delete selection"
 # actual delete in views
 
-class CopyForm(ModelForm):
-    class Meta:
-        model = AgencyEdge
-        fields = ['project', ]
 
 
 def copy_selection(modeladmin, request, queryset):
-    form = CopyForm()
     response = TemplateResponse(request, 
                                 'admin/copy_selection.html',
                                 {'queryset': queryset,
-                                 'form': form,
+                                 'projects': Project.objects.filter(author=request.user),
                                  'model': queryset.model.__name__})
     return response
 

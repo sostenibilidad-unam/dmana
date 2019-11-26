@@ -5,12 +5,17 @@
   <form method="post" action="/admin/copy_action/">
     {% csrf_token %}
 
-    {{ form.as_p }}
-    
-
+    <p>
+      <label for="id_project">Project:</label><select name="project" required id="id_project">
+	<option value="" selected>---------</option>
+	{% for project in projects %}
+	<option value="{{ project.pk }}">{{ project }}</option>
+	{% endfor %}
+      </select>    
+    </p>
     
     <input type="hidden" name="model" value="{{ model }}" />
-
+    
     <div>
       {% for obj in queryset %}
       <input type="hidden" name="obj_ids" value="{{ obj.pk }}" />
