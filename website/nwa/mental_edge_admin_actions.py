@@ -48,8 +48,8 @@ def contrast_heatmaps(modeladmin, request, queryset):
 
 
 contrast_heatmaps.\
-    short_description = "Difference of adjacency \
-    matrices. Choose different projects or different egos."
+    short_description = "Contrast adjacency \
+    matrices of mental maps. Choose different projects or different egos."
 
 
 def download_as_graphml(modeladmin, request, queryset):
