@@ -1,20 +1,21 @@
-<!doctype html>
-<html>
-<head>
-  <title>Cognitive Map</title>
-  <meta charset="UTF-8">
-  <style type="text/css">
-    html, body {
-      font: 10pt arial;
-    }
-  </style>
-</head>
+{% extends 'flatpages/default.html' %}
 
-<body>
+
+{% block title %}
+Cognitive Map Contrast
+{% endblock %}
+
+{% block content %}
+
+<div id="content-main">
+
   {% for title, plot in plots.items %}
+
   <h2>{{ title|safe }}</h2>
-  <img src="{{ plot }}" width="42%" />
+  <img src="{{ plot }}" width="90%" />
   <hr />
   {% endfor %}
-</body>
-</html>
+
+</div>
+
+{% endblock %}
