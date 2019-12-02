@@ -12,32 +12,27 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
 
-{% endblock %}
-
-
-{% block title %}
-Cognitive Map
-{% endblock %}
-
-
-{% block content %}
 <script type="text/javascript">
   var nodes = null;
   var edges = null;
   var network = null;
-  
+
   function draw() {
+      // create people.
+      // value corresponds with the age of the person
       nodes = [
 	  {% for n in nodes %}
-	  {id: {{ n.0 }}, value: {{ n.1 }}, label: '{{ n.2 }}', shape: 'box', color: '{{ n.3 }}'},
+	  {id: '{{ n.0 }}',
+	   {% if n.1 == 'person' %} shape: 'box', color: {background: 'khaki'} {% else %} shape: 'ellipse', color: {background: 'darkseagreen'} {% endif %},
+	   label: '{{ n.0 }}'},
 	  {% endfor %}
       ];
-      
+
       // create connections between people
       // value corresponds with the amount of contact between two people
       edges = [
 	  {% for e in edges %}
-	  {from: {{ e.source.id }}, to: {{ e.target.id }}, arrows: {to: true}, width: {{ e.width }}},
+	  {from: '{{ e.0 }}', to: '{{ e.1 }}'},
 	  {% endfor %}
       ];
       
@@ -48,40 +43,34 @@ Cognitive Map
 	  edges: edges
       };
       var options = {
-	  
-	  "edges": {
-	      "smooth": false
-	  },
-	  
-	  "physics": {
-	      "barnesHut": {
-		  "gravitationalConstant": -10000,
-		  "centralGravity": 4.25,
-		  "springLength": 300,
-		  "springConstant": 0.045,
-		  "damping": 0.99,
-		  "avoidOverlap": 0.3
-	      },
-	      "minVelocity": 0.75
+	  nodes: {
+	      shape: 'dot'
 	  }
-	  
       };
       network = new vis.Network(container, data, options);
   }
 </script>
+{% endblock %}
 
+{% block title %}
+Avatar Power Network
+{% endblock %}
+
+
+{% block content %}
+<h1>Avatar Power Network</h1>
+  
 <div id="content-main">
-  <h1>Cognitive Map</h1>
 
   <div id="mynetwork"></div>
+  
   <img src="{{ export_id }}_degree_loglog.png" width="33%"/>
-
+  
 </div>
+
 
 <script type="text/javascript">
   draw();
 </script>
 
 {% endblock %}
-
-  

@@ -48,8 +48,8 @@ def contrast_heatmaps(modeladmin, request, queryset):
 
 
 contrast_heatmaps.\
-    short_description = "Difference of adjacency \
-    matrices. Choose different projects or different egos."
+    short_description = "Contrast adjacency \
+    matrices of mental maps. Choose different projects or different egos."
 
 
 def download_as_graphml(modeladmin, request, queryset):
@@ -135,7 +135,7 @@ def create_visjs(modeladmin, request, queryset):
 
     g = mental_model(queryset)
 
-    fig = plt.figure(figsize=(5, 5), dpi=100)
+    fig = plt.figure(figsize=(7, 5), dpi=100)
     degree_sequence = sorted(dict(nx.degree(g)).values(),
                              reverse=True)
     f = plt.loglog(degree_sequence,
@@ -143,6 +143,10 @@ def create_visjs(modeladmin, request, queryset):
                    linewidth=0.3,
                    color='navy',
                    alpha=0.3)
+    ax = plt.gca()
+    ax.set(xlabel='degree', ylabel='frequency',
+       title='Connectivity degree (log-log)')
+    
     filename = '%s_degree_loglog.png' % export_id
     fig.savefig(path.join(settings.EXPORT,
                           filename))

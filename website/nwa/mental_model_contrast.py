@@ -58,6 +58,9 @@ def graph_contrast_heatmap(G, H):
 
     ax.set_yticklabels(labels=list(a.index), fontsize=7)
 
+    plt.xlabel("target")
+    plt.ylabel("source")               
+    
     fig.tight_layout()
 
     return plt

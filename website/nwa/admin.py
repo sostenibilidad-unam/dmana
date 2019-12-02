@@ -14,12 +14,35 @@ import nwa.power_edge_admin_actions as pexn
 import nwa.project_admin_actions as prxn
 import nwa.social_edge_admin_actions as sexn
 
+from django.template.response import TemplateResponse
+from django.forms import ModelForm
 
 AdminSite.site_header = "Agency Network Serializer"
 
 
-def delete_selection(modeladmin, request, queryset):
-    queryset.delete()
+def confirm_delete(modeladmin, request, queryset):
+    response = TemplateResponse(request,
+                                'admin/confirm_delete.html',
+                                {'queryset': queryset,
+                                 'model': queryset.model.__name__})
+    return response
+
+confirm_delete.short_description = "Delete selection"
+# actual delete in views
+
+
+
+def copy_selection(modeladmin, request, queryset):
+    projects = Project.objects.filter(author=request.user)
+    response = TemplateResponse(request,
+                                'admin/copy_selection.html',
+                                {'queryset': queryset,
+                                 'projects': projects,
+                                 'model': queryset.model.__name__})
+    return response
+
+copy_selection.short_description = "Copy selection into another project"
+# actual copy in views
 
 
 class JustMine(object):
@@ -108,14 +131,6 @@ class PersonAdmin(JustMine, admin.ModelAdmin):
     search_fields = ['name', 'avatar_name', 'organization__organization']
     list_display = ['name', 'avatar_name', 'organization', 'sector', 'ego', ]
 
-    actions = [sexn.download_as_graphml,
-               sexn.download_as_dot,
-               sexn.download_as_pdf,
-               sexn.create_visjs,
-               delete_selection
-               ]
-
-
     list_filter = (
         ('sector', admin.RelatedOnlyFieldListFilter), 'ego')
 
@@ -186,7 +201,8 @@ class SocialEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
                sexn.download_as_pajek,
                sexn.download_as_pdf,
                sexn.create_visjs,
-               delete_selection
+               copy_selection,
+               confirm_delete
                ]
 
 
@@ -278,7 +294,8 @@ class MentalEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         mmxn.download_as_pajek,
         mmxn.download_as_pdf,
         mmxn.create_visjs,
-        delete_selection,
+        copy_selection,
+        confirm_delete,
     ]
 
     autocomplete_fields = ['source', 'target', 'person', ]
@@ -304,7 +321,9 @@ class PowerEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         pexn.download_as_pdf,
         pexn.download_as_dot,
         pexn.download_as_pajek,
-        delete_selection,
+        pexn.create_visjs,
+        copy_selection,
+        confirm_delete,
     ]
 
 
@@ -343,5 +362,6 @@ class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
                aexn.download_alter_action_as_dot,
                aexn.download_alter_action_as_graphml,
                aexn.download_alter_action_as_pdf,
-               delete_selection
+               copy_selection,
+               confirm_delete,
     ]

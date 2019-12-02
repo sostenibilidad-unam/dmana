@@ -18,8 +18,11 @@ from django.urls import path
 from django.conf.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
+from nwa import views
 
 urlpatterns = [
+    path('admin/delete_action/', views.DeleteAction.as_view(), name='delete_action'),
+    path('admin/copy_action/', views.CopyAction.as_view(), name='copy_action'),    
     path('admin/', admin.site.urls),
     path(r'account/', include('allauth.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

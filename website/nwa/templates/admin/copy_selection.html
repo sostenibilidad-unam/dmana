@@ -1,0 +1,31 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Copy into another project</h1>
+<div id="content" class="colM delete-confirmation">
+  <form method="post" action="/admin/copy_action/">
+    {% csrf_token %}
+
+    <p>
+      <label for="id_project">Project:</label><select name="project" required id="id_project">
+	<option value="" selected>---------</option>
+	{% for project in projects %}
+	<option value="{{ project.pk }}">{{ project }}</option>
+	{% endfor %}
+      </select>    
+    </p>
+    
+    <input type="hidden" name="model" value="{{ model }}" />
+    
+    <div>
+      {% for obj in queryset %}
+      <input type="hidden" name="obj_ids" value="{{ obj.pk }}" />
+      <ul><li>{{obj}} @ {{ obj.project }}</li></ul>
+      {% endfor %}
+    </div>
+    <input type="submit" value="Yes, I'm sure">
+    <a href="/admin/nwa/{{ model|lower }}/" class="button cancel-link">No, take me back</a>
+  </form>
+  <br class="clear">
+  <div id="footer"></div>
+</div>
+{% endblock %}
