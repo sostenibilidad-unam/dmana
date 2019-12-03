@@ -6,6 +6,8 @@ It is a tool for colaboration through which users can capture data
 into a database, which can then be queried with arbitrary filters to
 construct, visualize and export complex networks.
 
+![screenshot](screen.png)
+![example hiveplot](agency_hiveplot.png)
 
 ## Database
 
