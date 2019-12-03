@@ -1,11 +1,6 @@
-# AgNeS
+# Agency Network Serializer
 
-## Agency Network Serializer
-
-![Saint Agnes of
-Rome](https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Agnes%2C_Nordisk_familjebok.png/119px-Agnes%2C_Nordisk_familjebok.png)
-
-This is a web application for the creation and managing of Agency Networks.
+This is a web application for the creation and managing of [Agency Networks](https://steps-centre.org/blog/new-forms-agency-help-navigate-xochimilcos-troubled-waters/).
 
 It is a tool for colaboration through which users can capture data
 into a database, which can then be queried with arbitrary filters to
@@ -40,9 +35,9 @@ By selecting edges from edgelist tables users may export data into
 common formats suitable for complex network analyses using other
 software:
 
- - GraphML, suitable for Cytoscape
- - Pajek, suitable for Pajek
- - Dot, suitable for GraphViz
+ - [GraphML](http://graphml.graphdrawing.org/), suitable for [Cytoscape](https://cytoscape.org/)
+ - Format suitable for [Pajek](http://vlado.fmf.uni-lj.si/pub/networks/Pajek/)
+ - [DOT](https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29), suitable for [GraphViz](https://graphviz.org/)
 
 Special visualizations can also be obtained directly from AgNeS:
 
