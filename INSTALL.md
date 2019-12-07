@@ -34,7 +34,7 @@ using [virtualenv](http://virtualenv.org):
 These commands will create the database schema of AgNeS into a local SQLite file.
 
 	(venv3) $ cd website
-	(venv3) $ ./manage.py 
+	(venv3) $ ./manage.py migrate
 	
 ## Create user
 
