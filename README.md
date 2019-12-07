@@ -1,13 +1,18 @@
 # Agency Network Serializer
 
-This is a web application for the creation and managing of [Agency Networks](https://steps-centre.org/blog/new-forms-agency-help-navigate-xochimilcos-troubled-waters/).
+This is a web application for the creation and managing of Agency Networks.
 
-It is a tool for colaboration through which users can capture data
+For an intro you might want to read the [Agency Network Analysis Vignette](https://steps-centre.org/pathways-methods-vignettes/agency-network-analysis/).
+
+![ANA vignete](https://github.com/sostenibilidad-unam/tlabs/raw/master/ANA%20and%20Q.png)
+
+AgNeS is a tool for colaboration through which users can capture data
 into a database, which can then be queried with arbitrary filters to
 construct, visualize and export complex networks.
 
-![screenshot](screen.png)
-![example hiveplot](agency_hiveplot.png)
+You may [use our AgNeS server](http://agnes.apps.lancis.ecologia.unam.mx/), hosted by [LANCIS](https://lancis.ecologia.unam.mx/).
+
+Or you may run it on your own infrastructure. Here are [installation instructions](INSTALL).
 
 ## Database
 
@@ -31,6 +36,16 @@ This is the table scheme:
 AgNeS provides web forms to capture and manage data into each of these
 tables.
 
+The following screenshot shows an agency edgelist. Notice how it
+connects people with actions through other people. 
+
+![screenshot](screen.png)
+
+These three categories of nodes can be represented in a hiveplot for easier analysis.
+
+![example hiveplot](agency_hiveplot.png)
+
+
 ## Exporting and Visualization
 
 By selecting edges from edgelist tables users may export data into
@@ -46,3 +61,5 @@ Special visualizations can also be obtained directly from AgNeS:
  - Hiveplot, for agency networks
  - HeatMap, suitable for comparisons of mental models
  - Force-embeded, both in PDF and interactive formats
+
+
