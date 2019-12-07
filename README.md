@@ -12,7 +12,7 @@ construct, visualize and export complex networks.
 
 You may [use our AgNeS server](http://agnes.apps.lancis.ecologia.unam.mx/), hosted by [LANCIS](https://lancis.ecologia.unam.mx/).
 
-Or you may run it on your own infrastructure. Here are [installation instructions](INSTALL).
+Or you may run it on your own infrastructure. Here are [installation instructions](INSTALL.md).
 
 ## Database
 
