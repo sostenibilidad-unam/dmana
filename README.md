@@ -2,12 +2,13 @@
 
 This is a web application for the creation and managing of Agency Networks.
 
-For an intro you might want to read the [Agency Network Analysis Vignette](https://steps-centre.org/pathways-methods-vignettes/agency-network-analysis/).
+Agency Network Analysis (ANA) maps a given actor’s arena of social action in the context of a problem space articulated by that actor. This mapping is done via a multi-part interview process that elicits that actor’s social network map and cognitive map.
+
+For more information you might want to read the [Agency Network Analysis Vignette](https://steps-centre.org/pathways-methods-vignettes/agency-network-analysis/).
 
 ![ANA vignete](https://github.com/sostenibilidad-unam/tlabs/raw/master/ANA%20and%20Q.png)
 
-AgNeS is a tool for colaboration through which users can capture data
-into a database, which can then be queried with arbitrary filters to
+AgNeS aids the management of agency netwroks through the usage of databases, which can be queried with arbitrary filters to
 construct, visualize and export complex networks.
 
 You may [use our AgNeS server](http://agnes.apps.lancis.ecologia.unam.mx/), hosted by [LANCIS](https://lancis.ecologia.unam.mx/).
