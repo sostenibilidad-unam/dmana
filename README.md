@@ -46,6 +46,7 @@ These three categories of nodes can be represented in a hiveplot for easier anal
 
 ![example hiveplot](agency_hiveplot.png)
 
+Other visualizations and export formats are described bellow.
 
 ## Exporting and Visualization
 
