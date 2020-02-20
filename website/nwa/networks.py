@@ -49,7 +49,7 @@ def power_agraph(queryset):
 def agency_ego_alter(queryset):
     g = nx.DiGraph()
     for e in queryset:
-        g.add_node(e.person, type='person',
+        g.add_node(str(e.person), type='person',
                    sector=str(e.person.sector),
                    ego=e.person.ego)
         for alter in e.people.all():
@@ -66,6 +66,29 @@ def agency_ego_alter(queryset):
                        str(alter),
                        action=action)
     return g
+
+
+def agency_ego_alter_action(queryset):
+    g = nx.DiGraph()
+    for e in queryset:
+        g.add_node(str(e.person), type='person',
+                   sector=str(e.person.sector),
+                   ego=e.person.ego)
+        g.add_node(str(e.action), type='action')
+        
+        for alter in e.people.all():
+            g.add_node(str(alter), type='alter',
+                       sector=str(alter.sector),
+                       ego=False)
+
+            g.add_edge(str(e.person),
+                       str(alter))
+
+            g.add_edge(str(alter),
+                       str(e.action))
+                       
+    return g
+
 
 
 def agency_ego_alter_agraph(queryset):

@@ -1,9 +1,13 @@
 import pygraphviz as pgv
 import tempfile
+from django.urls import reverse
+from django.db import IntegrityError
 from django.template.loader import render_to_string
 from django.conf import settings
 from os import path
-from .networks import agency_network, agency_agraph, agency_agraph_orgs2cats, agency_ego_alter, agency_ego_alter_agraph, agency_alter_action, agency_alter_action_agraph
+from .models import SocialEdge
+from .networks import agency_network, agency_agraph, agency_agraph_orgs2cats, agency_ego_alter, \
+    agency_ego_alter_action, agency_ego_alter_agraph, agency_alter_action, agency_alter_action_agraph
 from .scale import Scale
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -40,6 +44,41 @@ def download_ego_alter_as_graphml(modeladmin, request, queryset):
 
 download_ego_alter_as_graphml.\
     short_description = "Download Ego-Alter network in GraphML format for Cytoscape"
+
+
+
+def extract_social_network(modeladmin, request, queryset):
+    for e in queryset:
+        for alter in e.people.all():
+            try:
+                se = SocialEdge(source=e.person,
+                                target=alter,
+                                project=e.project,
+                                author=e.author)
+                se.save()
+            except IntegrityError:
+                pass
+            
+    return HttpResponseRedirect(reverse('admin:nwa_socialedge_changelist'))
+
+extract_social_network.\
+    short_description = "Create social edges from selected agency edges"
+
+
+
+def download_ego_alter_action_as_graphml(modeladmin, request, queryset):
+    response = HttpResponse(
+        "\n".join([l
+                   for l in
+                   nx.readwrite.graphml.generate_graphml(
+                       agency_ego_alter_action(queryset))]),
+        content_type="application/xml")
+    response['Content-Disposition'] \
+        = 'attachment; filename="agency_ego_alter_action.graphml"'
+    return response
+
+download_ego_alter_action_as_graphml.\
+    short_description = "Download Ego-Alter-Action network in GraphML format for Cytoscape"
 
 
 def download_ego_alter_as_pdf(modeladmin, request, queryset):
