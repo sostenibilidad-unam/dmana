@@ -16,6 +16,7 @@ import uuid
 import matplotlib.pyplot as plt
 from .agency_hiveplot import AgencyHiveplot
 from django.conf import settings
+from django.contrib import messages
 
 
 def download_ego_alter_as_dot(modeladmin, request, queryset):
@@ -48,6 +49,7 @@ download_ego_alter_as_graphml.\
 
 
 def extract_social_network(modeladmin, request, queryset):
+    n = 0
     for e in queryset:
         for alter in e.people.all():
             try:
@@ -56,8 +58,15 @@ def extract_social_network(modeladmin, request, queryset):
                                 project=e.project,
                                 author=e.author)
                 se.save()
+                n += 1
             except IntegrityError:
-                pass
+                messages.add_message(request,
+                                     messages.WARNING,
+                                     'skipped duplicate edge %s -> %s' % (e.person, alter))
+
+    messages.add_message(request,
+                         messages.INFO,
+                         'created %s social edges' % n)
             
     return HttpResponseRedirect(reverse('admin:nwa_socialedge_changelist'))
 
