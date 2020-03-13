@@ -9,10 +9,17 @@ Cognitive Map Contrast
 
 <div id="content-main">
 
-  {% for title, plot in plots.items %}
+  {% for plot in plots %}
 
-  <h2>{{ title|safe }}</h2>
-  <img src="{{ plot }}" width="90%" />
+  <h2>{{ plot.0|safe }}</h2>
+  <img src="{{ plot.1 }}" width="90%" />
+  <ul>
+    <li>unchanged: {{ plot.2.0 }}</li>
+    <li>deletion: {{ plot.2.1 }}</li>
+    <li>insertion: {{ plot.2.2 }}</li>
+    <li>purple: {{ plot.2.3 }}</li>
+  </ul>
+  
   <hr />
   {% endfor %}
 

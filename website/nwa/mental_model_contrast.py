@@ -64,3 +64,43 @@ def graph_contrast_heatmap(G, H):
     fig.tight_layout()
 
     return plt
+
+
+
+def graph_contrast_report(G, H):
+
+    # same network, return empty plot
+    if G.edges == H.edges:
+        return "same graph"
+
+    # grab set of nodes from all graphs
+    nodelist = set()
+    for g in [G, H, ]:
+        for node in g.nodes:
+            nodelist.add(node)
+
+    g = nx.to_pandas_adjacency(G, nodelist=nodelist)
+    h = nx.to_pandas_adjacency(H, nodelist=nodelist)
+
+    h.replace(1, 2, inplace=True)
+    a = g + h
+
+    # drop zeros from resulting dataframe
+    a = a.loc[(a != 0).any(1)]
+    a = a.loc[:, (a != 0).any(axis=0)]
+
+    no_change = 0
+    deletion = 0
+    insertion = 0
+    purple = 0
+    for r in a.to_numpy():
+        row = list(r)
+        no_change += row.count(0)
+        deletion += row.count(1)
+        insertion += row.count(2)
+        purple += row.count(3)
+
+    return (no_change,
+            deletion,
+            insertion,
+            purple)

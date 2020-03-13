@@ -1,6 +1,6 @@
 from .networks import mental_model
 import tempfile
-from .mental_model_contrast import networks_from_qs, graph_contrast_heatmap
+from .mental_model_contrast import networks_from_qs, graph_contrast_heatmap, graph_contrast_report
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.conf import settings
@@ -22,7 +22,7 @@ def contrast_heatmaps(modeladmin, request, queryset):
     mkdir(outdir)
 
     with open(path.join(outdir, 'index.html'), 'w') as index:
-        plots = {}
+        plots = []
         for pair in combinations(networks, 2):
 
             g = networks[pair[0]]
@@ -35,10 +35,12 @@ def contrast_heatmaps(modeladmin, request, queryset):
                                          pair[0][1],
                                          pair[1][0],
                                          pair[1][1])
-            plots[title] = (settings.STATIC_URL
-                            + 'networks/'
-                            + export_id + "/"
-                            + filename)
+            plots.append((title, settings.STATIC_URL
+                          + 'networks/'
+                          + export_id + "/"
+                          + filename,
+                          graph_contrast_report(g, h)))
+
 
         index.write(render_to_string('nwa/mm_contrast_heatmaps.html',
                                      {'plots': plots}))
