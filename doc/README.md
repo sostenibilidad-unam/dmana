@@ -18,6 +18,7 @@ why a platform to enter data and systematize it]
  
 	
 ### Data about the perception-understanding of a system 
+
  - Biophysical and socio-political variables
 
 
@@ -49,25 +50,24 @@ Examples:
 4. Use AgNeS as a central database to aid in the collection and curation of data.
 
 -----------------------------------------
-# AgNeS (part A)
-1c. Objective
-2. Architecture-composition -Main Table of tables
+# AgNeS
+
+## Objective
+
+## Database Architecture
+
  
-Agency networks
+## Agency networks
 	Visualizations
 	 - hiveplot
 	
-	Section Social network (person, person)
-	Visualizations
+## Social network (person, person)
 
-	Section Avatar power network (avatar, power)
-	Visualizations
 
-III. AgNeS (partB)
-1. Objective
-2. Architecture-composition -Main Table of tables
+## Power network (avatar, power)
+
  
-Cognitive maps (variable, variable)
-Visualizations
+## Cognitive maps (variable, variable)
+
 
 
