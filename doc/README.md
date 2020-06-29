@@ -1,18 +1,17 @@
 # Introduction
 
-
 What type of data we are talking about
-Why networks (how we retrieve them from Semi-Structured Interviews -SSI); examples; 
+Why networks (how we retrieve them from Semi-Structured Interviews -SSI); examples;
 why a platform to enter data and systematize it]
 	
 ## Data types in a system under study
-	with a participatory research approach)
+
+with a participatory research approach.
 
 ### Data about people
 
  - Sector (academia, ngo, etc.)
- - Organization (government body, )
- 
+ - Organization (government body, ) 
  - collaborators, relationships
  - practices-actions, capacities
  
@@ -21,7 +20,6 @@ why a platform to enter data and systematize it]
 
  - Biophysical and socio-political variables
 
-
 # Networks (what are they, why to use them for that type of data, etc)
 
 ## Social networks -> in particular, agency networks (Ego-nets, Action-nets, Power-nets), objective
@@ -29,7 +27,8 @@ why a platform to enter data and systematize it]
 ## Cogntive maps -> as abstractions or internal representations of how a system works .... , objective
 
 Examples: 
- a) Cognitive Map of an academic
+
+a) Cognitive Map of an academic
  Show a picture of a 1-2 cognitive map(s) of the percetion of management and state of a natural protected area of the university (with socio-political & biophysical variables)
     
  b) Agency Network of a Laboratory that studies the Natural Protected Area-NPA (5 egos, each with 3-4 alters)
