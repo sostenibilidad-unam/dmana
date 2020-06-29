@@ -20,38 +20,58 @@ with a participatory research approach.
 
  - Biophysical and socio-political variables
 
-# Networks (what are they, why to use them for that type of data, etc)
+# Networks in an ANA
 
-## Social networks -> in particular, agency networks (Ego-nets, Action-nets, Power-nets), objective
-	
-## Cogntive maps -> as abstractions or internal representations of how a system works .... , objective
+## Agency networks
+## Social network
+## Avatar Power network
+## Cogntive maps
+
+They are abstractions or internal representations of how a system works.
 
 Examples: 
 
 a) Cognitive Map of an academic
- Show a picture of a 1-2 cognitive map(s) of the percetion of management and state of a natural protected area of the university (with socio-political & biophysical variables)
+
+Show a picture of a 1-2 cognitive map(s) of the percetion of management and state of a natural protected area of the university (with socio-political & biophysical variables)
     
- b) Agency Network of a Laboratory that studies the Natural Protected Area-NPA (5 egos, each with 3-4 alters)
-	Show a picture of how they look after a SSI - what data they show
-		Egos: 
-	    1. Dr. Nigel (anthropologist)
-	    2. MSc. Mischa (Lab Tech)
-	    3. Dr. Sandra (biologist)
-	    4. Ms. Mirna, (sustainability student)
-	    5. Mr. Jared (CEO of an environmental NGO)
-		Alters:
-	    EGO1: MSc. Mischa, Mr. Jared, Dr. Repsa (head of the NPA)
-	    EGO2: Dr. Nigel, Dr. Sandra, Ms. Mirna
-	    EGO3: Ms. Mirna, Mr. Admin (permits for NPA), Dr. X (ecologist), Mr. Bugs (student)
-	    EGO4: Ms. Tutsi (user), Dr. Sandra
-	    EGO5: Dr. Nigel, Dr. Repsa, Mr. Green (International NGO), Mr. Admin, .... ??
 
-4. Use AgNeS as a central database to aid in the collection and curation of data.
+b) Agency Network of a Laboratory that studies the Natural Protected Area-NPA (5 egos, each with 3-4 alters)
 
------------------------------------------
+Show a picture of how they look after a SSI - what data they show
+
+Egos: 
+
+ 1. Dr. Nigel (anthropologist)
+ 2. MSc. Mischa (Lab Tech)
+ 3. Dr. Sandra (biologist)
+ 4. Ms. Mirna, (sustainability student)
+ 5. Mr. Jared (CEO of an environmental NGO)
+
+Alters:
+
+ EGO1: MSc. Mischa, Mr. Jared, Dr. Repsa (head of the NPA)
+ EGO2: Dr. Nigel, Dr. Sandra, Ms. Mirna
+ EGO3: Ms. Mirna, Mr. Admin (permits for NPA), Dr. X (ecologist), Mr. Bugs (student)
+ EGO4: Ms. Tutsi (user), Dr. Sandra
+ EGO5: Dr. Nigel, Dr. Repsa, Mr. Green (International NGO), Mr. Admin, .... ??
+
+
+-------
+
+
 # AgNeS
 
 ## Objective
+
+AgNeS is a database administration interface specifically designed to
+easily and sistematically gather data for agency network
+analyses. Once data is loaded into an ANA database, network structure
+metrics can be computed, it can be visualized in several ways or
+exported to common standard formats for further processing with other
+software.
+
+
 
 ## Database Architecture
 
