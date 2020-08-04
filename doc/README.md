@@ -21,6 +21,32 @@ common standard formats for further processing with other software.
 
 ## Database Architecture
 
+Information is grouped into tables made up of rows and columns, so
+that each row holds data from related items. For example a "People"
+table has rows with columns such as "name" and "e-mail".
+
+Links can be created that join different tables together. For example
+the "People" table might be related to an "Organization" table whose
+rows contain columns for names and addresses of different organizations.
+
+Constraints can be set on each column, so that only valid data can be
+entered. This helps keep data consistent.
+
+The resulting structure can be interrogated with great flexibility,
+for example one might ask for a list of all members of organizations
+in a given city.
+
+This architecture is implemented a specialized kind of software called
+a relational database. On top of such a database, we have developed a
+web application which allows users to acces tables from their web
+browsers, through the internet.
+
+The following subsections describe the makeup of each of the tables we
+have designed.
+
+Of special interest are the "Edge" tables, which hold relationships
+among nodes in the networks that make up the Agency Network Analysis.
+
 ![table scheme](../tables.png)
 
 ### Data about people
