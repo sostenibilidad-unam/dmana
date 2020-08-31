@@ -7,20 +7,9 @@ import uuid
 from os import path
 import tempfile
 import svgwrite
+from SecretColors.palette import Palette
 
-# action colors
-ac = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99',
-      '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6',
-      '#6a3d9a', '#ffff99', '#b15928',
-      '#8dd3c7', '#bebada', '#fb8072', '#80b1d3', '#fdb462',
-      '#b3de69', '#fccde5', '#d9d9d9', '#bc80bd', '#ccebc5',
-      '#ffed6f']
 
-# sector colors
-sc = ['#8dd3c7', '#bebada', '#fb8072', '#80b1d3', '#fdb462',
-      '#b3de69', '#fccde5', '#d9d9d9', '#bc80bd', '#ccebc5',
-      '#ffed6f', '#8dd3c7', '#bebada', '#fb8072', '#80b1d3', '#fdb462',
-      '#b3de69', '#fccde5', '#d9d9d9', '#bc80bd', '#ccebc5',]
 
 ego_color = '#b2df8a'
 
@@ -44,6 +33,7 @@ class AgencyHiveplot:
                 g.add_node(p, type='person',
                            sector=str(p.sector),
                            ego=p.ego)
+                
                 # ego to alter
                 g.add_edge(e.person,
                            p)
@@ -68,6 +58,19 @@ class AgencyHiveplot:
         self.sectors = list(Sector.objects.all())
         self.cats = list(Category.objects.all())
 
+
+        # create color palettes
+        p = Palette()
+
+        self.ac = p.random(no_of_colors=len(self.cats),
+                           shade=45)
+
+        # sector colors
+        self.sc = p.random(no_of_colors=len(self.sectors),
+                           shade=50)
+
+        
+        
     def add_node_to_axis(self, v, axis, circle_color, fill_opacity=0.7):
         # create node object
         node = Node(radius=self.g.degree(v),
@@ -103,7 +106,7 @@ class AgencyHiveplot:
     def add_sector_axes(self):
         end = 40
         for sector in self.sectors:
-            sector_color = sc[self.sectors.index(sector)]
+            sector_color = self.sc[self.sectors.index(sector)]
             axis = Axis(start=end, angle=90 + 120,
                         stroke=sector_color, stroke_width=1.1)
 
@@ -124,7 +127,8 @@ class AgencyHiveplot:
     def add_actioncat_axes(self):
         end = 40
         for cat in self.cats:
-            cat_color = ac[self.cats.index(cat)]
+            print("AC COLOR AHAHA", self.cats.index(cat))            
+            cat_color = self.ac[self.cats.index(cat)]
             axis = Axis(start=end, angle=90 + 120 + 120,
                         stroke=cat_color, stroke_width=1.1)
             for v in self.k:
@@ -145,7 +149,7 @@ class AgencyHiveplot:
     def connect_axes(self):
         for axis in self.actions:
             n = self.h.axes.index(axis)
-            cat_color = ac[self.cats.index(axis.name)]
+            cat_color = self.ac[self.cats.index(axis.name)]
             self.h.connect_axes(self.h.axes[n],
                                 self.h.axes[0],
                                 self.g.edges,
@@ -154,7 +158,7 @@ class AgencyHiveplot:
 
         for axis in self.people:
             n = self.h.axes.index(axis)
-            sector_color = sc[self.sectors.index(axis.name)]
+            sector_color = self.sc[self.sectors.index(axis.name)]
             self.h.connect_axes(self.h.axes[0],
                                 self.h.axes[n],
                                 self.g.edges,
@@ -163,10 +167,10 @@ class AgencyHiveplot:
 
         for p in self.people:
             n = self.h.axes.index(p)
-            sector_color = sc[self.sectors.index(p.name)]
+            sector_color = self.sc[self.sectors.index(p.name)]
             for a in self.actions:
                 m = self.h.axes.index(a)
-                cat_color = ac[self.cats.index(a.name)]
+                cat_color = self.ac[self.cats.index(a.name)]
                 self.h.connect_axes(self.h.axes[n],
                                     self.h.axes[m],
                                     self.g.edges,
