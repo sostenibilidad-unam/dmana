@@ -60,7 +60,7 @@ class AgencyHiveplot:
 
 
         # create color palettes
-        p = Palette()
+        p = Palette("clarity")
 
         self.ac = p.random(no_of_colors=len(self.cats),
                            shade=45)
@@ -127,7 +127,6 @@ class AgencyHiveplot:
     def add_actioncat_axes(self):
         end = 40
         for cat in self.cats:
-            print("AC COLOR AHAHA", self.cats.index(cat))            
             cat_color = self.ac[self.cats.index(cat)]
             axis = Axis(start=end, angle=90 + 120 + 120,
                         stroke=cat_color, stroke_width=1.1)
