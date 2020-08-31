@@ -34,3 +34,4 @@ six==1.15.0
 sqlparse==0.3.1
 svgwrite==1.4
 urllib3==1.25.10
+SecretColors==1.1.0
