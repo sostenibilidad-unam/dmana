@@ -6,17 +6,16 @@
       display: flex;
   }
   #mynetwork {
-      width: 1000px;
-      height: 800px;
+      height: 1000px;
       border: 1px solid lightgray;
       flex: 0 0 65%;
   }
-  
+
   #thru {
       flex: 1;
       margin: 1.5em;
   }
-  
+
 </style>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
@@ -34,7 +33,7 @@ Agency Network
 
 {% block content %}
 <div id="content-main">
-<h1>Agency Network</h1>  
+<h1>Agency Network</h1>
   <div id="wrapper">
     <div id="mynetwork"></div>
     <div id="thru"></div>
@@ -61,9 +60,9 @@ Agency Network
   {% endfor %}
   ];
 
-  var edge_data = {}
+  var edge_data = {};
   {% for e, d in edge_data.items %}
-  edge_data["{{ e }}"] = "{{ d|safe }}";
+  edge_data["{{ e }}"] = '{{ d|safe }}';
   {% endfor %}
 
   // Instantiate our network object.
@@ -74,7 +73,9 @@ Agency Network
   };
   var options = {
   nodes: {
-  shape: 'dot'
+      shape: 'dot',
+      width: (window.innerWidth - 25) + "px",
+      height: (window.innerHeight - 75) + "px"
   }
   };
 
