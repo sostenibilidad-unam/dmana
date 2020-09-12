@@ -19,6 +19,8 @@ from django.forms import ModelForm
 
 AdminSite.site_header = "Agency Network Serializer"
 
+AdminSite.index_template = "admin/agnes_index.html"
+
 
 def confirm_delete(modeladmin, request, queryset):
     response = TemplateResponse(request,

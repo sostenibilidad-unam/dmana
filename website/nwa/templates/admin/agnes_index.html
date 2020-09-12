@@ -1,0 +1,43 @@
+{% extends "admin/index.html" %}
+
+
+
+
+{% block content %}
+
+<style type="text/css">
+.column {
+  float: left;
+  width: 25%;
+  border: red;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.row {
+    margin-bottom: 2em;
+}
+
+</style>
+  
+
+<div class="row">
+  <div class="column">/admin/nwa/agencyedge/</div>
+  <div class="column">/admin/nwa/socialedge/</div>
+  <div class="column">/admin/nwa/poweredge/</div>
+  <div class="column">/admin/nwa/mentaledge/</div>  
+</div>
+
+<div id="content-main">    
+
+  {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+</div>
+
+
+{% endblock %}
+
