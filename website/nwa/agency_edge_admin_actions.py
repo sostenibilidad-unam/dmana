@@ -11,6 +11,7 @@ from .networks import agency_network, agency_agraph, agency_agraph_orgs2cats, ag
 from .scale import Scale
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.template.response import TemplateResponse
 import networkx as nx
 import uuid
 import matplotlib.pyplot as plt
@@ -373,21 +374,30 @@ create_visjs.\
 
 
 def create_agency_hiveplot(modeladmin, request, queryset):
-    print(len(list(queryset)))
-    ah = AgencyHiveplot(queryset)
-    ah.add_ego_axis()
-    ah.add_sector_axes()
-    ah.add_actioncat_axes()
-    ah.connect_axes()
+    
+    if request.POST.get('post'):
+        
+        ah = AgencyHiveplot(queryset,
+                            label_threshold=int(request.POST.get('degree')))
+        ah.add_ego_axis()
+        ah.add_sector_axes()
+        ah.add_actioncat_axes()
+        ah.connect_axes()
 
-    export_id = uuid.uuid4()
-    filename = "%s.svg" % export_id
+        export_id = uuid.uuid4()
+        filename = "%s.svg" % export_id
 
-    ah.save(path.join(settings.EXPORT,
-                      filename))
-    del(ah)
-    return HttpResponseRedirect(settings.STATIC_URL
-                                + 'networks/' + filename)
+        ah.save(path.join(settings.EXPORT,
+                          filename))
+        del(ah)
+        return HttpResponseRedirect(settings.STATIC_URL
+                                    + 'networks/' + filename)
+    else:
+        request.current_app = modeladmin.admin_site.name
+        return TemplateResponse(request,
+                                "admin/agency_hiveplot_threshold.html",
+                                {'queryset': queryset})
+    
 
 create_agency_hiveplot.\
     short_description = "create agency hiveplot"

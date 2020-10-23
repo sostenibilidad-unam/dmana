@@ -16,8 +16,10 @@ ego_color = '#b2df8a'
 
 class AgencyHiveplot:
 
-    def __init__(self, queryset):
+    def __init__(self, queryset, label_threshold=2):
 
+        self.label_threshold = label_threshold
+        
         g = nx.DiGraph()
 
         for e in queryset:
@@ -89,7 +91,7 @@ class AgencyHiveplot:
             orientation = 1
             scale = 0.35
         # also add a label
-        if self.g.degree(v) > 2:
+        if self.g.degree(v) > self.label_threshold:
             node.add_label("%s k=%s" % (v, self.g.degree(v)),
                            angle=axis.angle + 90 * orientation,
                            scale=scale)

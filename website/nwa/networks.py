@@ -75,7 +75,7 @@ def agency_ego_alter_action(queryset):
                    sector=str(e.person.sector),
                    ego=e.person.ego)
         g.add_node(str(e.action), type='action')
-        
+
         for alter in e.people.all():
             g.add_node(str(alter), type='alter',
                        sector=str(alter.sector),
@@ -86,7 +86,7 @@ def agency_ego_alter_action(queryset):
 
             g.add_edge(str(alter),
                        str(e.action))
-                       
+
     return g
 
 
@@ -114,7 +114,7 @@ def agency_ego_alter_agraph(queryset):
 def agency_alter_action(queryset):
     g = nx.DiGraph()
     for e in queryset:
-        g.add_node(str(e.action), type='action')        
+        g.add_node(str(e.action), type='action')
         for alter in e.people.all():
             g.add_node(str(alter), type='person',
                        sector=str(alter.sector))
@@ -146,7 +146,7 @@ def agency_alter_action_agraph(queryset):
                            shape="box",
                            fontsize='9',
                            style='filled', fillcolor='white')
-            
+
         g.add_edge(e[0],
                    e[1],
                    penwidth=h.get_edge_data(*e)['w'])
@@ -246,7 +246,7 @@ def social_agraph(queryset):
         nodescheme = "X11"
 
     for e in queryset:
-        print(sectors.index(e.source.sector) + 1)
+
         fillcolor = "/%s/%s" % (nodescheme,
                                 sectors.index(e.source.sector) + 1)
         g.add_node(e.source,
