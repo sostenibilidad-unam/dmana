@@ -349,7 +349,8 @@ class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
 
     autocomplete_fields = ['person', 'action', 'people']
 
-    actions = [aexn.download_as_graphml,
+    actions = [aexn.download_analisis_report_ods,
+               aexn.download_as_graphml,
                aexn.relationship_diagram_as_pdf,
                aexn.relationship_diagram_orgs2cats,
                aexn.download_as_dot,

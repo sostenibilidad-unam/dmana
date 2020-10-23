@@ -1,5 +1,9 @@
 import networkx as nx
 import pygraphviz as pgv
+from collections import OrderedDict
+import pyexcel as pe
+from io import BytesIO
+
 
 
 def mental_model(queryset):
@@ -281,3 +285,33 @@ def social_agraph(queryset):
                    arrowhead=arrowhead,
                    penwidth=penwidth)
     return g
+
+
+
+def network_analisis_report(g):
+
+    try:
+        diameter = nx.diameter(g)
+    except Exception as e:
+        diameter = str(e)
+    try:
+        aspl = nx.average_shortest_path_length(g)
+    except Exception as e:
+        aspl = str(e)
+
+    report = [
+        ['number of nodes',
+         'number of edges',
+         'diameter',
+         'average shortest path length',
+         'average clustering'],
+        [len(g.nodes),
+         len(g.edges),
+         diameter,
+         aspl,
+         nx.average_clustering(g)]]
+
+    io = BytesIO()
+    sheet = pe.Sheet(report, name="network analisis")
+    sheet.save_to_memory("ods", io)
+    return io

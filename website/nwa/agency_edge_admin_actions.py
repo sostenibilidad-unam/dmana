@@ -7,7 +7,8 @@ from django.conf import settings
 from os import path
 from .models import SocialEdge
 from .networks import agency_network, agency_agraph, agency_agraph_orgs2cats, agency_ego_alter, \
-    agency_ego_alter_action, agency_ego_alter_agraph, agency_alter_action, agency_alter_action_agraph
+    agency_ego_alter_action, agency_ego_alter_agraph, agency_alter_action, \
+    agency_alter_action_agraph, network_analisis_report
 from .scale import Scale
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -400,4 +401,18 @@ def create_agency_hiveplot(modeladmin, request, queryset):
     
 
 create_agency_hiveplot.\
-    short_description = "create agency hiveplot"
+    short_description = "Create agency hiveplot"
+
+
+def download_analisis_report_ods(modeladmin, request, queryset):
+    ods = network_analisis_report(agency_network(queryset))
+    print(ods)
+    response = HttpResponse(
+        ods,
+        content_type="application/ods")
+    response['Content-Disposition'] \
+        = 'attachment; filename="agency_network_analisis_report.ods"'
+    return response
+
+download_analisis_report_ods.\
+    short_description = "Network analisis report in spreadsheet format"
