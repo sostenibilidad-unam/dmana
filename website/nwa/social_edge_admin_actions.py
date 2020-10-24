@@ -1,5 +1,5 @@
 import tempfile
-from .networks import social_agraph, social_network
+from .networks import social_agraph, social_network, network_analisis_report
 from .models import Sector
 from .scale import Scale
 from django.http import HttpResponse
@@ -152,3 +152,18 @@ def create_visjs(modeladmin, request, queryset):
 
 create_visjs.\
     short_description = "Create interactive browser based visualization"
+
+
+
+def download_analisis_report_ods(modeladmin, request, queryset):
+    ods = network_analisis_report(social_network(queryset))
+
+    response = HttpResponse(
+        ods,
+        content_type="application/ods")
+    response['Content-Disposition'] \
+        = 'attachment; filename="social_network_analisis_report.ods"'
+    return response
+
+download_analisis_report_ods.\
+    short_description = "Network analisis report in spreadsheet format"

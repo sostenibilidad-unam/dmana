@@ -3,8 +3,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn
 import networkx as nx
-from pprint import pprint
-
 
 def networks_from_qs(queryset):
     # split into edgelists for person/project combinations

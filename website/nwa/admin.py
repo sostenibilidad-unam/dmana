@@ -198,14 +198,16 @@ class SocialEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
 
     autocomplete_fields = ['source', 'target', ]
 
-    actions = [sexn.download_as_graphml,
-               sexn.download_as_dot,
-               sexn.download_as_pajek,
-               sexn.download_as_pdf,
-               sexn.create_visjs,
-               copy_selection,
-               confirm_delete
-               ]
+    actions = [
+        sexn.download_analisis_report_ods,
+        sexn.download_as_graphml,
+        sexn.download_as_dot,
+        sexn.download_as_pajek,
+        sexn.download_as_pdf,
+        sexn.create_visjs,
+        copy_selection,
+        confirm_delete
+    ]
 
 
 # class AgencyEdgelistInline(JustMine, admin.TabularInline):
@@ -290,6 +292,7 @@ class MentalEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         ('project', admin.RelatedOnlyFieldListFilter), )
 
     actions = [
+        mmxn.download_analisis_report_ods,
         mmxn.contrast_heatmaps,
         mmxn.download_as_graphml,
         mmxn.download_as_dot,
@@ -319,6 +322,7 @@ class PowerEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
     autocomplete_fields = ['person', 'power', ]
 
     actions = [
+        pexn.download_analisis_report_ods,
         pexn.download_as_graphml,
         pexn.download_as_pdf,
         pexn.download_as_dot,

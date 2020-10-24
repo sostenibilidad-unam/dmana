@@ -1,4 +1,4 @@
-from .networks import mental_model
+from .networks import mental_model, network_analisis_report
 import tempfile
 from .mental_model_contrast import networks_from_qs, graph_contrast_heatmap, graph_contrast_report
 from django.http import HttpResponse
@@ -191,3 +191,17 @@ def create_visjs(modeladmin, request, queryset):
 
 create_visjs.\
     short_description = "Create interactive browser based visualization"
+
+
+
+def download_analisis_report_ods(modeladmin, request, queryset):
+    ods = network_analisis_report(mental_model(queryset))
+    response = HttpResponse(
+        ods,
+        content_type="application/ods")
+    response['Content-Disposition'] \
+        = 'attachment; filename="mental_model_analisis_report.ods"'
+    return response
+
+download_analisis_report_ods.\
+    short_description = "Network analisis report in spreadsheet format"

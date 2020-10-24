@@ -406,7 +406,6 @@ create_agency_hiveplot.\
 
 def download_analisis_report_ods(modeladmin, request, queryset):
     ods = network_analisis_report(agency_network(queryset))
-    print(ods)
     response = HttpResponse(
         ods,
         content_type="application/ods")
