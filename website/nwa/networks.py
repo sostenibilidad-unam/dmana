@@ -94,6 +94,39 @@ def agency_ego_alter_action(queryset):
     return g
 
 
+def agency_ego_alter_action_agraph(queryset):
+    g = pgv.AGraph(directed=True, overlap=False,
+                   outputmode='edgesfirst')
+    for e in queryset:
+        g.add_node(e.person,
+                   colorscheme='set13', color=2,
+                   shape='box',
+                   style='filled', fillcolor='white')
+        g.add_node(str(e.action),
+                   colorscheme='set13', color=5,
+                   shape='egg')
+
+        for alter in e.people.all():
+            g.add_node(str(alter),
+                       colorscheme='set13', color=3,
+                       shape="box",
+                       fontsize='9',
+                       style='filled', fillcolor='white')
+
+            g.add_edge(e.person,
+                       str(alter),
+                       colorscheme='set13',
+                       color=2)
+
+            g.add_edge(str(alter),
+                       str(e.action),
+                       colorscheme='set13',
+                       color=3)
+
+
+    return g
+
+
 
 def agency_ego_alter_agraph(queryset):
     g = pgv.AGraph(directed=True, overlap='scale')

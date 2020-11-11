@@ -7,7 +7,7 @@ from django.conf import settings
 from os import path
 from .models import SocialEdge
 from .networks import agency_network, agency_agraph, agency_agraph_orgs2cats, agency_ego_alter, \
-    agency_ego_alter_action, agency_ego_alter_agraph, agency_alter_action, \
+    agency_ego_alter_action, agency_ego_alter_action_agraph, agency_ego_alter_agraph, agency_alter_action, \
     agency_alter_action_agraph, network_analisis_report
 from .scale import Scale
 from django.http import HttpResponse
@@ -69,7 +69,7 @@ def extract_social_network(modeladmin, request, queryset):
     messages.add_message(request,
                          messages.INFO,
                          'created %s social edges' % n)
-            
+
     return HttpResponseRedirect(reverse('admin:nwa_socialedge_changelist'))
 
 extract_social_network.\
@@ -90,6 +90,23 @@ def download_ego_alter_action_as_graphml(modeladmin, request, queryset):
 
 download_ego_alter_action_as_graphml.\
     short_description = "Download Ego-Alter-Action network in GraphML format for Cytoscape"
+
+
+def download_ego_alter_action_as_pdf(modeladmin, request, queryset):
+    with tempfile.SpooledTemporaryFile() as tmp:
+        G = agency_ego_alter_action_agraph(queryset)
+        G.draw(tmp, format='pdf', prog='neato')
+        tmp.seek(0)
+        response = HttpResponse(
+            tmp.read(),
+            content_type="application/pdf")
+        response['Content-Disposition'] \
+            = 'attachment; filename="agency_ego_alter_action.pdf"'
+        return response
+
+download_ego_alter_action_as_pdf.\
+    short_description = "Download Ego-Alter-Action network as PDF"
+
 
 
 def download_ego_alter_as_pdf(modeladmin, request, queryset):
@@ -330,7 +347,7 @@ def create_visjs(modeladmin, request, queryset):
     ax = plt.gca()
     ax.set(xlabel='degree', ylabel='frequency',
        title='Connectivity degree (log-log)')
-    
+
     filename = '%s_degree_loglog.png' % export_id
     fig.savefig(path.join(settings.EXPORT,
                           filename))
@@ -375,9 +392,9 @@ create_visjs.\
 
 
 def create_agency_hiveplot(modeladmin, request, queryset):
-    
+
     if request.POST.get('post'):
-        
+
         ah = AgencyHiveplot(queryset,
                             label_threshold=int(request.POST.get('degree')))
         ah.add_ego_axis()
@@ -398,7 +415,7 @@ def create_agency_hiveplot(modeladmin, request, queryset):
         return TemplateResponse(request,
                                 "admin/agency_hiveplot_threshold.html",
                                 {'queryset': queryset})
-    
+
 
 create_agency_hiveplot.\
     short_description = "Create agency hiveplot"

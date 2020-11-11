@@ -370,6 +370,7 @@ class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
                aexn.download_alter_action_as_graphml,
                aexn.download_alter_action_as_pdf,
                aexn.download_ego_alter_action_as_graphml,
+               aexn.download_ego_alter_action_as_pdf,
                aexn.extract_social_network,
                copy_selection,
                confirm_delete,
