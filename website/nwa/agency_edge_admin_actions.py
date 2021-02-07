@@ -105,7 +105,7 @@ def download_ego_alter_action_as_pdf(modeladmin, request, queryset):
         return response
 
 download_ego_alter_action_as_pdf.\
-    short_description = "Download Ego-Alter-Action network as PDF"
+    short_description = "Download Ego-Alter-Action network in spring embedded layout as PDF"
 
 
 
@@ -123,7 +123,7 @@ def download_ego_alter_as_pdf(modeladmin, request, queryset):
 
 
 download_ego_alter_as_pdf.\
-    short_description = "Download Ego-Alter network as PDF"
+    short_description = "Download Ego-Alter network in spring embedded layout as PDF"
 
 
 
@@ -170,7 +170,7 @@ def download_alter_action_as_pdf(modeladmin, request, queryset):
 
 
 download_alter_action_as_pdf.\
-    short_description = "Download Alter-Action network as PDF"
+    short_description = "Download Alter-Action network in spring embedded layout as PDF"
 
 
 
@@ -234,7 +234,7 @@ def download_as_pdf(modeladmin, request, queryset):
 
 
 download_as_pdf.\
-    short_description = "Download as PDF"
+    short_description = "Download spring embedded layout in PDF"
 
 
 def download_orgs2cats_as_pdf(modeladmin, request, queryset):
@@ -251,7 +251,7 @@ def download_orgs2cats_as_pdf(modeladmin, request, queryset):
 
 
 download_orgs2cats_as_pdf.\
-    short_description = "Download orgs2cats as PDF"
+    short_description = "Organizations to Action Categories network in spring embedded layout as PDF"
 
 
 def relationship_diagram_as_pdf(modeladmin, request, queryset):
@@ -325,7 +325,7 @@ def relationship_diagram_orgs2cats(modeladmin, request, queryset):
 
 
 relationship_diagram_orgs2cats.\
-    short_description = "Download orgs2cats relationship diagram as PDF"
+    short_description = "Organizations to Action Categories relationship diagram as PDF"
 
 
 def create_visjs(modeladmin, request, queryset):
