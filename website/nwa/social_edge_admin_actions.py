@@ -72,7 +72,7 @@ def download_as_pdf(modeladmin, request, queryset):
 
 
 download_as_pdf.\
-    short_description = "Download as PDF"
+    short_description = "Download network in spring embedded layout as PDF"
 
 
 def create_visjs(modeladmin, request, queryset):
