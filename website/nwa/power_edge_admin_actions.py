@@ -71,7 +71,7 @@ def download_as_pdf(modeladmin, request, queryset):
 
 
 download_as_pdf.\
-    short_description = "Download as PDF"
+    short_description = "Download network in spring embedded layout as PDF"
 
 
 def create_visjs(modeladmin, request, queryset):
@@ -103,7 +103,7 @@ def create_visjs(modeladmin, request, queryset):
         f.write(render_to_string(
             'nwa/power_network.html',
             {'nodes': [(v,
-                       g.node[v]['type'])
+                       g.nodes[v]['type'])
                        for v in g.nodes],
              'edges': g.edges,
              'export_id': export_id
