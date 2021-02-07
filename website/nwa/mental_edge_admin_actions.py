@@ -113,7 +113,7 @@ def download_as_pdf(modeladmin, request, queryset):
 
 
 download_as_pdf.\
-    short_description = "Download as PDF"
+    short_description = "Download network in spring embedded layout PDF"
 
 
 def download_as_pajek(modeladmin, request, queryset):
