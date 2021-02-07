@@ -15,6 +15,9 @@ class Scale:
         """
         Linear scale.
         """
+        if max(self.domain) - min(self.domain) == 0:
+            return 0
+        
         mx = float(
             (max(self.range) - min(self.range))) \
             / (max(self.domain) - min(self.domain))
