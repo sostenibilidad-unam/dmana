@@ -101,7 +101,7 @@ class AgencyHiveplot:
                     stroke=ego_color, stroke_width=1.1)
         for v in self.k:
             v = v[0]
-            if ('ego' in self.g.node[v] and self.g.node[v]['ego'] is True):
+            if ('ego' in self.g.nodes[v] and self.g.nodes[v]['ego'] is True):
                 self.add_node_to_axis(v, axis, 'blue')  # sector colors
         self.h.axes.append(axis)
 
@@ -114,8 +114,8 @@ class AgencyHiveplot:
 
             for v in self.k:
                 v = v[0]
-                if ('ego' in self.g.node[v] and self.g.node[v]['ego'] is False
-                        and self.g.node[v]['sector'] == str(sector)):
+                if ('ego' in self.g.nodes[v] and self.g.nodes[v]['ego'] is False
+                        and self.g.nodes[v]['sector'] == str(sector)):
                     self.add_node_to_axis(v, axis,
                                           circle_color=sector_color)
 
@@ -134,9 +134,9 @@ class AgencyHiveplot:
                         stroke=cat_color, stroke_width=1.1)
             for v in self.k:
                 v = v[0]
-                if (self.g.node[v]['type'] == 'action'
+                if (self.g.nodes[v]['type'] == 'action'
                     and
-                   self.g.node[v]['category'] == str(cat)):
+                   self.g.nodes[v]['category'] == str(cat)):
 
                     self.add_node_to_axis(v, axis,
                                           circle_color=cat_color)
