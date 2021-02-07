@@ -171,7 +171,7 @@ def agency_alter_action_agraph(queryset):
     h = agency_alter_action(queryset)
     for e in h.edges:
         for node in e:
-            if h.node[node]['type'] == 'person':
+            if h.nodes[node]['type'] == 'person':
                 g.add_node(node,
                            colorscheme='set13', color=2,
                            shape="box",
