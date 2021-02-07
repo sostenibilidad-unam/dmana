@@ -165,7 +165,7 @@ def download_alter_action_as_pdf(modeladmin, request, queryset):
             tmp.read(),
             content_type="application/pdf")
         response['Content-Disposition'] \
-            = 'attachment; filename="agency_ego_alter.pdf"'
+            = 'attachment; filename="agency_alter_action.pdf"'
         return response
 
 
