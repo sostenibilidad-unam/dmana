@@ -258,10 +258,10 @@ def social_network(queryset):
     for e in queryset:
         g.add_edge(e.source,
                    e.target,
-                   influence=e.influence,
-                   distance=e.distance,
-                   interaction=e.interaction,
-                   polarity=e.polarity)
+                   influence=e.influence if e.influence else "",
+                   distance=e.distance if e.distance else "",
+                   interaction=e.interaction if e.interaction else "",
+                   polarity=e.polarity if e.polarity else "")
     return g
 
 
