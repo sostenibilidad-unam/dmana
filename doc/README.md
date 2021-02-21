@@ -53,14 +53,33 @@ among nodes in the networks that make up the Agency Network Analysis.
 
 ### Data about people
 
- - Sector (academia, ngo, etc.)
- - Organization (government body, ) 
- - collaborators, relationships
- - practices-actions, capacities
-	
+In our data model people:
+ - Can be distinguished as egos, which means they have been interviewed directly as part of the ANA method.
+ - Are afiliated to an organization, through a link to an organizations table.
+ - Represent an economy sector, which can be Academia, Government, Private enterprise, and Non-Governmental Organization.
+ - Have an avatar name and avatar picture, which embodies their main powers and qualities.
+ - Relate to "powers" by links to an "Avatar Powers" table.
+ 
+A "description" field is included, where free text can be entered if additional information is necessary.
+
+### Data about actions
+
+People are involved in their problem space by taking actions. These
+actions belong to different categories, by links to an Action
+Categories table.
+
+Actions are linked to people in the Agency Edgelist described below.
+
 ### Data about the perception-understanding of a system 
 
- - Biophysical and socio-political variables
+Variables which affect the problem space under study are kept in the
+Cognitive map Variables table.
+
+They are meant to be connected to form cognitive maps in the Cognitive
+map Edgelist described below.
+
+
+### Grouping data by project
 
 
 ## Networks in an ANA
