@@ -65,17 +65,35 @@ among nodes in the networks that make up the Agency Network Analysis.
 
  - Biophysical and socio-political variables
 
+
 ## Networks in an ANA
- 
+
+Complex networks are made up of nodes and edges. Nodes are things
+being connected, edges are the links which connect them.
+
+The main object of interest is the structure that results of
+considering all nodes and edges together. However more nuance is
+possible by storing arbitrary data in nodes and edges.
+
+For example, in social networks described bellow nodes represent
+people, and links represent collaboration relationships among
+them. Each node holds all data related to a person, such as picture
+and avatar name. And each edge holds data related to the
+collaboration, such as influence and distance.
+
+A common representation of a network is a list of edges. This is
+easily achieved by tables that join other tables in our
+database. These special tables are called Edgelists and there is one
+for every type of network that makes up an Agency Network Analysis.
+
+
 ### Agency networks
-	Visualizations
-	 - hiveplot
 	
-### Social network (person, person)
+### Social network
+(person, person)
 
-
-### Power network (avatar, power)
-
+### Power network 
+(avatar, power)
  
 ### Cognitive maps (variable, variable)
 
@@ -108,4 +126,39 @@ Alters:
  EGO3: Ms. Mirna, Mr. Admin (permits for NPA), Dr. X (ecologist), Mr. Bugs (student)
  EGO4: Ms. Tutsi (user), Dr. Sandra
  EGO5: Dr. Nigel, Dr. Repsa, Mr. Green (International NGO), Mr. Admin, .... ??
+
+
+
+## Outputs
+
+### Exporting to common file formats
+
+Any selected edgelist may be exported to the following formats:
+
+ - GrahpML. This format is a variant of XML specialized in representing complex networks. Many programs are able to read it, specially Cytoscape.
+ - Pajek's .net format. Pajek is a common tool for social network analyses.
+ - GraphViz DOT format. There are many ways of visualizing a complex network, GraphViz is a specialized tool which includes many different strategies for network visualization.
+ 
+### Network analysis report
+ 
+Common metrics can be obtained in a spreadsheet for a selected network. 
+ - Number of nodes
+ - Number of edges
+ - Network density
+ - Netwok Clustering index
+ - Average node connectivity
+ 
+ 
+## Visualization
+
+
+### Spring-embedded PDF
+
+### Interactive spring-embedded
+
+### Relationship Diagram PDF
+
+### Hiveplot
+
+### Adjacency Matrices Contrast Heatmap
 
