@@ -81,6 +81,16 @@ map Edgelist described below.
 
 ### Grouping data by project
 
+A Project makes it possible to use the same nodes to create different
+networks. This feature might be useful, e.g. in cases where a
+researcher wishes to analyze the same agency network in two different
+moments, or simply to use the same tool for different research
+projects.
+
+Edges in all networks always belong to a project, but nodes may be
+shared. This makes it easy to create a new network based on previous
+work: Edgelist tables allow the user to copy edges into new projects.
+
 
 ## Networks in an ANA
 
