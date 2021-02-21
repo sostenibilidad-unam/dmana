@@ -75,9 +75,9 @@ Actions are linked to people in the Agency Edgelist described below.
 Variables which affect the problem space under study are kept in the
 Cognitive map Variables table.
 
-They are meant to be connected to form cognitive maps in the Cognitive
-map Edgelist described below.
-
+This is just a list of meaningful words. They are meant to be
+connected to form cognitive maps in the Cognitive map Edgelist
+described below.
 
 ### Grouping data by project
 
@@ -90,7 +90,6 @@ projects.
 Edges in all networks always belong to a project, but nodes may be
 shared. This makes it easy to create a new network based on previous
 work: Edgelist tables allow the user to copy edges into new projects.
-
 
 ## Networks in an ANA
 
@@ -110,20 +109,57 @@ collaboration, such as influence and distance.
 A common representation of a network is a list of edges. This is
 easily achieved by tables that join other tables in our
 database. These special tables are called Edgelists and there is one
-for every type of network that makes up an Agency Network Analysis.
-
+for each type of network that makes up an Agency Network Analysis.
 
 ### Agency networks
-	
-### Social network
-(person, person)
 
-### Power network 
-(avatar, power)
+Agency networks capture which actions are taken by people within the
+problem space. These are created by structured interviews and during
+workshops. People directly interviewed are marked as "ego".
+
+People become nodes linked to actions by agency edges. These edges
+contain lists of other people through which these actions are carried
+out. Thus, agency networks easily become social networks. Actually,
+social networks may be extracted from selections of agency edges.
+	
+### Social networks
+
+Social networks connect people with each other. Although a social
+network may connect anyone to anyone else, since the data is gathered
+with collaboration with "egos" most connections are from nodes marked
+as "ego" to other people. 
+
+Relationship edges hold data for Influence, Distance, Interaction and Polarity.
+
+Influence is an integer and represents the percieved control of an ego
+over their alter's actions.
+
+Distance is also an integer and, as the name suggests, stands for the
+closeness of a relationship. A relationship of distance 1 is more
+intimate than one of distance 3.
+
+Interaction?
+
+Polarity?
+
+
+### Power networks
+
+Within an Agency Network Analyses, participants are asked to list
+which powers characterize their avatars.
+
+By using these powers as nodes along with the avatars that wield them,
+a network may be constructed which shows similarities among agents, as
+shown by their avatars' shared powers.
+
  
 ### Cognitive maps (variable, variable)
 
-They are abstractions or internal representations of how a system works.
+Cognitive maps are abstractions or internal representations of how a
+system works.
+
+
+-----
 
 Examples: 
 
