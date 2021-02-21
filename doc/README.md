@@ -1,8 +1,11 @@
+tenorios 222 ed 23 d 6
+ex hacienda coapa
+
 # Agency Network Serializer
 
 ## Introduction
 
-Agency Network Analylses map the social action arena of people by
+Agency Network Analylses (ANA) map the social action arena of people by
 situating them relative to their collaborators and within their
 problem space. This helps actors identify where they have agency in
 the system, i.e. over what elements and through what relationships.
@@ -12,42 +15,44 @@ data is gathered about actors (their context, worplaces, type of
 organization, etc.), their activities (practices, capacities), and
 their relationships to other actors.
 
-AgNeS is a database administration interface specifically designed to
+AgNeS is a database administration interface specially designed to
 easily and sistematically gather data for agency network analyses.
-Once data is loaded into an ANA database, network structure metrics
-can be computed, it can be visualized in several ways or exported to
-common standard formats for further processing with other software.
+Once data is loaded into database, agency networks can be visualized
+in several ways, metrics from their structure can be easily computed,
+or they can be exported to common standard formats for further
+processing with other software.
 
 
 ## Database Architecture
 
-Information is grouped into tables made up of rows and columns, so
-that each row holds data from related items. For example a "People"
-table has rows with columns such as "name" and "e-mail".
+In our ANA database, information is grouped into tables made up of rows
+and columns, so that each row holds data for related items. For
+example a "People" table has a row for each person with columns such
+as "name", and "e-mail".
 
 Links can be created that join different tables together. For example
-the "People" table might be related to an "Organization" table whose
-rows contain columns for names and addresses of different organizations.
+the "People" table might be related to an "Organization" table, which
+may have columns such as "organization name" and "street address".
+
+![table scheme](../tables.png)
 
 Constraints can be set on each column, so that only valid data can be
-entered. This helps keep data consistent.
+entered. This guarantees data consistency.
 
-The resulting structure can be interrogated with great flexibility,
-for example one might ask for a list of all members of organizations
-in a given city.
+The resulting structure can be interrogated with great
+flexibility. Using a specialized query language, any combination of
+columns may be fetched by complex combinations of criteria.
 
-This architecture is implemented a specialized kind of software called
-a relational database. On top of such a database, we have developed a
-web application which allows users to acces tables from their web
-browsers, through the internet.
+We have developed a web application which allows users to easily
+access these tables.
 
-The following subsections describe the makeup of each of the tables we
-have designed.
+The following subsections describe the structure of each of the tables
+we have designed, as well as the corresponding web forms for
+filtering, vizualising, exporting and data input.
 
 Of special interest are the "Edge" tables, which hold relationships
 among nodes in the networks that make up the Agency Network Analysis.
 
-![table scheme](../tables.png)
 
 ### Data about people
 
