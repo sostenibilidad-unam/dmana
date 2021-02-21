@@ -1,6 +1,3 @@
-tenorios 222 ed 23 d 6
-ex hacienda coapa
-
 # Agency Network Serializer
 
 ## Introduction
