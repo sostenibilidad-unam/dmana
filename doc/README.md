@@ -111,7 +111,7 @@ easily achieved by tables that join other tables in our
 database. These special tables are called Edgelists and there is one
 for each type of network that makes up an Agency Network Analysis.
 
-### Agency networks
+### Agency edges
 
 Agency networks capture which actions are taken by people within the
 problem space. These are created by structured interviews and during
@@ -122,7 +122,7 @@ contain lists of other people through which these actions are carried
 out. Thus, agency networks easily become social networks. Actually,
 social networks may be extracted from selections of agency edges.
 	
-### Social networks
+### Social edges
 
 Social networks connect people with each other. Although a social
 network may connect anyone to anyone else, since the data is gathered
@@ -143,7 +143,7 @@ Interaction?
 Polarity?
 
 
-### Power networks
+### Avatar-Power edges
 
 Within an Agency Network Analyses, participants are asked to list
 which powers characterize their avatars.
@@ -153,42 +153,21 @@ a network may be constructed which shows similarities among agents, as
 shown by their avatars' shared powers.
 
  
-### Cognitive maps (variable, variable)
+### Cognitive map edges
 
 Cognitive maps are abstractions or internal representations of how a
-system works.
+system works. Like other models it captures some elements of a
+phenomenon and discards others. It is constructed by connecting system
+variables to other system variables. Variables are just salient
+features of the problem space, and the edges that connect them denote
+a relationship among them, without specifying if it is cause-effect,
+influence, correlation or other type of relationship.
 
+Each edge belongs to a Person, the set of edges belonging to her
+represents her Cognitive map of the problem space.
 
------
-
-Examples: 
-
-a) Cognitive Map of an academic
-
-Here a picture of a cognitive map of the perception of
-management and state of a natural protected area of the university
-(with socio-political & biophysical variables)
-
-b) Agency Network of a Laboratory that studies the Natural Protected Area-NPA (5 egos, each with 3-4 alters)
-
-Show a picture of how they look after a SSI - what data they show
-
-Egos: 
-
- 1. Dr. Nigel (anthropologist)
- 2. MSc. Mischa (Lab Tech)
- 3. Dr. Sandra (biologist)
- 4. Ms. Mirna, (sustainability student)
- 5. Mr. Jared (CEO of an environmental NGO)
-
-Alters:
-
- EGO1: MSc. Mischa, Mr. Jared, Dr. Repsa (head of the NPA)
- EGO2: Dr. Nigel, Dr. Sandra, Ms. Mirna
- EGO3: Ms. Mirna, Mr. Admin (permits for NPA), Dr. X (ecologist), Mr. Bugs (student)
- EGO4: Ms. Tutsi (user), Dr. Sandra
- EGO5: Dr. Nigel, Dr. Repsa, Mr. Green (International NGO), Mr. Admin, .... ??
-
+By choosing edges from several people their common Cognitive map may
+be generated.
 
 
 ## Outputs
