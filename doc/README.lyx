@@ -309,15 +309,17 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Edges-and-nodes"
+
+\end_inset
+
 Edges and nodes in AgNeS.
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -335,6 +337,17 @@ Agency networks capture which actions are taken by people within the problem
  space.
  These are created by structured interviews and during workshops.
  People directly interviewed are marked as "ego".
+ A diagram of an agency edge is shown in the top left panel of figure 
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "fig:Edges-and-nodes"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -356,6 +369,20 @@ Social networks connect people with each other.
  data is gathered with collaboration with "egos" most connections are from
  nodes marked as "ego" to other people.
  
+\end_layout
+
+\begin_layout Standard
+A diagram of a social edge is shown in the top right panel of figure 
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "fig:Edges-and-nodes"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -388,12 +415,25 @@ Avatar-Power edges
 \begin_layout Standard
 Within an Agency Network Analyses, participants are asked to list which
  powers characterize their avatars.
+ By using these powers as nodes along with the avatars that wield them,
+ a network may be constructed.
+ Edges connect avatars to their powers as shown in the bottom left panel
+ of figure 
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "fig:Edges-and-nodes"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-By using these powers as nodes along with the avatars that wield them, a
- network may be constructed which shows similarities among agents, as shown
- by their avatars' shared powers.
+Although there are no direct connections among powers nor among avatars,
+ their similarities are shown by the network proximity of nodes.
 \end_layout
 
 \begin_layout Subsection
@@ -414,11 +454,23 @@ Cognitive maps are abstractions or internal representations of how a system
 \begin_layout Standard
 Each edge belongs to a Person, the set of edges belonging to her represents
  her Cognitive map of the problem space.
+ The bottom right panel of figure 
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "fig:Edges-and-nodes"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ shows the structure of a cognitive map edge.
 \end_layout
 
 \begin_layout Standard
 By choosing edges from several people their common Cognitive map may be
  generated.
+ Data of variable ownership is kept in the variable nodes.
 \end_layout
 
 \begin_layout Section
@@ -430,26 +482,37 @@ Exporting to common file formats
 \end_layout
 
 \begin_layout Standard
+Athough some visualization and analysis tools are provided, the main focus
+ of AgNeS is helping to capture and validate data.
+ To allow for better tools in the analysis of these networks, the user may
+ export them to common interchange formats.
+\end_layout
+
+\begin_layout Standard
 Any selected edgelist may be exported to the following formats:
 \end_layout
 
 \begin_layout Itemize
 GrahpML.
  This format is a variant of XML specialized in representing complex networks.
- Many programs are able to read it, specially Cytoscape.
+ Many programs are able to read it, of special note are Cytoscape and Gephi,
+ both powerful network analysis and visualization software packages.
+ 
 \end_layout
 
 \begin_layout Itemize
-Pajek's .net format.
+Pajek format.
  Pajek is a common tool for social network analyses.
  
 \end_layout
 
 \begin_layout Itemize
 GraphViz DOT format.
- There are many ways of visualizing a complex network, GraphViz is a specialized
- tool which includes many different strategies for network visualization.
- 
+ GraphViz is a specialized visualization tool for networks, with many different
+ strategies and layouts.
+ Some visualizations shown in the next section are done with this tool.
+ However the DOT format is easily editable, and users may further customize
+ visualizations by using this toolset.
 \end_layout
 
 \begin_layout Subsection
@@ -458,8 +521,34 @@ Network analysis report
 
 \begin_layout Standard
 Common metrics can be obtained in a spreadsheet for a selected network.
- - Number of nodes - Number of edges - Network density - Netwok Clustering
- index - Average node connectivity 
+ From any selection of edges a user may obtain:
+\end_layout
+
+\begin_layout Itemize
+number of nodes 
+\end_layout
+
+\begin_layout Itemize
+number of edges 
+\end_layout
+
+\begin_layout Itemize
+network density 
+\end_layout
+
+\begin_layout Itemize
+netwok clustering index 
+\end_layout
+
+\begin_layout Itemize
+average node connectivity.
+\end_layout
+
+\begin_layout Standard
+These are basic counts and indexes that allow users to make simple but meaningfu
+l contrasts between networks, with little effort.
+ However many more aspects may be of interest and can be readily studied
+ using a wealth of conceptual and computational tools for network analysis.
 \end_layout
 
 \begin_layout Section
@@ -467,11 +556,114 @@ Visualization
 \end_layout
 
 \begin_layout Subsection
-Spring-embedded PDF
+Spring-embedded
+\end_layout
+
+\begin_layout Standard
+This layout algorithm simulates the network as a system where nodes are
+ mass particles that attract and repel other particles, while edges constrain
+ their movements.
+ The positions of nodes and edges are found by seeking a minimum energy
+ configuration of this system.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename spring_embedded.png
+	lyxscale 33
+	height 40theight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:sprint-embeded"
+
+\end_inset
+
+Printer-friendly visualization of an Agency network using the spring-embedded
+ layout algorithm.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the spring-embedded, printer-friendly visualization shown in figure 
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "fig:sprint-embeded"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ egos are enclosed by rectangles while actions are placed within ellipses,
+ arrow width and color represent edge weight.
+\end_layout
+
+\begin_layout Standard
+Many equilibria are possible, which makes it hard to visually compare networks
+ displayed by this algorithm.
+ However spatial relationships of nodes reveal their network proximity:
+ nodes with many common edges tend to visually group together.
+\end_layout
+
+\begin_layout Standard
+Printer-friendly visualizations generated by AgNeS use this algorithm.
+ Text, lines and shapes are carefully sized and placed for readability.
+ They can be viewed on screen, zooming in and out as necessary.
+ But they are specially meant to be printed on paper and displayed as posters,
+ perhaps in the context of a workshop.
+\end_layout
+
+\begin_layout Standard
+By displaying at all structural data, these visualizations are useful as
+ maps that can help users locate any node and its neighbors.
 \end_layout
 
 \begin_layout Subsection
 Interactive spring-embedded
+\end_layout
+
+\begin_layout Standard
+Same layout as the above subsection, but not as friendly with a printer,
+ must displayed within a browser.
+ However this visualization is interactive, it allows users to move nodes
+ with the mouse pointer and watch as the whole system achieves a new equilibrium.
+\end_layout
+
+\begin_layout Standard
+It is also useful for sharing a visualization without having to move around
+ large files.
+ Users can easily share a web address which opens the desired interactive
+ visualization on any browser, instead of having to send big PDF files.
 \end_layout
 
 \begin_layout Subsection
