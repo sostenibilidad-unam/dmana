@@ -13,13 +13,18 @@ def mental_model(queryset):
     """
     g = nx.DiGraph()
     for e in queryset:
-        w = g.get_edge_data(e.source.name,
-                            e.target.name,
-                            default={'w': 0})['w']
+        edge_data = g.get_edge_data(e.source.name,
+                                    e.target.name,
+                                    default={'w': 0,
+                                             'people': ""})
+        w = edge_data['w']
         w += 1
+
+        people = edge_data['people']
+        people += str(e.person) + ", "
         g.add_edge(e.source.name,
                    e.target.name,
-                   w=w)
+                   w=w, people=people)
     return g
 
 
