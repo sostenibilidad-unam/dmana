@@ -648,7 +648,7 @@ By displaying at all structural data, these visualizations are useful as
  maps that can help users locate any node and its neighbors.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Interactive spring-embedded
 \end_layout
 
@@ -667,15 +667,254 @@ It is also useful for sharing a visualization without having to move around
 \end_layout
 
 \begin_layout Subsection
-Relationship Diagram PDF
+Relationship Diagram
+\end_layout
+
+\begin_layout Standard
+Relationship diagrams, such as the one shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Relationship-diagram"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, display Agency Edges using three columns.
+ Two types are possible.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Egos-alters-actions: the leftmost column lists egos, the center column is
+ a list of alters through which egos are involved in actions, listed in
+ the rightmost column.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Egos-organizations-cateogries: the center column shows organizations which
+ group alters, and the right column shows action categories which group
+ actions.
+ By showing organizations and action categories both lists can be shortened
+ which might enhance readability.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename relationship_diagram_orgs2cats.png
+	lyxscale 33
+	width 96text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Relationship-diagram"
+
+\end_inset
+
+Relationship diagram of organizations to action categories.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This diagram is printer-friendly and emphazises readability of nodes.
+ Arrows visualy display the connections among the three types of nodes.
 \end_layout
 
 \begin_layout Subsection
 Hiveplot
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename hiveplot1.svg
+	lyxscale 33
+	width 60text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename hiveplot2.svg
+	lyxscale 33
+	width 30text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:hiveplot"
+
+\end_inset
+
+Contrast of two agency networks containing the same set of nodes, by placing
+ hiveplots side by side.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hiveplots use a node coordinate system to create perceptual uniformity and
+ reproducibility in the visualization of a network.
+ This makes the layout easy to interpret and allows for assessing differences
+ between networks.
+\end_layout
+
+\begin_layout Standard
+Hiveplots depict network structure by placing categories of nodes into radialy
+ distributed axes.
+ These categories are egos, alters and actions.
+ Edges are curves between those axes, which connect the nodes.
+ Visualizing the same set of nodes equally places them in two different
+ networks, which highlights the difference in the structure of their connections.
+\end_layout
+
+\begin_layout Standard
+Node size represents connectivity degree.
+ Node and edge colors represent action categories and economy sector for
+ people's organizations.
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:hiveplot"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ shows two different networks made from the same set of nodes, at two different
+ times.
+\end_layout
+
+\begin_layout Standard
+Hiveplots are generated in the W3C standard SVG format, which allows users
+ to further tune the visualization with other software.
+\end_layout
+
 \begin_layout Subsection
 Adjacency Matrices Contrast Heatmap
+\end_layout
+
+\begin_layout Standard
+Cognitive maps can be displayed as contrast heatmaps in AgNeS.
+\end_layout
+
+\begin_layout Standard
+A common recording format for complex networks is the adjacency matrix.
+ It is a square matrix in which rows and columns represent nodes, cells
+ in the matrix hold values different from zero to indicate the corresponding
+ nodes are connected (no connection is represented by 0).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename adjacency_matrix_contrast.png
+	lyxscale 11
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:contrast-adjacency"
+
+\end_inset
+
+Contrast adjacency matrix visualized as a heatmap.
+ Red and blue cells represent connections in source and target networks.
+ Purple cells are connections present in both.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When contrasting two networks, one network might use 1 to denote conections,
+ and a second network might use the number 2.
+ Adding these matrices, a matrix is created with values which can be 0,
+ 1, 2 or 3.
+ This matrix can be visualized as a heatmap in which blue represents one
+ network, red represents another network and purple, which is a mixture
+ of red and blue, represents connections that can be found in both networks.
+\end_layout
+
+\begin_layout Standard
+Pairs of networks are selected by choosing edges from different projects,
+ if they belong to the same ego, or from different egos if they belong to
+ the same project.
 \end_layout
 
 \end_body
