@@ -888,8 +888,14 @@ Hiveplots depict network structure by placing categories of nodes into radialy
  distributed axes.
  These categories are egos, alters and actions.
  Edges are curves between those axes, which connect the nodes.
- Visualizing the same set of nodes equally places them in two different
- networks, which highlights the difference in the structure of their connections.
+ Readers may follow connections from egos to alters or from egos to actions,
+ both are displayed in the same layout.
+\end_layout
+
+\begin_layout Standard
+Hiveplots for different networks made up of the same set of nodes would
+ display them in the same places, thus highlighting the difference in the
+ structure of their connections.
 \end_layout
 
 \begin_layout Standard
