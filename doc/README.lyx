@@ -191,19 +191,82 @@ Of special interest are the "Edge" tables, which hold relationships among
 \end_layout
 
 \begin_layout Subsection
+Web application
+\end_layout
+
+\begin_layout Standard
+The web application is organized in three layers.
+\end_layout
+
+\begin_layout Standard
+After logging in a list of all available tables is shown, this is the main
+ menu.
+ Choosing a table on this menu leads to an item list view.
+\end_layout
+
+\begin_layout Standard
+This view is the second layer, it displays controls to search and filter,
+ and a list of the resulting items within the chosen table.
+ Collections of these items may be selected and acted upon, e.g.
+ to generate visualizations or to export data.
+\end_layout
+
+\begin_layout Standard
+Finally, by clicking on any item in a list, a form is displayed where users
+ may read and edit all fields belonging to the chosen item.
+ For easy access, some items include sub-forms for related items, e.g.
+ it is possible to edit an ego's edgelists directly from the 
+\begin_inset Quotes eld
+\end_inset
+
+person view
+\begin_inset Quotes erd
+\end_inset
+
+, as well as from dedicated 
+\begin_inset Quotes eld
+\end_inset
+
+edge views
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
 Data about people
 \end_layout
 
 \begin_layout Standard
-In our data model people: - Can be distinguished as egos, which means they
- have been interviewed directly as part of the ANA method.
- - Are afiliated to an organization, through a link to an organizations
- table.
- - Represent an economy sector, which can be Academia, Government, Private
- enterprise, and Non-Governmental Organization.
- - Have an avatar name and avatar picture, which embodies their main powers
+In our data model, people: 
+\end_layout
+
+\begin_layout Itemize
+Can be distinguished as egos, which means they have been interviewed directly
+ as part of the ANA method.
+ 
+\end_layout
+
+\begin_layout Itemize
+Are afiliated to an organization, through a link to an organizations table.
+ 
+\end_layout
+
+\begin_layout Itemize
+Work in an economy sector, which can be Academia, Government, Private enterprise
+, and Non-Governmental Organization.
+ 
+\end_layout
+
+\begin_layout Itemize
+Have an avatar name and avatar picture, which embodies their main powers
  and qualities.
- - Relate to "powers" by links to an "Avatar Powers" table.
+ 
+\end_layout
+
+\begin_layout Itemize
+Relate to "powers" by links to an "Avatar Powers" table.
  A "description" field is included, where free text can be entered if additional
  information is necessary.
 \end_layout
@@ -235,6 +298,14 @@ Variables which affect the problem space under study are kept in the Cognitive
 This is just a list of meaningful words.
  They are meant to be connected to form cognitive maps in the Cognitive
  map Edgelist described below.
+\end_layout
+
+\begin_layout Standard
+Cognitive maps are directed graphs in which connections among variables
+ represent cause and effect interactions.
+ To analyze and compare the interviewees’ perception of the system, we identifie
+d in each cognitive map the variables (nodes) according to their cause and
+ effect positions properties:
 \end_layout
 
 \begin_layout Subsection
@@ -395,17 +466,21 @@ Influence is an integer and represents the percieved control of an ego over
 \end_layout
 
 \begin_layout Standard
-Distance is also an integer and, as the name suggests, stands for the closeness
- of a relationship.
+Distance is also an integer and, stands for the perceived social distance
+ between the ego and each alter, representing the relative degree of collaborati
+on (e.g.
+ due to frequency of the interaction) from the point of view of ego.
  A relationship of distance 1 is more intimate than one of distance 3.
 \end_layout
 
 \begin_layout Standard
-Interaction?
+Interaction represents how the interviewee perceives the intensity of interactio
+ns with individuals within her network (from ego to alter and alter to ego).
 \end_layout
 
 \begin_layout Standard
-Polarity?
+Polarity captures the nature of the perceived relationship, which can be
+ normatively positive, neutral, or negative.
 \end_layout
 
 \begin_layout Subsection
@@ -671,6 +746,47 @@ Relationship Diagram
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename relationship_diagram_orgs2cats.png
+	lyxscale 33
+	width 96text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Relationship-diagram"
+
+\end_inset
+
+Example relationship diagram of egos to alter organizations to action categories.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Relationship diagrams, such as the one shown in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -702,47 +818,6 @@ Egos-organizations-cateogries: the center column shows organizations which
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename relationship_diagram_orgs2cats.png
-	lyxscale 33
-	width 96text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Relationship-diagram"
-
-\end_inset
-
-Relationship diagram of organizations to action categories.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 This diagram is printer-friendly and emphazises readability of nodes.
  Arrows visualy display the connections among the three types of nodes.
 \end_layout
@@ -755,7 +830,7 @@ Hiveplot
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -787,8 +862,8 @@ name "fig:hiveplot"
 
 \end_inset
 
-Contrast of two agency networks containing the same set of nodes, by placing
- hiveplots side by side.
+Contrast of two agency networks containing the same set of nodes but different
+ connection structures, by placing hiveplots side by side.
 \end_layout
 
 \end_inset
@@ -862,7 +937,7 @@ A common recording format for complex networks is the adjacency matrix.
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
