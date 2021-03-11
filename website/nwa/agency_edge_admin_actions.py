@@ -31,7 +31,7 @@ def download_ego_alter_as_dot(modeladmin, request, queryset):
 
 
 download_ego_alter_as_dot.\
-    short_description = "Download Ego-Alter network in DOT format for Graphviz"
+    short_description = "Export Ego-Alter network to Graphviz DOT format "
 
 
 def download_ego_alter_as_graphml(modeladmin, request, queryset):
@@ -46,7 +46,7 @@ def download_ego_alter_as_graphml(modeladmin, request, queryset):
     return response
 
 download_ego_alter_as_graphml.\
-    short_description = "Download Ego-Alter network in GraphML format for Cytoscape"
+    short_description = "Export Ego-Alter network to GraphML format"
 
 
 
@@ -89,7 +89,7 @@ def download_ego_alter_action_as_graphml(modeladmin, request, queryset):
     return response
 
 download_ego_alter_action_as_graphml.\
-    short_description = "Download Ego-Alter-Action network in GraphML format for Cytoscape"
+    short_description = "Export Ego-Alter-Action network to GraphML format"
 
 
 def download_ego_alter_action_as_pdf(modeladmin, request, queryset):
@@ -105,7 +105,7 @@ def download_ego_alter_action_as_pdf(modeladmin, request, queryset):
         return response
 
 download_ego_alter_action_as_pdf.\
-    short_description = "Download Ego-Alter-Action network in spring embedded layout as PDF"
+    short_description = "Visualize Ego-Alter-Action network in spring-embedded layout"
 
 
 
@@ -123,7 +123,7 @@ def download_ego_alter_as_pdf(modeladmin, request, queryset):
 
 
 download_ego_alter_as_pdf.\
-    short_description = "Download Ego-Alter network in spring embedded layout as PDF"
+    short_description = "Visualize Ego-Alter network in spring embedded layout"
 
 
 
@@ -138,7 +138,7 @@ def download_alter_action_as_dot(modeladmin, request, queryset):
 
 
 download_alter_action_as_dot.\
-    short_description = "Download Alter-Action network in DOT format for Graphviz"
+    short_description = "Export Alter-Action network to Graphviz DOT format"
 
 
 def download_alter_action_as_graphml(modeladmin, request, queryset):
@@ -153,7 +153,7 @@ def download_alter_action_as_graphml(modeladmin, request, queryset):
     return response
 
 download_alter_action_as_graphml.\
-    short_description = "Download Alter-Action network in GraphML format for Cytoscape"
+    short_description = "Export Alter-Action network to GraphML format"
 
 
 def download_alter_action_as_pdf(modeladmin, request, queryset):
@@ -170,7 +170,7 @@ def download_alter_action_as_pdf(modeladmin, request, queryset):
 
 
 download_alter_action_as_pdf.\
-    short_description = "Download Alter-Action network in spring embedded layout as PDF"
+    short_description = "Visualize Alter-Action network in spring-embedded layout"
 
 
 
@@ -188,7 +188,7 @@ def download_as_graphml(modeladmin, request, queryset):
 
 
 download_as_graphml.\
-    short_description = "Agency Network in GraphML format for Cytoscape"
+    short_description = "Export Agency Network to GraphML format"
 
 
 def download_as_dot(modeladmin, request, queryset):
@@ -201,7 +201,7 @@ def download_as_dot(modeladmin, request, queryset):
 
 
 download_as_dot.\
-    short_description = "Agency Network in DOT format for Graphviz"
+    short_description = "Export Agency Network to Graphviz DOT format"
 
 
 def download_as_pajek(modeladmin, request, queryset):
@@ -217,7 +217,7 @@ def download_as_pajek(modeladmin, request, queryset):
 
 
 download_as_pajek.\
-    short_description = "Download Pajek format"
+    short_description = "Export to Pajek format"
 
 
 def download_as_pdf(modeladmin, request, queryset):
@@ -234,7 +234,7 @@ def download_as_pdf(modeladmin, request, queryset):
 
 
 download_as_pdf.\
-    short_description = "Download spring embedded layout in PDF"
+    short_description = "Visualize Agency network in spring-embedded layout"
 
 
 def download_orgs2cats_as_pdf(modeladmin, request, queryset):
@@ -251,7 +251,7 @@ def download_orgs2cats_as_pdf(modeladmin, request, queryset):
 
 
 download_orgs2cats_as_pdf.\
-    short_description = "Organizations to Action Categories network in spring embedded layout as PDF"
+    short_description = "Visualize Organizations to Action Categories network in spring embedded-layout"
 
 
 def relationship_diagram_as_pdf(modeladmin, request, queryset):
@@ -288,7 +288,7 @@ def relationship_diagram_as_pdf(modeladmin, request, queryset):
 
 
 relationship_diagram_as_pdf.\
-    short_description = "Download Relationship Diagram as PDF"
+    short_description = "Visualize as Ego-Alter-Action relationship diagram"
 
 
 def relationship_diagram_orgs2cats(modeladmin, request, queryset):
@@ -325,7 +325,7 @@ def relationship_diagram_orgs2cats(modeladmin, request, queryset):
 
 
 relationship_diagram_orgs2cats.\
-    short_description = "Organizations to Action Categories relationship diagram as PDF"
+    short_description = "Visualize as Ego-Organization-Category relationship diagram"
 
 
 def create_visjs(modeladmin, request, queryset):
@@ -388,7 +388,7 @@ def create_visjs(modeladmin, request, queryset):
 
 
 create_visjs.\
-    short_description = "Create interactive browser based visualization"
+    short_description = "Visualize as interactive spring-embedded layout"
 
 
 def create_agency_hiveplot(modeladmin, request, queryset):
@@ -418,7 +418,7 @@ def create_agency_hiveplot(modeladmin, request, queryset):
 
 
 create_agency_hiveplot.\
-    short_description = "Create agency hiveplot"
+    short_description = "Visualize Agency Network as hiveplot"
 
 
 def download_analisis_report_ods(modeladmin, request, queryset):
@@ -431,4 +431,4 @@ def download_analisis_report_ods(modeladmin, request, queryset):
     return response
 
 download_analisis_report_ods.\
-    short_description = "Network analisis report in spreadsheet format"
+    short_description = "Export network analisis report in spreadsheet format"

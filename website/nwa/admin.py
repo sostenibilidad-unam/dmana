@@ -292,13 +292,13 @@ class MentalEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
         ('project', admin.RelatedOnlyFieldListFilter), )
 
     actions = [
-        mmxn.download_analisis_report_ods,
-        mmxn.contrast_heatmaps,
         mmxn.download_as_graphml,
         mmxn.download_as_dot,
         mmxn.download_as_pajek,
+        mmxn.download_analisis_report_ods,
         mmxn.download_as_pdf,
         mmxn.create_visjs,
+        mmxn.contrast_heatmaps,
         copy_selection,
         confirm_delete,
     ]
@@ -322,11 +322,11 @@ class PowerEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
     autocomplete_fields = ['person', 'power', ]
 
     actions = [
-        pexn.download_analisis_report_ods,
         pexn.download_as_graphml,
-        pexn.download_as_pdf,
         pexn.download_as_dot,
         pexn.download_as_pajek,
+        pexn.download_analisis_report_ods,
+        pexn.download_as_pdf,
         pexn.create_visjs,
         copy_selection,
         confirm_delete,
@@ -353,25 +353,36 @@ class AgencyEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
 
     autocomplete_fields = ['person', 'action', 'people']
 
-    actions = [aexn.download_analisis_report_ods,
-               aexn.download_as_graphml,
-               aexn.relationship_diagram_as_pdf,
-               aexn.relationship_diagram_orgs2cats,
-               aexn.download_as_dot,
-               aexn.download_as_pajek,
-               aexn.download_as_pdf,
-               aexn.download_orgs2cats_as_pdf,
-               aexn.create_visjs,
-               aexn.create_agency_hiveplot,
-               aexn.download_ego_alter_as_dot,
-               aexn.download_ego_alter_as_graphml,
-               aexn.download_ego_alter_as_pdf,
-               aexn.download_alter_action_as_dot,
-               aexn.download_alter_action_as_graphml,
-               aexn.download_alter_action_as_pdf,
-               aexn.download_ego_alter_action_as_graphml,
-               aexn.download_ego_alter_action_as_pdf,
-               aexn.extract_social_network,
-               copy_selection,
-               confirm_delete,
+    actions = [
+        aexn.extract_social_network,
+        
+        aexn.download_as_graphml,
+        aexn.download_as_dot,
+        aexn.download_as_pajek,
+        
+        aexn.download_ego_alter_as_dot,
+        aexn.download_ego_alter_as_graphml,
+
+        aexn.download_alter_action_as_dot,
+        aexn.download_alter_action_as_graphml,
+
+        aexn.download_ego_alter_action_as_graphml,        
+        aexn.download_analisis_report_ods,
+
+        aexn.download_as_pdf,
+        aexn.create_visjs,
+        
+        aexn.download_orgs2cats_as_pdf,
+
+        aexn.download_ego_alter_as_pdf,
+        aexn.download_alter_action_as_pdf,
+        aexn.download_ego_alter_action_as_pdf,
+        
+        aexn.relationship_diagram_as_pdf,
+        aexn.relationship_diagram_orgs2cats,
+        
+        aexn.create_agency_hiveplot,
+
+        copy_selection,
+        confirm_delete,
     ]
