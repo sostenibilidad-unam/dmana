@@ -128,14 +128,14 @@ Links can be created that join different tables together.
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
 	filename /home/rgarcia/agnes/tables.png
-	lyxscale 33
-	width 96text%
+	lyxscale 55
+	width 111text%
 
 \end_inset
 
@@ -146,7 +146,80 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Entity-relationship-diagram"
+
+\end_inset
+
 Entity-relationship diagram of database.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Person
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+power
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+action
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+variable
+\begin_inset Quotes erd
+\end_inset
+
+ tables hold data related to nodes.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Agency edge
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+social edge
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+power edge
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+mental edge
+\begin_inset Quotes erd
+\end_inset
+
+ are tables from which networks can be created.
+ 
 \end_layout
 
 \end_inset
@@ -172,66 +245,31 @@ Constraints can be set on each column, so that only valid data can be entered.
 The resulting structure can be interrogated with great flexibility.
  Using a specialized query language, any combination of columns may be fetched
  by complex combinations of criteria.
+ However, for ease of use, we have developed a web application which allows
+ users to easily access these tables.
 \end_layout
 
 \begin_layout Standard
-We have developed a web application which allows users to easily access
- these tables.
+Figure 
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "fig:Entity-relationship-diagram"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ shows a map of the tables that make up the AgNeS database, including their
+ columns and relationships.
+ Of special interest are the "Edge" tables, which hold relationships among
+ nodes in the networks that make up the Agency Network Analysis.
 \end_layout
 
 \begin_layout Standard
 The following subsections describe the structure of each of the tables we
  have designed, as well as the corresponding web forms for filtering, vizualisin
 g, exporting and data input.
-\end_layout
-
-\begin_layout Standard
-Of special interest are the "Edge" tables, which hold relationships among
- nodes in the networks that make up the Agency Network Analysis.
-\end_layout
-
-\begin_layout Subsection
-Web application
-\end_layout
-
-\begin_layout Standard
-The web application is organized in three layers.
-\end_layout
-
-\begin_layout Standard
-After logging in a list of all available tables is shown, this is the main
- menu.
- Choosing a table on this menu leads to an item list view.
-\end_layout
-
-\begin_layout Standard
-This view is the second layer, it displays controls to search and filter,
- and a list of the resulting items within the chosen table.
- Collections of these items may be selected and acted upon, e.g.
- to generate visualizations or to export data.
-\end_layout
-
-\begin_layout Standard
-Finally, by clicking on any item in a list, a form is displayed where users
- may read and edit all fields belonging to the chosen item.
- For easy access, some items include sub-forms for related items, e.g.
- it is possible to edit an ego's edgelists directly from the 
-\begin_inset Quotes eld
-\end_inset
-
-person view
-\begin_inset Quotes erd
-\end_inset
-
-, as well as from dedicated 
-\begin_inset Quotes eld
-\end_inset
-
-edge views
-\begin_inset Quotes erd
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Subsection
@@ -300,14 +338,6 @@ This is just a list of meaningful words.
  map Edgelist described below.
 \end_layout
 
-\begin_layout Standard
-Cognitive maps are directed graphs in which connections among variables
- represent cause and effect interactions.
- To analyze and compare the interviewees’ perception of the system, we identifie
-d in each cognitive map the variables (nodes) according to their cause and
- effect positions properties:
-\end_layout
-
 \begin_layout Subsection
 Grouping data by project
 \end_layout
@@ -324,6 +354,53 @@ A Project makes it possible to use the same nodes to create different networks.
 Edges in all networks always belong to a project, but nodes may be shared.
  This makes it easy to create a new network based on previous work: Edgelist
  tables allow the user to copy edges into new projects.
+\end_layout
+
+\begin_layout Subsection
+Web application
+\end_layout
+
+\begin_layout Standard
+The web application is organized in three layers.
+\end_layout
+
+\begin_layout Standard
+After logging in a list of all available tables is shown, this is the main
+ menu.
+ Choosing a table on this menu leads to an item list view.
+\end_layout
+
+\begin_layout Standard
+This list view is the second layer, there is a list view for every database
+ table.
+ It displays controls to search and filter, and a list of found items within
+ the chosen table.
+ Collections of these items may be selected and acted upon, e.g.
+ to generate visualizations or to export data.
+\end_layout
+
+\begin_layout Standard
+Finally, by clicking on any item in a list, a form is displayed where users
+ may read and edit all fields belonging to the chosen item.
+ This is the innermost layer.
+ For easy access, some items include sub-forms for related items, e.g.
+ it is possible to edit an ego's edgelists directly from the 
+\begin_inset Quotes eld
+\end_inset
+
+person view
+\begin_inset Quotes erd
+\end_inset
+
+, as well as from dedicated 
+\begin_inset Quotes eld
+\end_inset
+
+edge views
+\begin_inset Quotes erd
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -552,6 +629,14 @@ By choosing edges from several people their common Cognitive map may be
 Outputs
 \end_layout
 
+\begin_layout Standard
+By providing forms for data capture, AgNeS allows easy access to the database
+ structure, which in turn keeps data consistent.
+ Once data from an agency network analysis is loaded into the database,
+ it may be used to create visualizations or exported to common formats for
+ further analysis using specialized software.
+\end_layout
+
 \begin_layout Subsection
 Exporting to common file formats
 \end_layout
@@ -628,6 +713,13 @@ l contrasts between networks, with little effort.
 
 \begin_layout Section
 Visualization
+\end_layout
+
+\begin_layout Standard
+The visual display of network information is itself a powerful analysis
+ tool.
+ AgNeS provides visualizations which are specific to the problem domain
+ of an agency network analysis.
 \end_layout
 
 \begin_layout Subsection
