@@ -84,23 +84,22 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Agency Network Analylses (ANA) map the social action arena of people by
- situating them relative to their collaborators and within their problem
- space.
+Agency Network Analyses (ANA) map the social action arena of people by situating
+ them relative to their collaborators and within their problem space.
  This helps actors identify where they have agency in the system, i.e.
  over what elements and through what relationships.
 \end_layout
 
 \begin_layout Standard
 This mapping is done via a multi-part interview process during which data
- is gathered about actors (their context, worplaces, type of organization,
+ is gathered about actors (their context, workplaces, type of organization,
  etc.), their activities (practices, capacities), and their relationships
  to other actors.
 \end_layout
 
 \begin_layout Standard
 AgNeS is a database administration interface specially designed to easily
- and sistematically gather data for agency network analyses.
+ and systematically gather data for agency network analyses.
  Once data is loaded into database, agency networks can be visualized in
  several ways, metrics from their structure can be easily computed, or they
  can be exported to common standard formats for further processing with
@@ -268,7 +267,7 @@ noprefix "false"
 
 \begin_layout Standard
 The following subsections describe the structure of each of the tables we
- have designed, as well as the corresponding web forms for filtering, vizualisin
+ have designed, as well as the corresponding web forms for filtering, visualizin
 g, exporting and data input.
 \end_layout
 
@@ -287,7 +286,7 @@ Can be distinguished as egos, which means they have been interviewed directly
 \end_layout
 
 \begin_layout Itemize
-Are afiliated to an organization, through a link to an organizations table.
+Are affiliated to an organization, through a link to an organizations table.
  
 \end_layout
 
@@ -538,7 +537,7 @@ Relationship edges hold data for Influence, Distance, Interaction and Polarity.
 \end_layout
 
 \begin_layout Standard
-Influence is an integer and represents the percieved control of an ego over
+Influence is an integer and represents the perceived control of an ego over
  their alter's actions.
 \end_layout
 
@@ -642,7 +641,7 @@ Exporting to common file formats
 \end_layout
 
 \begin_layout Standard
-Athough some visualization and analysis tools are provided, the main focus
+Although some visualization and analysis tools are provided, the main focus
  of AgNeS is helping to capture and validate data.
  To allow for better tools in the analysis of these networks, the user may
  export them to common interchange formats.
@@ -672,7 +671,7 @@ GraphViz DOT format.
  strategies and layouts.
  Some visualizations shown in the next section are done with this tool.
  However the DOT format is easily editable, and users may further customize
- visualizations by using this toolset.
+ visualizations by using this tool set.
 \end_layout
 
 \begin_layout Subsection
@@ -697,7 +696,7 @@ network density
 \end_layout
 
 \begin_layout Itemize
-netwok clustering index 
+network clustering index 
 \end_layout
 
 \begin_layout Itemize
@@ -910,8 +909,8 @@ Egos-organizations-cateogries: the center column shows organizations which
 \end_layout
 
 \begin_layout Standard
-This diagram is printer-friendly and emphazises readability of nodes.
- Arrows visualy display the connections among the three types of nodes.
+This diagram is printer-friendly and emphasizes readability of nodes.
+ Arrows visually display the connections among the three types of nodes.
 \end_layout
 
 \begin_layout Subsection
@@ -976,7 +975,7 @@ Hiveplots use a node coordinate system to create perceptual uniformity and
 \end_layout
 
 \begin_layout Standard
-Hiveplots depict network structure by placing categories of nodes into radialy
+Hiveplots depict network structure by placing categories of nodes into radially
  distributed axes.
  These categories are egos, alters and actions.
  Edges are curves between those axes, which connect the nodes.
@@ -1075,7 +1074,7 @@ Contrast adjacency matrix visualized as a heatmap.
 \end_layout
 
 \begin_layout Standard
-When contrasting two networks, one network might use 1 to denote conections,
+When contrasting two networks, one network might use 1 to denote connections,
  and a second network might use the number 2.
  Adding these matrices, a matrix is created with values which can be 0,
  1, 2 or 3.
