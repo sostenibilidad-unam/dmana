@@ -25,7 +25,7 @@ def download_as_graphml(modeladmin, request, queryset):
 
 
 download_as_graphml.\
-    short_description = "Download GraphML format suitalbe for Cytoscape"
+    short_description = "Export Social Network to GraphML format"
 
 
 def download_as_dot(modeladmin, request, queryset):
@@ -38,7 +38,7 @@ def download_as_dot(modeladmin, request, queryset):
 
 
 download_as_dot.\
-    short_description = "Download DOT format for Graphviz"
+    short_description = "Export Social Network to Graphviz DOT format"
 
 
 def download_as_pajek(modeladmin, request, queryset):
@@ -54,7 +54,7 @@ def download_as_pajek(modeladmin, request, queryset):
 
 
 download_as_pajek.\
-    short_description = "Download Pajek format"
+    short_description = "Export Social Network to Pajek format"
 
 
 
@@ -72,7 +72,7 @@ def download_as_pdf(modeladmin, request, queryset):
 
 
 download_as_pdf.\
-    short_description = "Download network in spring embedded layout as PDF"
+    short_description = "Visualize Social Network in spring-embedded layout"
 
 
 def create_visjs(modeladmin, request, queryset):
@@ -151,7 +151,7 @@ def create_visjs(modeladmin, request, queryset):
 
 
 create_visjs.\
-    short_description = "Create interactive browser based visualization"
+    short_description = "Visualize Social Network as interactive spring-embedded layout"
 
 
 
@@ -166,4 +166,4 @@ def download_analisis_report_ods(modeladmin, request, queryset):
     return response
 
 download_analisis_report_ods.\
-    short_description = "Network analisis report in spreadsheet format"
+    short_description = "Export network analisis report in spreadsheet format"
