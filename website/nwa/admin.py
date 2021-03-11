@@ -199,12 +199,14 @@ class SocialEdgeAdmin(DjangoQLSearchMixin, JustMine, admin.ModelAdmin):
     autocomplete_fields = ['source', 'target', ]
 
     actions = [
-        sexn.download_analisis_report_ods,
         sexn.download_as_graphml,
         sexn.download_as_dot,
         sexn.download_as_pajek,
+        sexn.download_analisis_report_ods,
+        
         sexn.download_as_pdf,
         sexn.create_visjs,
+        
         copy_selection,
         confirm_delete
     ]

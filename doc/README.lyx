@@ -374,8 +374,26 @@ This list view is the second layer, there is a list view for every database
  table.
  It displays controls to search and filter, and a list of found items within
  the chosen table.
- Collections of these items may be selected and acted upon, e.g.
- to generate visualizations or to export data.
+ Filter controls include a project filter, which allows users to choose
+ only items related to a given project.
+ Some list views include a field for advanced query language search.
+ This input field auto-completes search terms for easy exploration, and
+ allows logical combinations of any search criteria, e.g.
+ a user might search for ego's that belong to a given organization 
+\emph on
+or
+\emph default
+ work in a certain economy sector 
+\emph on
+and 
+\emph default
+that are related to actions of a given category.
+\end_layout
+
+\begin_layout Standard
+Collections of these items may be selected by clicking on their checkboxes,
+ and acted upon, e.g.
+ to generate visualizations, to export data or to copy them to other projects.
 \end_layout
 
 \begin_layout Standard
@@ -438,7 +456,7 @@ A common representation of a network is a list of edges.
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -757,7 +775,7 @@ This layout algorithm simulates the network as a system where nodes are
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
